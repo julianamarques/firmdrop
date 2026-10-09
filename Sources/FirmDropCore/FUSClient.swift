@@ -83,7 +83,7 @@ public actor FUSClient {
         }
         guard !body.isEmpty else { return nil }
         do {
-            return try XMLDocument(data: data)
+            return try XMLDocument.untrusted(data)
         } catch {
             throw FUSError.badResponse("\(endpoint) não retornou XML (bloqueio do CDN?)")
         }

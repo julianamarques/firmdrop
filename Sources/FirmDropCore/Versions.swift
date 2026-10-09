@@ -45,7 +45,7 @@ public enum Versions {
 
     public static func parse(_ data: Data, model: String, region: String) throws -> FirmwareVersions {
         let doc: XMLDocument
-        do { doc = try XMLDocument(data: data) } catch {
+        do { doc = try XMLDocument.untrusted(data) } catch {
             throw FUSError.badResponse("version.xml inválido")
         }
         let latestNode = try doc.nodes(forXPath: "/versioninfo/firmware/version/latest").first as? XMLElement
