@@ -73,7 +73,7 @@ struct SettingsView: View {
         panel.canChooseDirectories = true
         panel.canChooseFiles = false
         panel.canCreateDirectories = true
-        panel.prompt = "Escolher"
+        panel.prompt = String(localized: "Escolher")
         panel.directoryURL = AppDefaults.downloadFolder
         if panel.runModal() == .OK, let url = panel.url {
             downloadFolder = url.path(percentEncoded: false)

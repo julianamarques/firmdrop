@@ -51,10 +51,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         guard downloads.runningCount > 0 else { return .terminateNow }
         let alert = NSAlert()
-        alert.messageText = "Há downloads em andamento"
-        alert.informativeText = "Eles serão pausados e poderão ser retomados quando você abrir o FirmDrop de novo."
-        alert.addButton(withTitle: "Pausar e sair")
-        alert.addButton(withTitle: "Cancelar")
+        alert.messageText = String(localized: "Há downloads em andamento")
+        alert.informativeText = String(localized: "Eles serão pausados e poderão ser retomados quando você abrir o FirmDrop de novo.")
+        alert.addButton(withTitle: String(localized: "Pausar e sair"))
+        alert.addButton(withTitle: String(localized: "Cancelar"))
         guard alert.runModal() == .alertFirstButtonReturn else { return .terminateCancel }
         downloads.pauseAll()
         return .terminateNow

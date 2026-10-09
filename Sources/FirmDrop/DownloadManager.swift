@@ -92,20 +92,20 @@ final class DownloadManager {
                     onProgress: { progress in Task { @MainActor in item?.apply(progress) } },
                     onRetry: { attempt, error in
                         Task { @MainActor in
-                            item?.retryMessage = "Falha (\(error.localizedDescription)). Nova tentativa \(attempt)…"
+                            item?.retryMessage = String(localized: "Falha (\(error.localizedDescription)). Nova tentativa \(attempt)…")
                         }
                     }
                 )
                 guard let item else { return }
                 item.state = .completed(url)
                 item.retryMessage = nil
-                self?.notify(title: "Download concluído", body: "\(item.title) — \(Versions.compact(item.version))")
+                self?.notify(title: String(localized: "Download concluído"), body: "\(item.title) — \(Versions.compact(item.version))")
             } catch is CancellationError {
                 item?.state = .paused
             } catch {
                 guard let item else { return }
                 item.state = .failed(error.localizedDescription)
-                self?.notify(title: "Falha no download", body: "\(item.title): \(error.localizedDescription)")
+                self?.notify(title: String(localized: "Falha no download"), body: "\(item.title): \(error.localizedDescription)")
             }
             item?.task = nil
             self?.updateActivity()

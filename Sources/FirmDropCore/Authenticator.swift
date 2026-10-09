@@ -14,7 +14,7 @@ public struct Authenticator: Sendable {
 
     public init(params: Data) throws {
         guard Self.sha256(params) == Self.paramsSHA256 else {
-            throw FUSError.authParams("auth_param.dat com SHA-256 inesperado")
+            throw FUSError.authParams(String(localized: "auth_param.dat com SHA-256 inesperado"))
         }
         let bytes = [UInt8](params)
         func int32(at index: Int) -> Int {
@@ -104,6 +104,6 @@ public struct Authenticator: Sendable {
                 return try Authenticator(params: data)
             }
         }
-        throw FUSError.authParams("auth_param.dat não encontrado no app; rode scripts/fetch-auth-params.sh")
+        throw FUSError.authParams(String(localized: "auth_param.dat não encontrado no app; rode scripts/fetch-auth-params.sh"))
     }
 }

@@ -30,7 +30,7 @@ struct Region: Hashable, Identifiable {
     var id: String { code }
 
     static let brazil = [
-        Region(code: "ZTO", name: "Brasil (desbloqueado)"),
+        Region(code: "ZTO", name: String(localized: "Brasil (desbloqueado)")),
         Region(code: "ZTA", name: "Claro"),
         Region(code: "ZTM", name: "TIM"),
         Region(code: "ZVV", name: "Vivo"),
@@ -65,7 +65,7 @@ enum Format {
         f.unitsStyle = .abbreviated
         f.maximumUnitCount = 2
         f.allowedUnits = seconds >= 3600 ? [.hour, .minute] : [.minute, .second]
-        return f.string(from: seconds).map { "falta \($0)" }
+        return f.string(from: seconds).map { String(localized: "falta \($0)") }
     }
 
     static func buildDate(_ version: String) -> String? {

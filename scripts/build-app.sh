@@ -30,6 +30,8 @@ cp Resources/Info.plist "$APP/Contents/Info.plist"
 cp Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
 cp LICENSE NOTICE Resources/licenses/Bifrost-LICENSE.txt "$APP/Contents/Resources/"
 cp Resources/auth_param.dat "$APP/Contents/Resources/auth_param.dat"
+xcrun xcstringstool compile Resources/Localizable.xcstrings --output-directory "$APP/Contents/Resources"
+swift scripts/make-source-strings.swift Resources/Localizable.xcstrings "$APP/Contents/Resources" >/dev/null
 codesign --force --options runtime --sign - "$APP"
 
 echo "Pronto: $APP"

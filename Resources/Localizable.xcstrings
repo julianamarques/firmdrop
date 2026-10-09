@@ -1,0 +1,1202 @@
+{
+  "sourceLanguage": "pt-BR",
+  "strings": {
+    "%@ de %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ of %@"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ de %2$@"
+          }
+        }
+      }
+    },
+    "%@ não retornou XML (bloqueio do CDN?)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ did not return XML (blocked by the CDN?)"
+          }
+        }
+      }
+    },
+    "%@ — %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ — %@"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ — %2$@"
+          }
+        }
+      }
+    },
+    "%lld em andamento": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld in progress"
+          }
+        }
+      }
+    },
+    "A chave não decifra este arquivo (o resultado não é um ZIP).": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The key does not decrypt this file (the result is not a ZIP)."
+          }
+        }
+      }
+    },
+    "A versão %@ está disponível. Você está usando a %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version %@ is available. You are using %@."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "new",
+            "value": "A versão %1$@ está disponível. Você está usando a %2$@."
+          }
+        }
+      }
+    },
+    "Agora Não": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not Now"
+          }
+        }
+      }
+    },
+    "Ajustes": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings"
+          }
+        }
+      }
+    },
+    "Android %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Android %@"
+          }
+        }
+      }
+    },
+    "Atualizações": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updates"
+          }
+        }
+      }
+    },
+    "Autenticação recusada pelo servidor. O esquema de autenticação pode ter mudado.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server rejected the authentication. The authentication scheme may have changed."
+          }
+        }
+      }
+    },
+    "Baixando…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Downloading…"
+          }
+        }
+      }
+    },
+    "Baixar": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download"
+          }
+        }
+      }
+    },
+    "Baixar Atualização": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download Update"
+          }
+        }
+      }
+    },
+    "BinaryInform vazio": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "empty BinaryInform"
+          }
+        }
+      }
+    },
+    "Brasil (desbloqueado)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brazil (unlocked)"
+          }
+        }
+      }
+    },
+    "Buscando versões…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Looking up versions…"
+          }
+        }
+      }
+    },
+    "Buscar": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search"
+          }
+        }
+      }
+    },
+    "Busque um modelo": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search for a model"
+          }
+        }
+      }
+    },
+    "CSC": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CSC"
+          }
+        }
+      }
+    },
+    "Cancelar": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "Cancelar download": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel Download"
+          }
+        }
+      }
+    },
+    "Cancelar e apagar arquivo parcial": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel and Delete Partial File"
+          }
+        }
+      }
+    },
+    "Cancelar e apagar arquivo parcial…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel and Delete Partial File…"
+          }
+        }
+      }
+    },
+    "Cancelar o download de %@?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel the download of %@?"
+          }
+        }
+      }
+    },
+    "Conectando ao servidor da Samsung…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connecting to Samsung's server…"
+          }
+        }
+      }
+    },
+    "Conferindo a parte já baixada… %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checking the part already downloaded… %@"
+          }
+        }
+      }
+    },
+    "Confira sua conexão com a internet e tente de novo.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check your internet connection and try again."
+          }
+        }
+      }
+    },
+    "Consultando tamanho…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Getting size…"
+          }
+        }
+      }
+    },
+    "Continuar baixando": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep Downloading"
+          }
+        }
+      }
+    },
+    "Copiar chave de decifragem": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy Decryption Key"
+          }
+        }
+      }
+    },
+    "Decifrando… %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Decrypting… %@"
+          }
+        }
+      }
+    },
+    "Digite o modelo do aparelho (Configurações › Sobre o telefone), por exemplo SM-A556E ou SM-S928B.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter the device model (Settings › About phone), for example SM-A556E or SM-S928B."
+          }
+        }
+      }
+    },
+    "Download concluído": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download Complete"
+          }
+        }
+      }
+    },
+    "Downloads": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Downloads"
+          }
+        }
+      }
+    },
+    "Durante a decifragem é preciso o dobro do tamanho do firmware livre em disco.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Decrypting needs free disk space of twice the firmware size."
+          }
+        }
+      }
+    },
+    "Eles serão pausados e poderão ser retomados quando você abrir o FirmDrop de novo.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "They will be paused and can be resumed the next time you open FirmDrop."
+          }
+        }
+      }
+    },
+    "Escolher": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose"
+          }
+        }
+      }
+    },
+    "Escolher…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose…"
+          }
+        }
+      }
+    },
+    "Falha (%@). Nova tentativa %lld…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failed (%@). Retry %lld…"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Falha (%1$@). Nova tentativa %2$lld…"
+          }
+        }
+      }
+    },
+    "Falha no download": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download Failed"
+          }
+        }
+      }
+    },
+    "FirmDrop": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FirmDrop"
+          }
+        }
+      }
+    },
+    "Firmware não encontrado para essa combinação de modelo, região e versão (status %@).": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No firmware found for this model, region and version (status %@)."
+          }
+        }
+      }
+    },
+    "Há downloads em andamento": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Downloads are in progress"
+          }
+        }
+      }
+    },
+    "Ignorar Esta Versão": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skip This Version"
+          }
+        }
+      }
+    },
+    "Limpar": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear"
+          }
+        }
+      }
+    },
+    "Limpar concluídos": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear Completed"
+          }
+        }
+      }
+    },
+    "Manter o arquivo cifrado (.enc4) depois de decifrar": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep the encrypted file (.enc4) after decrypting"
+          }
+        }
+      }
+    },
+    "Modelo": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model"
+          }
+        }
+      }
+    },
+    "Modelo inválido: “%@”. Use o código do aparelho, por exemplo SM-A556E.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalid model: “%@”. Use the device code, for example SM-A556E."
+          }
+        }
+      }
+    },
+    "Modelo, ex.: SM-A556E": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model, e.g. SM-A556E"
+          }
+        }
+      }
+    },
+    "Mostrar no Finder": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show in Finder"
+          }
+        }
+      }
+    },
+    "Nenhum arquivo disponível para %@/%@ na versão %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No file available for %@/%@ at version %@."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Nenhum arquivo disponível para %1$@/%2$@ na versão %3$@."
+          }
+        }
+      }
+    },
+    "Nenhum firmware encontrado para %@ na região %@. Confira o modelo (ex.: SM-A556E) e o CSC.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No firmware found for %@ in region %@. Check the model (e.g. SM-A556E) and the CSC."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Nenhum firmware encontrado para %1$@ na região %2$@. Confira o modelo (ex.: SM-A556E) e o CSC."
+          }
+        }
+      }
+    },
+    "Nenhum firmware publicado": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Published Firmware"
+          }
+        }
+      }
+    },
+    "Nenhuma versão publicada para %@ em %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No version published for %@ in %@."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Nenhuma versão publicada para %1$@ em %2$@."
+          }
+        }
+      }
+    },
+    "No modo automático, o app verifica ao abrir e uma vez por dia. As novas versões são baixadas da página de Releases no GitHub.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In automatic mode, the app checks at launch and once a day. New versions are downloaded from the Releases page on GitHub."
+          }
+        }
+      }
+    },
+    "Nova versão do FirmDrop": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New Version of FirmDrop"
+          }
+        }
+      }
+    },
+    "Nunca": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Never"
+          }
+        }
+      }
+    },
+    "Não foi possível buscar": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search Failed"
+          }
+        }
+      }
+    },
+    "Não foi possível obter os parâmetros de autenticação: %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not load the authentication parameters: %@."
+          }
+        }
+      }
+    },
+    "Não foi possível verificar atualizações": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could Not Check for Updates"
+          }
+        }
+      }
+    },
+    "Não há firmware para %@ na região %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There is no firmware for %@ in region %@."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Não há firmware para %1$@ na região %2$@."
+          }
+        }
+      }
+    },
+    "O CRC32 não confere (esperado %@, obtido %@). Apague o arquivo e baixe novamente.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The CRC32 does not match (expected %@, got %@). Delete the file and download again."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "new",
+            "value": "O CRC32 não confere (esperado %1$@, obtido %2$@). Apague o arquivo e baixe novamente."
+          }
+        }
+      }
+    },
+    "O FirmDrop %@ é a versão mais nova disponível.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FirmDrop %@ is the newest version available."
+          }
+        }
+      }
+    },
+    "O arquivo parcial é maior que o esperado. Apague-o e baixe novamente.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The partial file is larger than expected. Delete it and download again."
+          }
+        }
+      }
+    },
+    "O que já foi baixado será apagado.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What has been downloaded so far will be deleted."
+          }
+        }
+      }
+    },
+    "O servidor exigiu IMEI/número de série para este modelo.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server required an IMEI/serial number for this model."
+          }
+        }
+      }
+    },
+    "O servidor informou um nome de arquivo inválido: “%@”.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server sent an invalid file name: “%@”."
+          }
+        }
+      }
+    },
+    "O servidor não aceitou retomar o download.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server did not allow resuming the download."
+          }
+        }
+      }
+    },
+    "O servidor não forneceu a chave para decifrar o arquivo.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server did not provide the key to decrypt the file."
+          }
+        }
+      }
+    },
+    "O servidor respondeu HTTP %lld em %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server responded with HTTP %lld at %@."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "new",
+            "value": "O servidor respondeu HTTP %1$lld em %2$@."
+          }
+        }
+      }
+    },
+    "Os códigos do Brasil servem o mesmo firmware; o CSC ativo é escolhido pelo chip.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All Brazilian codes serve the same firmware; the active CSC is chosen by the SIM card."
+          }
+        }
+      }
+    },
+    "Outra": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Other"
+          }
+        }
+      }
+    },
+    "Outra região…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Other Region…"
+          }
+        }
+      }
+    },
+    "Pausado": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paused"
+          }
+        }
+      }
+    },
+    "Pausado · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paused · %@"
+          }
+        }
+      }
+    },
+    "Pausar": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pause"
+          }
+        }
+      }
+    },
+    "Pausar e sair": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pause and Quit"
+          }
+        }
+      }
+    },
+    "Recentes": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recent"
+          }
+        }
+      }
+    },
+    "Região %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Region %@"
+          }
+        }
+      }
+    },
+    "Região inválida: “%@”. Use o código CSC, por exemplo ZTO.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalid region: “%@”. Use the CSC code, for example ZTO."
+          }
+        }
+      }
+    },
+    "Região padrão": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Default region"
+          }
+        }
+      }
+    },
+    "Remover da lista": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove from List"
+          }
+        }
+      }
+    },
+    "Remover da lista (manter arquivo parcial)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove from List (Keep Partial File)"
+          }
+        }
+      }
+    },
+    "Resposta inesperada do servidor: %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unexpected response from the server: %@."
+          }
+        }
+      }
+    },
+    "Retomar": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resume"
+          }
+        }
+      }
+    },
+    "Salvar em": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save to"
+          }
+        }
+      }
+    },
+    "Tamanho final (%lld bytes) diferente do esperado (%lld bytes).": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Final size (%lld bytes) differs from the expected size (%lld bytes)."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Tamanho final (%1$lld bytes) diferente do esperado (%2$lld bytes)."
+          }
+        }
+      }
+    },
+    "Tentar de novo": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try Again"
+          }
+        }
+      }
+    },
+    "Verificar Agora": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check Now"
+          }
+        }
+      }
+    },
+    "Verificar Atualizações…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check for Updates…"
+          }
+        }
+      }
+    },
+    "Verificar atualizações automaticamente": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check for updates automatically"
+          }
+        }
+      }
+    },
+    "Versão de firmware inválida para este modelo/região.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalid firmware version for this model/region."
+          }
+        }
+      }
+    },
+    "Versão instalada": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installed version"
+          }
+        }
+      }
+    },
+    "Versão inválida: “%@”. O formato esperado é PDA/CSC/MODEM.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalid version: “%@”. The expected format is PDA/CSC/MODEM."
+          }
+        }
+      }
+    },
+    "Versão mais recente": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Latest version"
+          }
+        }
+      }
+    },
+    "Versões anteriores (%lld)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previous versions (%lld)"
+          }
+        }
+      }
+    },
+    "Você está usando a versão mais recente": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You're Using the Latest Version"
+          }
+        }
+      }
+    },
+    "auth_param.dat com SHA-256 inesperado": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "auth_param.dat has an unexpected SHA-256"
+          }
+        }
+      }
+    },
+    "auth_param.dat não encontrado no app; rode scripts/fetch-auth-params.sh": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "auth_param.dat not found in the app; run scripts/fetch-auth-params.sh"
+          }
+        }
+      }
+    },
+    "conexão encerrada antes do fim do arquivo": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "connection closed before the end of the file"
+          }
+        }
+      }
+    },
+    "desconhecida": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "unknown"
+          }
+        }
+      }
+    },
+    "falha ao decifrar (%d)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "decryption failed (%d)"
+          }
+        }
+      }
+    },
+    "falha ao iniciar AES (%d)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "could not start AES (%d)"
+          }
+        }
+      }
+    },
+    "falta %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ left"
+          }
+        }
+      }
+    },
+    "o servidor não enviou um nonce": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "the server did not send a nonce"
+          }
+        }
+      }
+    },
+    "tamanho do arquivo não é múltiplo de 16": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "file size is not a multiple of 16"
+          }
+        }
+      }
+    },
+    "version.xml inválido": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "invalid version.xml"
+          }
+        }
+      }
+    },
+    "versão inválida na resposta do servidor": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "invalid version in the server response"
+          }
+        }
+      }
+    },
+    "versão inválida no version.xml": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "invalid version in version.xml"
+          }
+        }
+      }
+    },
+    "·": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "·"
+          }
+        }
+      }
+    },
+    "Última verificação": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last check"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

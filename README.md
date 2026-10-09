@@ -19,6 +19,7 @@ software de instalação de firmwares Samsung.
 - Evita que o Mac entre em repouso durante o download, avisa com notificação ao terminar
   e mostra a contagem de downloads no Dock
 - Avisa quando há uma versão nova do app (Releases do GitHub)
+- Em português e inglês, conforme o idioma do macOS (inglês para os demais idiomas)
 
 Visual Liquid Glass (barras e cartões de vidro flutuantes, modo claro e escuro).
 Requer **macOS 26** ou mais novo.
@@ -54,6 +55,19 @@ O build baixa o `auth_param.dat` uma vez (ver [abaixo](#auth_paramdat)) e o embu
 Para desenvolver no Xcode, abra o `Package.swift` (`xed .`) e rode o esquema **FirmDrop**.
 Rodando fora do `.app`, o app usa o `Resources/auth_param.dat`: baixe-o antes com
 `scripts/fetch-auth-params.sh`.
+
+## Traduções
+
+Os textos ficam em português no código, e as traduções em
+`Resources/Localizable.xcstrings` (String Catalog, que pode ser editado no Xcode). Depois de
+adicionar ou alterar textos, rode:
+
+```sh
+scripts/sync-strings.sh   # extrai os textos do código e atualiza o catálogo
+```
+
+Os textos novos aparecem sem tradução no catálogo, e o `swift test` falha até que todos
+tenham a versão em inglês, com os mesmos marcadores (`%@`, `%lld`) do original.
 
 ## Publicar uma versão
 
@@ -131,8 +145,8 @@ Bifrost, e publicar uma nova versão.
 | `Sources/FirmDropCore/` | Protocolo FUS, autenticação, criptografia e motor de download (sem UI) |
 | `Sources/FirmDrop/` | App SwiftUI: busca, lista de downloads, ajustes |
 | `Tests/FirmDropCoreTests/` | Testes (`swift test`) |
-| `Resources/` | `Info.plist` e ícone do app |
-| `scripts/` | `build-app.sh` (monta o .app), `fetch-auth-params.sh`, `make-dmg.sh`, `release.sh` e `make-icon.sh` (gera o ícone) |
+| `Resources/` | `Info.plist`, ícone do app e traduções (`Localizable.xcstrings`) |
+| `scripts/` | `build-app.sh` (monta o .app), `fetch-auth-params.sh`, `sync-strings.sh`, `make-source-strings.swift`, `make-dmg.sh`, `release.sh` e `make-icon.sh` (gera o ícone) |
 
 ## Testes
 

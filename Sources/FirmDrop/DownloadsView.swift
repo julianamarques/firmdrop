@@ -168,7 +168,7 @@ struct DownloadRow: View {
         }
     }
 
-    private func iconButton(_ symbol: String, help: String, action: @escaping () -> Void) -> some View {
+    private func iconButton(_ symbol: String, help: LocalizedStringKey, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
                 .frame(width: 16, height: 16)
@@ -179,15 +179,15 @@ struct DownloadRow: View {
     }
 
     private var progressText: String {
-        item.total > 0 ? "\(Format.bytes(item.completed)) de \(Format.bytes(item.total))" : ""
+        item.total > 0 ? String(localized: "\(Format.bytes(item.completed)) de \(Format.bytes(item.total))") : ""
     }
 
     private var statusLine: String {
         switch item.state {
         case .running(.connecting):
-            return "Conectando ao servidor da Samsung…"
+            return String(localized: "Conectando ao servidor da Samsung…")
         case .running(.verifyingPartial):
-            return "Conferindo a parte já baixada… \(percent)"
+            return String(localized: "Conferindo a parte já baixada… \(percent)")
         case .running(.downloading):
             if let retry = item.retryMessage { return retry }
             var parts = [progressText]
@@ -195,9 +195,9 @@ struct DownloadRow: View {
             if let eta = item.secondsRemaining.flatMap(Format.remaining) { parts.append(eta) }
             return parts.joined(separator: " · ")
         case .running(.decrypting):
-            return "Decifrando… \(percent)"
+            return String(localized: "Decifrando… \(percent)")
         case .paused:
-            return progressText.isEmpty ? "Pausado" : "Pausado · \(progressText)"
+            return progressText.isEmpty ? String(localized: "Pausado") : String(localized: "Pausado · \(progressText)")
         case let .completed(url):
             return url.lastPathComponent
         case let .failed(message):

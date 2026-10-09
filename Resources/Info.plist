@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>pt-BR</string>
+	<string>en</string>
 	<key>CFBundleDisplayName</key>
 	<string>FirmDrop</string>
 	<key>CFBundleExecutable</key>
@@ -14,6 +14,7 @@
 	<string>com.julianamarques.FirmDrop</string>
 	<key>CFBundleLocalizations</key>
 	<array>
+		<string>en</string>
 		<string>pt-BR</string>
 	</array>
 	<key>CFBundleName</key>

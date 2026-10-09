@@ -22,44 +22,44 @@ public enum FUSError: LocalizedError, Equatable, Sendable {
     public var errorDescription: String? {
         switch self {
         case let .modelNotFound(model, region):
-            "Nenhum firmware encontrado para \(model) na região \(region). Confira o modelo (ex.: SM-A556E) e o CSC."
+            String(localized: "Nenhum firmware encontrado para \(model) na região \(region). Confira o modelo (ex.: SM-A556E) e o CSC.")
         case let .invalidModel(model):
-            "Modelo inválido: “\(model)”. Use o código do aparelho, por exemplo SM-A556E."
+            String(localized: "Modelo inválido: “\(model)”. Use o código do aparelho, por exemplo SM-A556E.")
         case let .invalidRegion(region):
-            "Região inválida: “\(region)”. Use o código CSC, por exemplo ZTO."
+            String(localized: "Região inválida: “\(region)”. Use o código CSC, por exemplo ZTO.")
         case let .unsafeFileName(name):
-            "O servidor informou um nome de arquivo inválido: “\(name)”."
+            String(localized: "O servidor informou um nome de arquivo inválido: “\(name)”.")
         case let .noVersionAvailable(model, region):
-            "Nenhuma versão publicada para \(model) em \(region)."
+            String(localized: "Nenhuma versão publicada para \(model) em \(region).")
         case let .invalidVersion(v):
-            "Versão inválida: “\(v)”. O formato esperado é PDA/CSC/MODEM."
+            String(localized: "Versão inválida: “\(v)”. O formato esperado é PDA/CSC/MODEM.")
         case let .http(endpoint, status):
-            "O servidor respondeu HTTP \(status) em \(endpoint)."
+            String(localized: "O servidor respondeu HTTP \(status) em \(endpoint).")
         case let .badResponse(detail):
-            "Resposta inesperada do servidor: \(detail)."
+            String(localized: "Resposta inesperada do servidor: \(detail).")
         case let .status(code):
             switch code {
-            case "F01": "Versão de firmware inválida para este modelo/região."
-            case "408": "O servidor exigiu IMEI/número de série para este modelo."
-            case "401": "Autenticação recusada pelo servidor. O esquema de autenticação pode ter mudado."
-            default: "Firmware não encontrado para essa combinação de modelo, região e versão (status \(code))."
+            case "F01": String(localized: "Versão de firmware inválida para este modelo/região.")
+            case "408": String(localized: "O servidor exigiu IMEI/número de série para este modelo.")
+            case "401": String(localized: "Autenticação recusada pelo servidor. O esquema de autenticação pode ter mudado.")
+            default: String(localized: "Firmware não encontrado para essa combinação de modelo, região e versão (status \(code)).")
             }
         case let .noBinary(model, region, version):
-            "Nenhum arquivo disponível para \(model)/\(region) na versão \(version)."
+            String(localized: "Nenhum arquivo disponível para \(model)/\(region) na versão \(version).")
         case .missingKey:
-            "O servidor não forneceu a chave para decifrar o arquivo."
+            String(localized: "O servidor não forneceu a chave para decifrar o arquivo.")
         case let .authParams(detail):
-            "Não foi possível obter os parâmetros de autenticação: \(detail)."
+            String(localized: "Não foi possível obter os parâmetros de autenticação: \(detail).")
         case .rangeNotSupported:
-            "O servidor não aceitou retomar o download."
+            String(localized: "O servidor não aceitou retomar o download.")
         case let .sizeMismatch(expected, got):
-            "Tamanho final (\(got) bytes) diferente do esperado (\(expected) bytes)."
+            String(localized: "Tamanho final (\(got) bytes) diferente do esperado (\(expected) bytes).")
         case let .crcMismatch(expected, got):
-            String(format: "O CRC32 não confere (esperado %08x, obtido %08x). Apague o arquivo e baixe novamente.", expected, got)
+            String(localized: "O CRC32 não confere (esperado \(String(format: "%08x", expected)), obtido \(String(format: "%08x", got))). Apague o arquivo e baixe novamente.")
         case .wrongKey:
-            "A chave não decifra este arquivo (o resultado não é um ZIP)."
+            String(localized: "A chave não decifra este arquivo (o resultado não é um ZIP).")
         case .fileTooLarge:
-            "O arquivo parcial é maior que o esperado. Apague-o e baixe novamente."
+            String(localized: "O arquivo parcial é maior que o esperado. Apague-o e baixe novamente.")
         }
     }
 }

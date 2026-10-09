@@ -132,7 +132,7 @@ public struct FirmwareDownload: Sendable {
                     throw error
                 }
                 guard offset >= info.size else {
-                    throw FUSError.badResponse("conexão encerrada antes do fim do arquivo")
+                    throw FUSError.badResponse(String(localized: "conexão encerrada antes do fim do arquivo"))
                 }
             } catch {
                 if error is CancellationError || Task.isCancelled { throw CancellationError() }
@@ -172,7 +172,7 @@ public struct FirmwareDownload: Sendable {
     static func decrypt(_ src: URL, to dst: URL, key: Data, onProgress: @Sendable (DownloadProgress) -> Void) throws {
         let fm = FileManager.default
         let size = (try fm.attributesOfItem(atPath: src.path)[.size] as? NSNumber)?.int64Value ?? 0
-        guard size % 16 == 0 else { throw FUSError.badResponse("tamanho do arquivo não é múltiplo de 16") }
+        guard size % 16 == 0 else { throw FUSError.badResponse(String(localized: "tamanho do arquivo não é múltiplo de 16")) }
 
         let reader = try FileHandle(forReadingFrom: src)
         defer { try? reader.close() }

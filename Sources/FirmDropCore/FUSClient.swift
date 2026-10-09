@@ -64,7 +64,7 @@ public actor FUSClient {
         nonce = ""
         signature = ""
         _ = try await post("NF_SmartDownloadGenerateNonce.do", body: Data())
-        guard !nonce.isEmpty else { throw FUSError.badResponse("o servidor não enviou um nonce") }
+        guard !nonce.isEmpty else { throw FUSError.badResponse(String(localized: "o servidor não enviou um nonce")) }
     }
 
     private func post(_ endpoint: String, body: Data) async throws -> XMLDocument? {
@@ -85,7 +85,7 @@ public actor FUSClient {
         do {
             return try XMLDocument.untrusted(data)
         } catch {
-            throw FUSError.badResponse("\(endpoint) não retornou XML (bloqueio do CDN?)")
+            throw FUSError.badResponse(String(localized: "\(endpoint) não retornou XML (bloqueio do CDN?)"))
         }
     }
 
@@ -111,7 +111,7 @@ public actor FUSClient {
         ], get: "BINARY_SW_VERSION")
 
         guard let doc = try await post("NF_SmartDownloadBinaryInform.do", body: body) else {
-            throw FUSError.badResponse("BinaryInform vazio")
+            throw FUSError.badResponse(String(localized: "BinaryInform vazio"))
         }
         let status = Self.text(doc, "/FUSMsg/FUSBody/Results/Status") ?? "?"
         guard Self.success.contains(status) else { throw FUSError.status(code: status) }
@@ -126,7 +126,7 @@ public actor FUSClient {
         let served = Self.text(doc, "/FUSMsg/FUSBody/Results/BINARY_SW_VERSION/Data")
             ?? put("BINARY_SW_VERSION") ?? version
         guard Identifiers.isValidVersion(served) else {
-            throw FUSError.badResponse("versão inválida na resposta do servidor")
+            throw FUSError.badResponse(String(localized: "versão inválida na resposta do servidor"))
         }
 
         var key: Data?

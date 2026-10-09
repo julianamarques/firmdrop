@@ -46,13 +46,13 @@ public enum Versions {
     public static func parse(_ data: Data, model: String, region: String) throws -> FirmwareVersions {
         let doc: XMLDocument
         do { doc = try XMLDocument.untrusted(data) } catch {
-            throw FUSError.badResponse("version.xml inválido")
+            throw FUSError.badResponse(String(localized: "version.xml inválido"))
         }
         let latestNode = try doc.nodes(forXPath: "/versioninfo/firmware/version/latest").first as? XMLElement
         let latestText = latestNode?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let latest = latestText.isEmpty ? nil : try normalize(latestText)
         if let latest, !Identifiers.isValidVersion(latest) {
-            throw FUSError.badResponse("versão inválida no version.xml")
+            throw FUSError.badResponse(String(localized: "versão inválida no version.xml"))
         }
 
         let values = try doc.nodes(forXPath: "/versioninfo/firmware/version/upgrade/value")

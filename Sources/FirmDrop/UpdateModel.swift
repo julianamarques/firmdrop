@@ -18,7 +18,7 @@ final class UpdateModel {
         lastCheck = UserDefaults.standard.object(forKey: SettingsKey.lastUpdateCheck) as? Date
     }
 
-    var currentVersion: String { AppVersion.current?.description ?? "desconhecida" }
+    var currentVersion: String { AppVersion.current?.description ?? String(localized: "desconhecida") }
 
     func startAutomaticChecks() {
         scheduleTask?.cancel()
@@ -59,12 +59,12 @@ final class UpdateModel {
                 Self.log.info("Nova versão disponível: \(release.tagName, privacy: .public)")
                 present(release, current: current)
             } else if userInitiated {
-                inform("Você está usando a versão mais recente", "O FirmDrop \(current) é a versão mais nova disponível.")
+                inform(String(localized: "Você está usando a versão mais recente"), String(localized: "O FirmDrop \(current.description) é a versão mais nova disponível."))
             }
         } catch {
             Self.log.error("Falha ao verificar atualizações: \(error.localizedDescription, privacy: .public)")
             if userInitiated {
-                inform("Não foi possível verificar atualizações", "Confira sua conexão com a internet e tente de novo.")
+                inform(String(localized: "Não foi possível verificar atualizações"), String(localized: "Confira sua conexão com a internet e tente de novo."))
             }
         }
     }
@@ -72,13 +72,13 @@ final class UpdateModel {
     private func present(_ release: AppRelease, current: AppVersion) {
         let changes = UpdateChecker.summary(of: release.body).map { "• \($0)" }.joined(separator: "\n")
         let alert = NSAlert()
-        alert.messageText = "Nova versão do FirmDrop"
-        alert.informativeText = ["A versão \(release.version?.description ?? release.tagName) está disponível. Você está usando a \(current).", changes]
+        alert.messageText = String(localized: "Nova versão do FirmDrop")
+        alert.informativeText = [String(localized: "A versão \(release.version?.description ?? release.tagName) está disponível. Você está usando a \(current.description)."), changes]
             .filter { !$0.isEmpty }
             .joined(separator: "\n\n")
-        alert.addButton(withTitle: "Baixar Atualização")
-        alert.addButton(withTitle: "Agora Não")
-        alert.addButton(withTitle: "Ignorar Esta Versão")
+        alert.addButton(withTitle: String(localized: "Baixar Atualização"))
+        alert.addButton(withTitle: String(localized: "Agora Não"))
+        alert.addButton(withTitle: String(localized: "Ignorar Esta Versão"))
         NSApp.activate()
 
         switch alert.runModal() {

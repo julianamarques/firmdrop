@@ -143,7 +143,7 @@ struct SearchBar: View {
     }
 
     private var regionLabel: String {
-        if customRegion { return "Outra" }
+        if customRegion { return String(localized: "Outra") }
         return Region.brazil.first { $0.code == search.region }.map { "\($0.code) · \($0.name)" } ?? search.region
     }
 
@@ -221,7 +221,7 @@ struct ResultView: View {
 }
 
 private struct GlassCard<Content: View>: View {
-    let title: String
+    let title: LocalizedStringKey
     let symbol: String
     @ViewBuilder var content: Content
 

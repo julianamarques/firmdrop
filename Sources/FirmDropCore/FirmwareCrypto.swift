@@ -42,7 +42,7 @@ public final class AESECBDecryptor {
                 keyPtr.baseAddress, key.count, nil, &cryptor
             )
         }
-        guard status == kCCSuccess else { throw FUSError.badResponse("falha ao iniciar AES (\(status))") }
+        guard status == kCCSuccess else { throw FUSError.badResponse(String(localized: "falha ao iniciar AES (\(status))")) }
     }
 
     deinit { CCCryptorRelease(cryptor) }
@@ -55,7 +55,7 @@ public final class AESECBDecryptor {
                 CCCryptorUpdate(cryptor, inPtr.baseAddress, data.count, outPtr.baseAddress, data.count, &moved)
             }
         }
-        guard status == kCCSuccess else { throw FUSError.badResponse("falha ao decifrar (\(status))") }
+        guard status == kCCSuccess else { throw FUSError.badResponse(String(localized: "falha ao decifrar (\(status))")) }
         out.count = moved
         return out
     }
