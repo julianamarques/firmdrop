@@ -16,10 +16,14 @@ struct FirmDropApp: App {
         .defaultSize(width: 900, height: 760)
         .commands {
             CommandGroup(replacing: .newItem) {}
+            CommandGroup(after: .appInfo) {
+                Button("Verificar Atualizações…") { appDelegate.updates.checkNow() }
+            }
         }
 
         Settings {
             SettingsView()
+                .environment(appDelegate.updates)
         }
     }
 }
@@ -27,11 +31,20 @@ struct FirmDropApp: App {
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     let downloads = DownloadManager()
+    let updates = UpdateModel()
+
+    override init() {
+        SettingsKey.registerDefaults()
+        super.init()
+    }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Quando executado fora de um .app (swift run), garante janela e ícone no Dock.
         NSApp.setActivationPolicy(.regular)
         NSApp.activate()
+
+        updates.isBusy = { [downloads] in downloads.runningCount > 0 }
+        updates.startAutomaticChecks()
     }
 
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {

@@ -6,6 +6,13 @@ enum SettingsKey {
     static let keepEncrypted = "keepEncrypted"
     static let defaultRegion = "defaultRegion"
     static let recentModels = "recentModels"
+    static let autoCheckUpdates = "autoCheckUpdates"
+    static let lastUpdateCheck = "lastUpdateCheck"
+    static let skippedUpdateVersion = "skippedUpdateVersion"
+
+    static func registerDefaults() {
+        UserDefaults.standard.register(defaults: [autoCheckUpdates: true])
+    }
 }
 
 enum AppDefaults {

@@ -12,31 +12,54 @@ para o Odin.
 - Confere o **CRC32** e decifra o `.enc4` automaticamente
 - Evita que o Mac entre em repouso durante o download, avisa com notificação ao terminar
   e mostra a contagem de downloads no Dock
+- Avisa quando há uma versão nova do app (Releases do GitHub)
 
 Visual Liquid Glass (barras e cartões de vidro flutuantes, modo claro e escuro).
 Requer **macOS 26** ou mais novo.
 
-## Compilar e instalar
+## Instalar
+
+1. Baixe o `FirmDrop.dmg` da versão mais recente na [página de Releases](https://github.com/julianamarques/firmdrop/releases).
+2. Abra o arquivo e arraste o **FirmDrop** para **Aplicativos**.
+
+O app avisa quando há uma versão nova. Em **FirmDrop › Verificar Atualizações…** você verifica
+na hora, e em **Ajustes › Atualizações** escolhe se a verificação é automática (ao abrir o app e
+uma vez por dia) ou só manual. Quem usa uma versão estável não é avisado de pré-lançamentos
+(alpha, beta, rc).
+
+O app é assinado apenas localmente (*ad-hoc*). Em outro Mac, o macOS bloqueia a primeira
+abertura: libere em **Ajustes do Sistema › Privacidade e Segurança › Abrir Mesmo Assim**.
+Para distribuir sem esse aviso, é preciso assinar e notarizar com uma conta Apple Developer.
+
+## Compilar
 
 É preciso o Xcode 26 ou mais novo (ou as Command Line Tools com Swift 6.2+).
 
 ```sh
 scripts/build-app.sh             # gera build/FirmDrop.app
 scripts/build-app.sh --install   # e copia para /Applications
-open build/FirmDrop.app
+scripts/make-dmg.sh              # gera build/FirmDrop.dmg
 ```
 
-Opções: `--universal` gera um binário para Apple Silicon e Intel.
+Opção para os dois scripts: `--universal` gera um binário para Apple Silicon e Intel.
 
 Para desenvolver no Xcode, abra o `Package.swift` (`xed .`) e rode o esquema **FirmDrop**.
 
-### Levar para outro Mac
+## Publicar uma versão
 
-O app é assinado *ad-hoc* (sem conta de desenvolvedor). Em outro Mac, o Gatekeeper vai
-bloquear a primeira abertura. Para liberar, clique com o botão direito no app e escolha
-**Abrir**, ou use Ajustes do Sistema › Privacidade e Segurança › **Abrir Mesmo Assim**.
-Para distribuir sem esse aviso, é preciso assinar e notarizar com uma conta Apple
-Developer.
+O `scripts/release.sh` atualiza a versão no `Info.plist`, faz o commit `chore: release vX.Y.Z`,
+envia o `main`, gera o `.dmg` universal e cria a Release no GitHub com as notas tiradas dos
+commits desde a versão anterior. Requer o [GitHub CLI](https://cli.github.com) autenticado e o
+`main` local igual ao `origin/main`.
+
+```sh
+DRY_RUN=1 scripts/release.sh 0.1.0-beta.1   # mostra as notas sem alterar nada
+scripts/release.sh 0.1.0-beta.1             # pré-lançamento (alpha, beta ou rc)
+scripts/release.sh 1.0.0                    # versão estável
+```
+
+A verificação de atualizações consulta a API pública do GitHub, então só funciona com o
+repositório público.
 
 ## Uso
 
@@ -96,7 +119,7 @@ atualizar `paramsURL`/`paramsSHA256` em `Sources/FirmDropCore/Authenticator.swif
 | `Sources/FirmDrop/` | App SwiftUI: busca, lista de downloads, ajustes |
 | `Tests/FirmDropCoreTests/` | Testes (`swift test`) |
 | `Resources/` | `Info.plist` e ícone do app |
-| `scripts/` | `build-app.sh` (monta o .app) e `make-icon.sh` (gera o ícone) |
+| `scripts/` | `build-app.sh` (monta o .app), `make-dmg.sh`, `release.sh` e `make-icon.sh` (gera o ícone) |
 
 ## Testes
 
