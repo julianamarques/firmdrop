@@ -28,7 +28,7 @@ cp "$BIN_DIR/FirmDrop" "$APP/Contents/MacOS/FirmDrop"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
 cp Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
 cp LICENSE NOTICE Resources/licenses/Bifrost-LICENSE.txt "$APP/Contents/Resources/"
-codesign --force --sign - "$APP"
+codesign --force --options runtime --sign - "$APP"
 
 echo "Pronto: $APP"
 if [ "$INSTALL" = 1 ]; then
