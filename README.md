@@ -1,6 +1,6 @@
 # FirmDrop — firmwares Samsung no Mac
 
-App nativo para macOS (SwiftUI) que baixa firmwares **oficiais** da Samsung direto do
+App nativo e open source para macOS (SwiftUI) que baixa firmwares **oficiais** da Samsung direto do
 servidor FUS (*Firmware Update Server*), o mesmo usado pelo Smart Switch. É o que sites
 como o SamMobile fazem por trás. Os arquivos são os pacotes oficiais da Samsung, sem
 nenhuma modificação: o app só decifra o `.enc4` com a chave fornecida pelo servidor, e o
