@@ -112,6 +112,25 @@ private func pkcs7(_ data: Data) -> Data {
     }
 }
 
+@Suite struct BackpressureTests {
+    @Test func pausesAboveTheHighMarkAndResumesBelowTheLowMark() {
+        var flow = Backpressure(high: 100, low: 20)
+        let decisions = [
+            flow.received(60), flow.received(50), flow.received(30),
+            flow.consumed(100), flow.consumed(30),
+        ]
+        #expect(decisions == [false, true, false, false, true])
+        #expect(!flow.paused && flow.pending == 10)
+    }
+
+    @Test func neverResumesWhenNotPaused() {
+        var flow = Backpressure(high: 100, low: 20)
+        let decisions = [flow.received(10), flow.consumed(10)]
+        #expect(decisions == [false, false])
+        #expect(!flow.paused && flow.pending == 0)
+    }
+}
+
 @Suite struct BinaryInfoTests {
     @Test func names() {
         let info = BinaryInfo(
@@ -148,7 +167,7 @@ struct LiveTests {
         #expect(info.displayName?.contains("A55") == true)
         try await client.binaryInit(info)
 
-        let (session, request) = await client.downloadRequest(for: info, offset: 0)
+        let (session, request) = try await client.downloadRequest(for: info, offset: 0)
         var partial = request
         partial.setValue("bytes=0-15", forHTTPHeaderField: "Range")
         let (data, response) = try await session.data(for: partial)

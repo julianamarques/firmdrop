@@ -1035,6 +1035,16 @@
         }
       }
     },
+    "caminho de download inválido na resposta do servidor": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "invalid download path in the server response"
+          }
+        }
+      }
+    },
     "conexão encerrada antes do fim do arquivo": {
       "localizations": {
         "en": {

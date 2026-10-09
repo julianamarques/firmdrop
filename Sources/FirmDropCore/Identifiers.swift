@@ -13,6 +13,10 @@ enum Identifiers {
         version.wholeMatch(of: /[A-Z0-9]{1,32}(\/[A-Z0-9]{1,32}){0,3}/) != nil
     }
 
+    static func isValidModelPath(_ path: String) -> Bool {
+        path.wholeMatch(of: /(\/[A-Za-z0-9_-]{1,64}){1,8}\//) != nil
+    }
+
     static func isPlainFileName(_ name: String) -> Bool {
         name.wholeMatch(of: /[A-Za-z0-9_-][A-Za-z0-9._-]{0,254}/) != nil
     }

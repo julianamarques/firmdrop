@@ -67,6 +67,16 @@ import Testing
         #expect(!Identifiers.isValidVersion(version))
     }
 
+    @Test(arguments: ["/neofus/910/", "/a/", "/neofus_2/x-1/"])
+    func acceptsModelPaths(path: String) {
+        #expect(Identifiers.isValidModelPath(path))
+    }
+
+    @Test(arguments: ["", "/", "neofus/910/", "/neofus/910", "/neofus/../x/", "/a b/", "/neofus/910/?x=1&y=", "/neofus//910/", "/neofus/910/#x"])
+    func rejectsModelPaths(path: String) {
+        #expect(!Identifiers.isValidModelPath(path))
+    }
+
     @Test(arguments: ["SM-A556E_4_20260915000521_613i6lvoq5_fac.zip.enc4", "fw.zip"])
     func acceptsPlainFileNames(name: String) {
         #expect(Identifiers.isPlainFileName(name))

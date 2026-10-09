@@ -127,6 +127,9 @@ public actor FUSClient {
         guard Identifiers.isPlainFileName(filename), filename.contains(".zip") else {
             throw FUSError.unsafeFileName(filename)
         }
+        guard let path = put("MODEL_PATH"), Identifiers.isValidModelPath(path) else {
+            throw FUSError.badResponse(String(localized: "caminho de download inválido na resposta do servidor"))
+        }
         let served = Self.text(doc, "/FUSMsg/FUSBody/Results/BINARY_SW_VERSION/Data")
             ?? put("BINARY_SW_VERSION") ?? version
         guard Identifiers.isValidVersion(served) else {
@@ -146,7 +149,7 @@ public actor FUSClient {
             region: region,
             version: served,
             filename: filename,
-            path: put("MODEL_PATH") ?? "",
+            path: path,
             size: size,
             crc32: put("BINARY_CRC").flatMap(UInt32.init),
             key: key,
@@ -172,8 +175,11 @@ public actor FUSClient {
         }
     }
 
-    func downloadRequest(for info: BinaryInfo, offset: Int64) -> (URLSession, URLRequest) {
-        var request = URLRequest(url: URL(string: "\(Self.downloadURL)?file=\(info.remoteFile)")!)
+    func downloadRequest(for info: BinaryInfo, offset: Int64) throws -> (URLSession, URLRequest) {
+        guard Identifiers.isValidModelPath(info.path), let url = URL(string: "\(Self.downloadURL)?file=\(info.remoteFile)") else {
+            throw FUSError.badResponse(String(localized: "caminho de download inválido na resposta do servidor"))
+        }
+        var request = URLRequest(url: url)
         request.setValue(authorization, forHTTPHeaderField: "Authorization")
         request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
         if offset > 0 { request.setValue("bytes=\(offset)-", forHTTPHeaderField: "Range") }

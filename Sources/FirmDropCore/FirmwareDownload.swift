@@ -1,4 +1,5 @@
 import Foundation
+import Synchronization
 
 public enum DownloadPhase: Sendable {
     case connecting
@@ -101,7 +102,7 @@ public struct FirmwareDownload: Sendable {
         var attempt = 0
         while offset < info.size {
             do {
-                let (session, request) = await client.downloadRequest(for: info, offset: offset)
+                let (session, request) = try await client.downloadRequest(for: info, offset: offset)
                 var buffer = Data()
                 buffer.reserveCapacity(Self.chunkSize)
                 var throttle = ProgressThrottle()
@@ -115,7 +116,9 @@ public struct FirmwareDownload: Sendable {
                 }
 
                 do {
-                    for try await data in Self.stream(session: session, request: request, expectPartial: offset > 0) {
+                    let (chunks, consumed) = Self.stream(session: session, request: request, expectPartial: offset > 0)
+                    for try await data in chunks {
+                        consumed(data.count)
                         buffer.append(data)
                         if buffer.count >= Self.chunkSize { try flush() }
                         if throttle.shouldReport() {
@@ -155,14 +158,17 @@ public struct FirmwareDownload: Sendable {
         }
     }
 
-    static func stream(session: URLSession, request: URLRequest, expectPartial: Bool) -> AsyncThrowingStream<Data, Error> {
-        AsyncThrowingStream { continuation in
-            let delegate = StreamDelegate(continuation: continuation, expectPartial: expectPartial)
-            let task = session.dataTask(with: request)
-            task.delegate = delegate
-            continuation.onTermination = { _ in task.cancel() }
-            task.resume()
-        }
+    static func stream(
+        session: URLSession, request: URLRequest, expectPartial: Bool
+    ) -> (chunks: AsyncThrowingStream<Data, Error>, consumed: @Sendable (Int) -> Void) {
+        let (chunks, continuation) = AsyncThrowingStream<Data, Error>.makeStream()
+        let task = session.dataTask(with: request)
+        let delegate = StreamDelegate(continuation: continuation, expectPartial: expectPartial)
+        delegate.task = task
+        task.delegate = delegate
+        continuation.onTermination = { _ in task.cancel() }
+        task.resume()
+        return (chunks, delegate.consumed)
     }
 
     static func decrypt(_ src: URL, to dst: URL, key: Data, onProgress: @Sendable (DownloadProgress) -> Void) async throws {
@@ -218,9 +224,37 @@ private struct ProgressThrottle {
     }
 }
 
+struct Backpressure: Sendable {
+    let high: Int
+    let low: Int
+    private(set) var pending = 0
+    private(set) var paused = false
+
+    init(high: Int = 64 << 20, low: Int = 16 << 20) {
+        self.high = high
+        self.low = low
+    }
+
+    mutating func received(_ count: Int) -> Bool {
+        pending += count
+        guard !paused, pending >= high else { return false }
+        paused = true
+        return true
+    }
+
+    mutating func consumed(_ count: Int) -> Bool {
+        pending -= count
+        guard paused, pending <= low else { return false }
+        paused = false
+        return true
+    }
+}
+
 private final class StreamDelegate: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     let continuation: AsyncThrowingStream<Data, Error>.Continuation
     let expectPartial: Bool
+    weak var task: URLSessionDataTask?
+    private let backpressure = Mutex(Backpressure())
 
     init(continuation: AsyncThrowingStream<Data, Error>.Continuation, expectPartial: Bool) {
         self.continuation = continuation
@@ -246,7 +280,12 @@ private final class StreamDelegate: NSObject, URLSessionDataDelegate, @unchecked
     }
 
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+        backpressure.withLock { if $0.received(data.count) { dataTask.suspend() } }
         continuation.yield(data)
+    }
+
+    func consumed(_ count: Int) {
+        backpressure.withLock { if $0.consumed(count) { task?.resume() } }
     }
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
