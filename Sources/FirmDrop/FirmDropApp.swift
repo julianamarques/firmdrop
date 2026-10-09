@@ -25,6 +25,8 @@ struct FirmDropApp: App {
             SettingsView()
                 .environment(appDelegate.updates)
         }
+        .windowResizability(.contentSize)
+        .defaultPosition(.center)
     }
 }
 
