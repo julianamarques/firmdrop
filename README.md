@@ -2,8 +2,9 @@
 
 App nativo para macOS (SwiftUI) que baixa firmwares **oficiais** da Samsung direto do
 servidor FUS (*Firmware Update Server*), o mesmo usado pelo Smart Switch. É o que sites
-como o SamMobile fazem por trás. Os arquivos são idênticos aos oficiais e saem prontos
-para o Odin.
+como o SamMobile fazem por trás. Os arquivos são os pacotes oficiais da Samsung, sem
+nenhuma modificação: o app só decifra o `.enc4` com a chave fornecida pelo servidor, e o
+`.zip` sai pronto para o Odin.
 
 - Busca por modelo e região (Brasil: ZTO, Claro, TIM, Vivo, ou qualquer outro CSC)
 - Mostra nome comercial, tamanho, versão do Android e versões anteriores com mês/ano
