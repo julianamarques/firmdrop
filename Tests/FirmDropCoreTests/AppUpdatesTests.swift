@@ -30,11 +30,11 @@ import Testing
 @Suite struct UpdateCheckerTests {
     private let json = #"""
     [
-      {"tag_name": "v0.2.0-beta.1", "html_url": "https://github.com/x/y/releases/tag/v0.2.0-beta.1", "body": "## Instalação\n\nBaixe.\n\n## Mudanças\n\n- fix: one\n- feat: two\n", "draft": false, "prerelease": true,
-       "assets": [{"name": "FirmDrop.dmg", "browser_download_url": "https://github.com/x/y/releases/download/v0.2.0-beta.1/FirmDrop.dmg"}]},
-      {"tag_name": "v0.3.0", "html_url": "https://github.com/x/y/releases/tag/v0.3.0", "body": null, "draft": true, "prerelease": false, "assets": []},
-      {"tag_name": "v0.1.6", "html_url": "https://github.com/x/y/releases/tag/v0.1.6", "body": "", "draft": false, "prerelease": false, "assets": []},
-      {"tag_name": "v0.1.5-beta.1", "html_url": "https://github.com/x/y/releases/tag/v0.1.5-beta.1", "body": "", "draft": false, "prerelease": true, "assets": []}
+      {"tag_name": "v0.2.0-beta.1", "html_url": "https://github.com/julianamarques/firmdrop/releases/tag/v0.2.0-beta.1", "body": "## Instalação\n\nBaixe.\n\n## Mudanças\n\n- fix: one\n- feat: two\n", "draft": false, "prerelease": true,
+       "assets": [{"name": "FirmDrop.dmg", "browser_download_url": "https://github.com/julianamarques/firmdrop/releases/download/v0.2.0-beta.1/FirmDrop.dmg"}]},
+      {"tag_name": "v0.3.0", "html_url": "https://github.com/julianamarques/firmdrop/releases/tag/v0.3.0", "body": null, "draft": true, "prerelease": false, "assets": []},
+      {"tag_name": "v0.1.6", "html_url": "https://github.com/julianamarques/firmdrop/releases/tag/v0.1.6", "body": "", "draft": false, "prerelease": false, "assets": []},
+      {"tag_name": "v0.1.5-beta.1", "html_url": "https://github.com/julianamarques/firmdrop/releases/tag/v0.1.5-beta.1", "body": "", "draft": false, "prerelease": true, "assets": []}
     ]
     """#
 
@@ -53,7 +53,7 @@ import Testing
         let release = UpdateChecker.newestRelease(in: try releases(), newerThan: try #require(AppVersion("0.1.5")))
 
         #expect(release?.tagName == "v0.1.6")
-        #expect(release?.downloadURL.absoluteString == "https://github.com/x/y/releases/tag/v0.1.6")
+        #expect(release?.downloadURL.absoluteString == "https://github.com/julianamarques/firmdrop/releases/tag/v0.1.6")
     }
 
     @Test func ignoresDraftsAndReportsUpToDate() throws {

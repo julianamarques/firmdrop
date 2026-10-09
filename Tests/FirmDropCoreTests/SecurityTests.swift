@@ -122,3 +122,34 @@ import Testing
         #expect(urls.decrypted.deletingLastPathComponent().standardizedFileURL == dir.standardizedFileURL)
     }
 }
+
+@Suite struct UpdateLinkTests {
+    private func release(asset: String?, html: String) throws -> AppRelease {
+        let assets = asset.map { #"[{"name": "FirmDrop.dmg", "browser_download_url": "\#($0)"}]"# } ?? "[]"
+        let json = #"{"tag_name": "v9.0.0", "html_url": "\#(html)", "body": null, "draft": false, "prerelease": false, "assets": \#(assets)}"#
+        return try JSONDecoder().decode(AppRelease.self, from: Data(json.utf8))
+    }
+
+    @Test func opensTheProjectDownload() throws {
+        let url = "https://github.com/julianamarques/firmdrop/releases/download/v9.0.0/FirmDrop.dmg"
+        #expect(try release(asset: url, html: "https://github.com/julianamarques/firmdrop/releases/tag/v9.0.0").downloadURL.absoluteString == url)
+    }
+
+    @Test(arguments: [
+        "file:///Applications/Calculator.app",
+        "http://github.com/julianamarques/firmdrop/releases/download/v9.0.0/FirmDrop.dmg",
+        "https://evil.example/julianamarques/firmdrop/releases/download/v9.0.0/FirmDrop.dmg",
+        "https://github.com/outra-pessoa/firmdrop/releases/download/v9.0.0/FirmDrop.dmg",
+        "https://github.com.evil.example/julianamarques/firmdrop/releases/FirmDrop.dmg",
+        "https://user@github.com/julianamarques/firmdrop/releases/FirmDrop.dmg",
+        "x-apple.systempreferences:com.apple.preference.security",
+    ])
+    func neverOpensUntrustedLinks(link: String) throws {
+        #expect(try release(asset: link, html: link).downloadURL == UpdateChecker.releasesPage)
+    }
+
+    @Test func fallsBackToTheReleasePageWhenTheAssetIsUntrusted() throws {
+        let page = "https://github.com/julianamarques/firmdrop/releases/tag/v9.0.0"
+        #expect(try release(asset: "file:///tmp/x.dmg", html: page).downloadURL.absoluteString == page)
+    }
+}

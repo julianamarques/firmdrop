@@ -88,12 +88,20 @@ public struct AppRelease: Decodable, Equatable, Sendable {
     public var version: AppVersion? { AppVersion(tagName) }
 
     public var downloadURL: URL {
-        assets.first { $0.name.hasSuffix(".dmg") }?.browserDownloadURL ?? htmlURL
+        [assets.first { $0.name.hasSuffix(".dmg") }?.browserDownloadURL, htmlURL]
+            .compactMap { $0 }
+            .first(where: UpdateChecker.isTrusted) ?? UpdateChecker.releasesPage
     }
 }
 
 public enum UpdateChecker {
     public static let releasesURL = URL(string: "https://api.github.com/repos/julianamarques/firmdrop/releases?per_page=20")!
+    public static let releasesPage = URL(string: "https://github.com/julianamarques/firmdrop/releases")!
+
+    static func isTrusted(_ url: URL) -> Bool {
+        url.scheme == "https" && url.host() == "github.com" && url.port == nil && url.user() == nil
+            && url.path().hasPrefix("/julianamarques/firmdrop/releases/")
+    }
 
     public static func fetchReleases(session: URLSession = .shared) async throws -> [AppRelease] {
         var request = URLRequest(url: releasesURL, timeoutInterval: 15)
