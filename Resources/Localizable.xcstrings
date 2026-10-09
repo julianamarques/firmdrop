@@ -27,22 +27,6 @@
         }
       }
     },
-    "%@ — %@": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ — %@"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "new",
-            "value": "%1$@ — %2$@"
-          }
-        }
-      }
-    },
     "%lld em andamento": {
       "localizations": {
         "en": {
@@ -155,16 +139,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Download Update"
-          }
-        }
-      }
-    },
-    "BinaryInform vazio": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "empty BinaryInform"
           }
         }
       }
@@ -583,22 +557,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "No Published Firmware"
-          }
-        }
-      }
-    },
-    "Nenhuma versão publicada para %@ em %@.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No version published for %@ in %@."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "new",
-            "value": "Nenhuma versão publicada para %1$@ em %2$@."
           }
         }
       }

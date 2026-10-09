@@ -3,17 +3,16 @@ import Testing
 @testable import FirmDropCore
 
 @Suite struct UntrustedXMLTests {
-    private func withSecretFile(_ body: (URL) throws -> Void) throws {
-        let dir = FileManager.default.temporaryDirectory.appending(path: "firmdrop-test-\(UUID().uuidString)")
-        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        defer { try? FileManager.default.removeItem(at: dir) }
-        let secret = dir.appending(path: "secret.txt")
-        try Data("CONTEUDO-SECRETO".utf8).write(to: secret)
-        try body(secret)
+    private func withSecretFile(_ body: (URL) throws -> Void) async throws {
+        try await withTemporaryDirectory { dir in
+            let secret = dir.appending(path: "secret.txt")
+            try Data("CONTEUDO-SECRETO".utf8).write(to: secret)
+            try body(secret)
+        }
     }
 
-    @Test func doesNotResolveExternalEntities() throws {
-        try withSecretFile { secret in
+    @Test func doesNotResolveExternalEntities() async throws {
+        try await withSecretFile { secret in
             let xml = """
             <?xml version="1.0"?>
             <!DOCTYPE r [<!ENTITY xxe SYSTEM "\(secret.absoluteString)">]>
@@ -25,8 +24,8 @@ import Testing
         }
     }
 
-    @Test func versionXMLDoesNotLeakLocalFiles() throws {
-        try withSecretFile { secret in
+    @Test func versionXMLDoesNotLeakLocalFiles() async throws {
+        try await withSecretFile { secret in
             let xml = """
             <?xml version="1.0"?>
             <!DOCTYPE versioninfo [<!ENTITY xxe SYSTEM "\(secret.absoluteString)">]>
@@ -49,19 +48,23 @@ import Testing
         #expect(!Identifiers.isValidModel(model))
     }
 
-    @Test func validatesRegions() {
-        #expect(Identifiers.isValidRegion("ZTO"))
-        #expect(Identifiers.isValidRegion("XAR"))
-        #expect(!Identifiers.isValidRegion("../ZTO"))
-        #expect(!Identifiers.isValidRegion("Z"))
-        #expect(!Identifiers.isValidRegion("ZT O"))
+    @Test(arguments: ["ZTO", "XAR"])
+    func acceptsRegions(region: String) {
+        #expect(Identifiers.isValidRegion(region))
     }
 
-    @Test func validatesVersions() {
+    @Test(arguments: ["../ZTO", "Z", "ZT O"])
+    func rejectsRegions(region: String) {
+        #expect(!Identifiers.isValidRegion(region))
+    }
+
+    @Test func acceptsVersions() {
         #expect(Identifiers.isValidVersion("A556EXXSIDZI3/A556EOWOIDZI3/A556EXXSIDZI3/A556EXXSIDZI3"))
-        #expect(!Identifiers.isValidVersion("A556EXXSIDZI3/../x"))
-        #expect(!Identifiers.isValidVersion("A556EXXSIDZI3//x"))
-        #expect(!Identifiers.isValidVersion("A556E XXSIDZI3"))
+    }
+
+    @Test(arguments: ["A556EXXSIDZI3/../x", "A556EXXSIDZI3//x", "A556E XXSIDZI3"])
+    func rejectsVersions(version: String) {
+        #expect(!Identifiers.isValidVersion(version))
     }
 
     @Test(arguments: ["SM-A556E_4_20260915000521_613i6lvoq5_fac.zip.enc4", "fw.zip"])
@@ -95,13 +98,14 @@ import Testing
 }
 
 @Suite struct LocalFileTests {
+    private let dir = URL(filePath: "/tmp/destino", directoryHint: .isDirectory)
+
     private func info(filename: String, version: String = "A1/B1/A1/A1", region: String = "ZTO") -> BinaryInfo {
         BinaryInfo(model: "SM-X", region: region, version: version, filename: filename,
                    path: "/p/", size: 1, crc32: nil, key: Data(count: 16))
     }
 
     @Test func keepsFilesInsideTheDestination() throws {
-        let dir = URL(filePath: "/tmp/destino", directoryHint: .isDirectory)
         let urls = try FirmwareDownload.localURLs(for: info(filename: "fw_fac.zip.enc4"), in: dir)
         #expect(urls.encrypted.path == "/tmp/destino/fw_fac_A1_B1_ZTO.zip.enc4")
         #expect(urls.decrypted.path == "/tmp/destino/fw_fac_A1_B1_ZTO.zip")
@@ -110,13 +114,11 @@ import Testing
     @Test(arguments: [("../escapou.zip.enc4", "ZTO"), ("fw.zip.enc4", "../../x"), ("fw.zip.enc4", "Z/x")])
     func refusesNamesThatEscapeTheDestination(filename: String, region: String) {
         #expect(throws: FUSError.self) {
-            try FirmwareDownload.localURLs(for: info(filename: filename, region: region),
-                                           in: URL(filePath: "/tmp/destino", directoryHint: .isDirectory))
+            try FirmwareDownload.localURLs(for: info(filename: filename, region: region), in: dir)
         }
     }
 
     @Test func versionSeparatorsNeverLeaveTheDestination() throws {
-        let dir = URL(filePath: "/tmp/destino", directoryHint: .isDirectory)
         let urls = try FirmwareDownload.localURLs(for: info(filename: "fw.zip.enc4", version: "A1/../../x/A1"), in: dir)
         #expect(urls.encrypted.deletingLastPathComponent().standardizedFileURL == dir.standardizedFileURL)
         #expect(urls.decrypted.deletingLastPathComponent().standardizedFileURL == dir.standardizedFileURL)

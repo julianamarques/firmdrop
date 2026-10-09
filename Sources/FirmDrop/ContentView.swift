@@ -137,20 +137,20 @@ struct SearchBar: View {
             }
         }
         .onAppear {
-            customRegion = !Region.brazil.contains { $0.code == search.region }
+            customRegion = Region.brazil(search.region) == nil
             modelFocused = true
         }
     }
 
     private var regionLabel: String {
         if customRegion { return String(localized: "Outra") }
-        return Region.brazil.first { $0.code == search.region }.map { "\($0.code) · \($0.name)" } ?? search.region
+        return Region.brazil(search.region).map { "\($0.code) · \($0.name)" } ?? search.region
     }
 
     private var regionMenu: some View {
         Menu {
             ForEach(Region.brazil) { region in
-                Button("\(region.code) — \(region.name)") {
+                Button(region.title) {
                     customRegion = false
                     search.region = region.code
                 }
@@ -253,7 +253,7 @@ struct LatestCard: View {
                     .glassEffect(.regular.tint(.accentColor), in: .circle)
 
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(search.latestInfo?.displayName ?? versions.model)
+                    Text(search.latestBinary?.displayName ?? versions.model)
                         .font(.title2.bold())
                     HStack(spacing: 6) {
                         Text("Região \(versions.region)")
@@ -274,11 +274,12 @@ struct LatestCard: View {
                         .padding(.top, 2)
 
                     Group {
-                        if let info = search.latestInfo {
+                        switch search.latestInfo {
+                        case let .success(info)?:
                             Label(Format.bytes(info.size), systemImage: "internaldrive")
-                        } else if let error = search.latestInfoError {
-                            Text(error).foregroundStyle(.red)
-                        } else {
+                        case let .failure(error)?:
+                            Text(error.localizedDescription).foregroundStyle(.red)
+                        case nil:
                             HStack(spacing: 6) {
                                 ProgressView().controlSize(.small)
                                 Text("Consultando tamanho…")
@@ -334,7 +335,19 @@ struct DownloadButton: View {
     let prominent: Bool
 
     private var item: DownloadItem? {
-        downloads.items.first { $0.model == model && $0.region == region && $0.version == version }
+        downloads.item(model: model, region: region, version: version)
+    }
+
+    @ViewBuilder private var downloadButton: some View {
+        let button = Button { downloads.start(model: model, region: region, version: version) } label: {
+            Label("Baixar", systemImage: "arrow.down")
+                .padding(.horizontal, prominent ? 6 : 0)
+        }
+        if prominent {
+            button.buttonStyle(.glassProminent)
+        } else {
+            button.buttonStyle(.glass)
+        }
     }
 
     var body: some View {
@@ -351,23 +364,12 @@ struct DownloadButton: View {
                 .buttonStyle(.glass)
                 .tint(.green)
             case .paused?, .failed?:
-                Button { downloads.start(model: model, region: region, version: version) } label: {
+                Button { if let item { downloads.resume(item) } } label: {
                     Label("Retomar", systemImage: "arrow.clockwise")
                 }
                 .buttonStyle(.glass)
             case nil:
-                if prominent {
-                    Button { downloads.start(model: model, region: region, version: version) } label: {
-                        Label("Baixar", systemImage: "arrow.down")
-                            .padding(.horizontal, 6)
-                    }
-                    .buttonStyle(.glassProminent)
-                } else {
-                    Button { downloads.start(model: model, region: region, version: version) } label: {
-                        Label("Baixar", systemImage: "arrow.down")
-                    }
-                    .buttonStyle(.glass)
-                }
+                downloadButton
             }
         }
         .controlSize(prominent ? .extraLarge : .regular)

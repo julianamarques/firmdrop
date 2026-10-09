@@ -14,11 +14,12 @@ final class SearchModel {
     var modelText = ""
     var region: String = UserDefaults.standard.string(forKey: SettingsKey.defaultRegion) ?? Region.defaultCode
     private(set) var state: State = .idle
-    private(set) var latestInfo: BinaryInfo?
-    private(set) var latestInfoError: String?
+    private(set) var latestInfo: Result<BinaryInfo, any Error>?
     private(set) var recentModels: [String] = UserDefaults.standard.stringArray(forKey: SettingsKey.recentModels) ?? []
 
     private var searchTask: Task<Void, Never>?
+
+    var latestBinary: BinaryInfo? { try? latestInfo?.get() }
 
     var canSearch: Bool { !Format.cleanModel(modelText).isEmpty && !region.isEmpty }
 
@@ -31,31 +32,27 @@ final class SearchModel {
         searchTask?.cancel()
         state = .loading
         latestInfo = nil
-        latestInfoError = nil
 
         searchTask = Task {
+            async let client = FUSClient(authenticator: Authenticator.shared())
             do {
                 let versions = try await Versions.fetch(model: model, region: region)
                 guard !Task.isCancelled else { return }
                 state = .loaded(versions)
                 remember(model)
-                if let latest = versions.latest { await loadInfo(model: model, region: region, version: latest) }
+                guard let latest = versions.latest else { return }
+                let info: Result<BinaryInfo, any Error>
+                do {
+                    info = .success(try await client.binaryInform(model: model, region: region, version: latest))
+                } catch {
+                    info = .failure(error)
+                }
+                guard !Task.isCancelled else { return }
+                latestInfo = info
             } catch {
                 guard !Task.isCancelled else { return }
                 state = .failed(error.localizedDescription)
             }
-        }
-    }
-
-    private func loadInfo(model: String, region: String, version: String) async {
-        do {
-            let client = try await FUSClient(authenticator: try await AuthProvider.shared.authenticator())
-            let info = try await client.binaryInform(model: model, region: region, version: version)
-            guard !Task.isCancelled else { return }
-            latestInfo = info
-        } catch {
-            guard !Task.isCancelled else { return }
-            latestInfoError = error.localizedDescription
         }
     }
 

@@ -1,11 +1,11 @@
 import Foundation
 
-public enum Identifiers {
-    public static func isValidModel(_ model: String) -> Bool {
+enum Identifiers {
+    static func isValidModel(_ model: String) -> Bool {
         model.wholeMatch(of: /[A-Z0-9][A-Z0-9-]{0,31}/) != nil
     }
 
-    public static func isValidRegion(_ region: String) -> Bool {
+    static func isValidRegion(_ region: String) -> Bool {
         region.wholeMatch(of: /[A-Z0-9]{2,5}/) != nil
     }
 
@@ -17,8 +17,10 @@ public enum Identifiers {
         name.wholeMatch(of: /[A-Za-z0-9_-][A-Za-z0-9._-]{0,254}/) != nil
     }
 
-    static func validate(model: String, region: String) throws {
+    static func validated(model: String, region: String) throws -> (model: String, region: String) {
+        let model = model.uppercased(), region = region.uppercased()
         guard isValidModel(model) else { throw FUSError.invalidModel(model) }
         guard isValidRegion(region) else { throw FUSError.invalidRegion(region) }
+        return (model, region)
     }
 }

@@ -1,6 +1,6 @@
 import Foundation
 
-public struct BinaryInfo: Sendable, Equatable, Codable {
+public struct BinaryInfo: Sendable, Codable {
     public var model: String
     public var region: String
     public var version: String
@@ -27,7 +27,6 @@ public struct BinaryInfo: Sendable, Equatable, Codable {
         return localName
     }
 
-    public var isEncrypted: Bool { key != nil }
 }
 
 public actor FUSClient {
@@ -37,14 +36,18 @@ public actor FUSClient {
     static let success: Set<String> = ["200", "S00"]
 
     private let authenticator: Authenticator
-    private(set) var session: URLSession
-    private(set) var nonce = ""
+    private var session: URLSession
+    private var nonce = ""
     private var signature = ""
 
     public init(authenticator: Authenticator) async throws {
         self.authenticator = authenticator
         session = Self.makeSession()
         try await reset()
+    }
+
+    deinit {
+        session.finishTasksAndInvalidate()
     }
 
     private static func makeSession() -> URLSession {
@@ -58,16 +61,16 @@ public actor FUSClient {
         "FUS nonce=\"\(nonce)\", signature=\"\(signature)\", nc=\"\", type=\"\", realm=\"\""
     }
 
-    public func reset() async throws {
+    func reset() async throws {
         session.invalidateAndCancel()
         session = Self.makeSession()
         nonce = ""
         signature = ""
-        _ = try await post("NF_SmartDownloadGenerateNonce.do", body: Data())
+        _ = try await send("NF_SmartDownloadGenerateNonce.do", body: Data())
         guard !nonce.isEmpty else { throw FUSError.badResponse(String(localized: "o servidor não enviou um nonce")) }
     }
 
-    private func post(_ endpoint: String, body: Data) async throws -> XMLDocument? {
+    private func send(_ endpoint: String, body: Data) async throws -> Data {
         var request = URLRequest(url: URL(string: Self.baseURL + endpoint)!)
         request.httpMethod = "POST"
         request.httpBody = body
@@ -81,7 +84,11 @@ public actor FUSClient {
         guard (200..<300).contains(http.statusCode) else {
             throw FUSError.http(endpoint: endpoint, status: http.statusCode)
         }
-        guard !body.isEmpty else { return nil }
+        return data
+    }
+
+    private func post(_ endpoint: String, body: Data) async throws -> XMLDocument {
+        let data = try await send(endpoint, body: body)
         do {
             return try XMLDocument.untrusted(data)
         } catch {
@@ -90,8 +97,7 @@ public actor FUSClient {
     }
 
     public func binaryInform(model: String, region: String, version: String) async throws -> BinaryInfo {
-        let model = model.uppercased(), region = region.uppercased()
-        try Identifiers.validate(model: model, region: region)
+        let (model, region) = try Identifiers.validated(model: model, region: region)
         let lang = XMLElement(name: "CLIENT_LANGUAGE")
         lang.addChild(XMLElement(name: "Type", stringValue: "String"))
         lang.addChild(XMLElement(name: "Type", stringValue: "ISO 3166-1-alpha-3"))
@@ -110,9 +116,7 @@ public actor FUSClient {
             lang,
         ], get: "BINARY_SW_VERSION")
 
-        guard let doc = try await post("NF_SmartDownloadBinaryInform.do", body: body) else {
-            throw FUSError.badResponse(String(localized: "BinaryInform vazio"))
-        }
+        let doc = try await post("NF_SmartDownloadBinaryInform.do", body: body)
         let status = Self.text(doc, "/FUSMsg/FUSBody/Results/Status") ?? "?"
         guard Self.success.contains(status) else { throw FUSError.status(code: status) }
 
@@ -151,7 +155,7 @@ public actor FUSClient {
         )
     }
 
-    public func binaryInit(_ info: BinaryInfo) async throws {
+    func binaryInit(_ info: BinaryInfo) async throws {
         let name = Array(info.filename)
         let stem = name.count >= 25 ? String(name[(name.count - 25)..<(name.count - 9)]) : ""
         var put = [
@@ -163,12 +167,12 @@ public actor FUSClient {
         put.append(Self.data("LOGIC_CHECK", FirmwareCrypto.logicCheck(stem, nonce: nonce)))
 
         let doc = try await post("NF_SmartDownloadBinaryInitForMass.do", body: Self.message(put: put))
-        if let doc, let status = Self.text(doc, "/FUSMsg/FUSBody/Results/Status"), !Self.success.contains(status) {
+        if let status = Self.text(doc, "/FUSMsg/FUSBody/Results/Status"), !Self.success.contains(status) {
             throw FUSError.status(code: status)
         }
     }
 
-    public func downloadRequest(for info: BinaryInfo, offset: Int64) -> (URLSession, URLRequest) {
+    func downloadRequest(for info: BinaryInfo, offset: Int64) -> (URLSession, URLRequest) {
         var request = URLRequest(url: URL(string: "\(Self.downloadURL)?file=\(info.remoteFile)")!)
         request.setValue(authorization, forHTTPHeaderField: "Authorization")
         request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")

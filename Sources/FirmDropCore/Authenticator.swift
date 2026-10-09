@@ -2,7 +2,7 @@ import CryptoKit
 import Foundation
 
 public struct Authenticator: Sendable {
-    public static let paramsSHA256 = "6f969176bbe3eca193b51509313ca45d32366cf1825a907f04fde5b64d3f35b4"
+    static let paramsSHA256 = "6f969176bbe3eca193b51509313ca45d32366cf1825a907f04fde5b64d3f35b4"
 
     private static let headerSize = 56
     private static let shift = [0, 5, 10, 15, 4, 9, 14, 3, 8, 13, 2, 7, 12, 1, 6, 11]
@@ -12,7 +12,7 @@ public struct Authenticator: Sendable {
     private let block2Size: Int
     private let block3Size: Int
 
-    public init(params: Data) throws {
+    init(params: Data) throws {
         guard Self.sha256(params) == Self.paramsSHA256 else {
             throw FUSError.authParams(String(localized: "auth_param.dat com SHA-256 inesperado"))
         }
@@ -29,10 +29,10 @@ public struct Authenticator: Sendable {
     }
 
     static func sha256(_ data: Data) -> String {
-        SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+        SHA256.hash(data: data).hexString
     }
 
-    public func transform(_ block: [UInt8]) -> [UInt8] {
+    func transform(_ block: [UInt8]) -> [UInt8] {
         precondition(block.count == 16, "o bloco de autenticação precisa ter 16 bytes")
         let shift = Self.shift
         return tables.withUnsafeBufferPointer { t in
@@ -85,10 +85,10 @@ public struct Authenticator: Sendable {
         }
     }
 
-    public func sign(nonce: String) -> String {
+    func sign(nonce: String) -> String {
         var block = Array(nonce.utf8.prefix(16))
         block += [UInt8](repeating: UInt8(ascii: "0"), count: 16 - block.count)
-        return transform(block).map { String(format: "%02x", $0) }.joined()
+        return transform(block).hexString
     }
 
     static var paramsCandidates: [URL] {
@@ -98,7 +98,13 @@ public struct Authenticator: Sendable {
         ].compactMap { $0 }
     }
 
-    public static func load() throws -> Authenticator {
+    private static let bundled = Result { try load() }
+
+    public static func shared() throws -> Authenticator {
+        try bundled.get()
+    }
+
+    static func load() throws -> Authenticator {
         for url in paramsCandidates {
             if let data = try? Data(contentsOf: url) {
                 return try Authenticator(params: data)

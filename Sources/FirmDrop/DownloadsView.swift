@@ -5,7 +5,7 @@ struct DownloadsTray: View {
     @Environment(DownloadManager.self) private var downloads
 
     private var hasFinished: Bool {
-        downloads.items.contains { if case .completed = $0.state { true } else { false } }
+        downloads.items.contains(where: \.isCompleted)
     }
 
     var body: some View {
@@ -140,7 +140,7 @@ struct DownloadRow: View {
                     EmptyView()
                 }
                 iconButton("magnifyingglass", help: "Mostrar no Finder") { downloads.reveal(item) }
-                if case .completed = item.state {
+                if item.isCompleted {
                     iconButton("xmark", help: "Remover da lista") {
                         withAnimation(.smooth) { downloads.remove(item) }
                     }
@@ -153,7 +153,7 @@ struct DownloadRow: View {
 
     @ViewBuilder private var menuItems: some View {
         Button("Mostrar no Finder") { downloads.reveal(item) }
-        if case .completed = item.state {
+        if item.isCompleted {
             Button("Remover da lista") { downloads.remove(item) }
         } else {
             Button("Remover da lista (manter arquivo parcial)") { downloads.remove(item) }
@@ -163,7 +163,7 @@ struct DownloadRow: View {
             Divider()
             Button("Copiar chave de decifragem") {
                 NSPasteboard.general.clearContents()
-                NSPasteboard.general.setString(key.map { String(format: "%02x", $0) }.joined(), forType: .string)
+                NSPasteboard.general.setString(key.hexString, forType: .string)
             }
         }
     }

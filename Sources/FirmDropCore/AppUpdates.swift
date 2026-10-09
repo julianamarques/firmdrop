@@ -19,8 +19,9 @@ public struct AppVersion: Comparable, CustomStringConvertible, Sendable {
         let trimmed = text.hasPrefix("v") ? String(text.dropFirst()) : text
         let parts = trimmed.split(separator: "-", maxSplits: 1).map(String.init)
         guard let base = parts.first else { return nil }
-        let numbers = base.split(separator: ".").compactMap { Int($0) }
-        guard numbers.count == 3, base.split(separator: ".").count == 3 else { return nil }
+        let components = base.split(separator: ".")
+        let numbers = components.compactMap { Int($0) }
+        guard components.count == 3, numbers.count == 3 else { return nil }
         major = numbers[0]
         minor = numbers[1]
         patch = numbers[2]
@@ -39,10 +40,8 @@ public struct AppVersion: Comparable, CustomStringConvertible, Sendable {
     }
 
     public static func < (lhs: AppVersion, rhs: AppVersion) -> Bool {
-        if (lhs.major, lhs.minor, lhs.patch) != (rhs.major, rhs.minor, rhs.patch) {
-            return (lhs.major, lhs.minor, lhs.patch) < (rhs.major, rhs.minor, rhs.patch)
-        }
-        return (lhs.stageRank, lhs.stageNumber) < (rhs.stageRank, rhs.stageNumber)
+        (lhs.major, lhs.minor, lhs.patch, lhs.stageRank, lhs.stageNumber)
+            < (rhs.major, rhs.minor, rhs.patch, rhs.stageRank, rhs.stageNumber)
     }
 
     private var stageRank: Int {
@@ -61,8 +60,8 @@ public struct AppVersion: Comparable, CustomStringConvertible, Sendable {
     }
 }
 
-public struct AppRelease: Decodable, Equatable, Sendable {
-    public struct Asset: Decodable, Equatable, Sendable {
+public struct AppRelease: Decodable, Sendable {
+    public struct Asset: Decodable, Sendable {
         public let name: String
         public let browserDownloadURL: URL
 
@@ -95,8 +94,9 @@ public struct AppRelease: Decodable, Equatable, Sendable {
 }
 
 public enum UpdateChecker {
-    public static let releasesURL = URL(string: "https://api.github.com/repos/julianamarques/firmdrop/releases?per_page=20")!
-    public static let releasesPage = URL(string: "https://github.com/julianamarques/firmdrop/releases")!
+    static let releasesURL = URL(string: "https://api.github.com/repos/julianamarques/firmdrop/releases?per_page=20")!
+    static let releasesPage = URL(string: "https://github.com/julianamarques/firmdrop/releases")!
+    static let summaryLimit = 8
 
     static func isTrusted(_ url: URL) -> Bool {
         url.scheme == "https" && url.host() == "github.com" && url.port == nil && url.user() == nil
@@ -113,7 +113,7 @@ public enum UpdateChecker {
         return try JSONDecoder().decode([AppRelease].self, from: data)
     }
 
-    public static func summary(of notes: String?, limit: Int = 8) -> [String] {
+    public static func summary(of notes: String?) -> [String] {
         guard let notes else { return [] }
         var inChanges = false
         var items: [String] = []
@@ -124,7 +124,7 @@ public enum UpdateChecker {
                 items.append(String(line.dropFirst(2)))
             }
         }
-        return Array(items.prefix(limit))
+        return Array(items.prefix(summaryLimit))
     }
 
     public static func newestRelease(in releases: [AppRelease], newerThan current: AppVersion) -> AppRelease? {

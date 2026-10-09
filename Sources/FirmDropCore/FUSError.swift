@@ -5,7 +5,6 @@ public enum FUSError: LocalizedError, Equatable, Sendable {
     case invalidModel(String)
     case invalidRegion(String)
     case unsafeFileName(String)
-    case noVersionAvailable(model: String, region: String)
     case invalidVersion(String)
     case http(endpoint: String, status: Int)
     case badResponse(String)
@@ -29,8 +28,6 @@ public enum FUSError: LocalizedError, Equatable, Sendable {
             String(localized: "Região inválida: “\(region)”. Use o código CSC, por exemplo ZTO.")
         case let .unsafeFileName(name):
             String(localized: "O servidor informou um nome de arquivo inválido: “\(name)”.")
-        case let .noVersionAvailable(model, region):
-            String(localized: "Nenhuma versão publicada para \(model) em \(region).")
         case let .invalidVersion(v):
             String(localized: "Versão inválida: “\(v)”. O formato esperado é PDA/CSC/MODEM.")
         case let .http(endpoint, status):

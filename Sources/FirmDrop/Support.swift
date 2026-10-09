@@ -28,6 +28,7 @@ struct Region: Hashable, Identifiable {
     let code: String
     let name: String
     var id: String { code }
+    var title: String { "\(code) — \(name)" }
 
     static let brazil = [
         Region(code: "ZTO", name: String(localized: "Brasil (desbloqueado)")),
@@ -36,17 +37,9 @@ struct Region: Hashable, Identifiable {
         Region(code: "ZVV", name: "Vivo"),
     ]
     static let defaultCode = "ZTO"
-}
 
-actor AuthProvider {
-    static let shared = AuthProvider()
-    private var cached: Authenticator?
-
-    func authenticator() async throws -> Authenticator {
-        if let cached { return cached }
-        let auth = try Authenticator.load()
-        cached = auth
-        return auth
+    static func brazil(_ code: String) -> Region? {
+        brazil.first { $0.code == code }
     }
 }
 
@@ -59,12 +52,20 @@ enum Format {
         bytes(Int64(bytesPerSecond)) + "/s"
     }
 
-    static func remaining(_ seconds: Double) -> String? {
-        guard seconds.isFinite, seconds > 0 else { return nil }
+    @MainActor private static let hoursAndMinutes = remainingFormatter([.hour, .minute])
+    @MainActor private static let minutesAndSeconds = remainingFormatter([.minute, .second])
+
+    private static func remainingFormatter(_ units: NSCalendar.Unit) -> DateComponentsFormatter {
         let f = DateComponentsFormatter()
         f.unitsStyle = .abbreviated
         f.maximumUnitCount = 2
-        f.allowedUnits = seconds >= 3600 ? [.hour, .minute] : [.minute, .second]
+        f.allowedUnits = units
+        return f
+    }
+
+    @MainActor static func remaining(_ seconds: Double) -> String? {
+        guard seconds.isFinite, seconds > 0 else { return nil }
+        let f = seconds >= 3600 ? hoursAndMinutes : minutesAndSeconds
         return f.string(from: seconds).map { String(localized: "falta \($0)") }
     }
 

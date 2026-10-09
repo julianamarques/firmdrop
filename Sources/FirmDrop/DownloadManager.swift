@@ -39,11 +39,11 @@ final class DownloadItem: Identifiable {
 
     var title: String { info?.displayName ?? model }
     var isRunning: Bool { if case .running = state { true } else { false } }
+    var isCompleted: Bool { if case .completed = state { true } else { false } }
     var fraction: Double? { total > 0 ? min(1, Double(completed) / Double(total)) : nil }
 
     var encryptedFile: URL? {
-        guard let info else { return nil }
-        let url = directory.appending(path: info.localName)
+        guard let info, let url = try? FirmwareDownload.localURLs(for: info, in: directory).encrypted else { return nil }
         return FileManager.default.fileExists(atPath: url.path) ? url : nil
     }
 }
@@ -60,10 +60,13 @@ final class DownloadManager {
 
     var runningCount: Int { items.filter(\.isRunning).count }
 
+    func item(model: String, region: String, version: String) -> DownloadItem? {
+        items.first { $0.model == model && $0.region == region && $0.version == version }
+    }
+
     func start(model: String, region: String, version: String) {
-        if let existing = items.first(where: { $0.model == model && $0.region == region && $0.version == version }) {
-            if case .completed = existing.state { return }
-            resume(existing)
+        if let existing = item(model: model, region: region, version: version) {
+            if !existing.isCompleted { resume(existing) }
             return
         }
         let item = DownloadItem(model: model, region: region, version: version,
@@ -85,9 +88,8 @@ final class DownloadManager {
 
         item.task = Task { [weak self, weak item] in
             do {
-                let auth = try await AuthProvider.shared.authenticator()
                 let url = try await job.run(
-                    authenticator: auth,
+                    authenticator: Authenticator.shared(),
                     onInfo: { info in Task { @MainActor in item?.info = info; self?.save() } },
                     onProgress: { progress in Task { @MainActor in item?.apply(progress) } },
                     onRetry: { attempt, error in
@@ -120,11 +122,9 @@ final class DownloadManager {
     }
 
     func cancel(_ item: DownloadItem) {
-        item.task?.cancel()
-        if case .completed = item.state {} else if let file = item.encryptedFile {
-            try? FileManager.default.removeItem(at: file)
-        }
+        let partial = item.isCompleted ? nil : item.encryptedFile
         remove(item)
+        if let partial { try? FileManager.default.removeItem(at: partial) }
     }
 
     func remove(_ item: DownloadItem) {
@@ -135,7 +135,7 @@ final class DownloadManager {
     }
 
     func clearFinished() {
-        items.removeAll { if case .completed = $0.state { true } else { false } }
+        items.removeAll(where: \.isCompleted)
         save()
     }
 
@@ -223,8 +223,7 @@ final class DownloadManager {
                                     directory: r.directory, state: state)
             item.info = r.info
             item.total = r.total
-            if case .paused = state, let file = item.encryptedFile,
-               let size = (try? FileManager.default.attributesOfItem(atPath: file.path)[.size] as? NSNumber)?.int64Value {
+            if case .paused = state, let file = item.encryptedFile, let size = FileManager.default.fileSize(at: file) {
                 item.completed = size
             } else {
                 item.completed = r.completed
@@ -237,7 +236,8 @@ final class DownloadManager {
 extension DownloadItem {
     func apply(_ progress: DownloadProgress) {
         guard isRunning else { return }
-        if state != .running(progress.phase) {
+        let measuring = progress.phase == .downloading || progress.phase == .decrypting
+        if state != .running(progress.phase) || !measuring {
             bytesPerSecond = 0
             speedSample = nil
         }
@@ -246,11 +246,7 @@ extension DownloadItem {
         completed = progress.completed
         total = progress.total
 
-        guard progress.phase == .downloading || progress.phase == .decrypting else {
-            bytesPerSecond = 0
-            speedSample = nil
-            return
-        }
+        guard measuring else { return }
         let now = Date()
         guard let sample = speedSample else { speedSample = (now, progress.completed); return }
         let elapsed = now.timeIntervalSince(sample.time)

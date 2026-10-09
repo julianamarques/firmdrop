@@ -1,6 +1,6 @@
 import Foundation
 
-public struct FirmwareVersions: Sendable, Equatable {
+public struct FirmwareVersions: Sendable {
     public var model: String
     public var region: String
     public var latest: String?
@@ -12,7 +12,7 @@ public enum Versions {
     static let urlTemplate = "https://fota-cloud-dn.ospserver.net/firmware/%@/%@/version.xml"
     static let userAgent = "Kies2.0_FUS"
 
-    public static func normalize(_ version: String) throws -> String {
+    static func normalize(_ version: String) throws -> String {
         var parts = version.trimmingCharacters(in: .whitespacesAndNewlines)
             .split(separator: "/", omittingEmptySubsequences: false)
             .map(String.init)
@@ -24,7 +24,7 @@ public enum Versions {
         return parts.joined(separator: "/")
     }
 
-    public static func sortKey(_ version: String) -> String {
+    static func sortKey(_ version: String) -> String {
         String(version.split(separator: "/").first?.suffix(3) ?? "")
     }
 
@@ -43,7 +43,7 @@ public enum Versions {
         return version.split(separator: "/").filter { seen.insert($0).inserted }.joined(separator: "/")
     }
 
-    public static func parse(_ data: Data, model: String, region: String) throws -> FirmwareVersions {
+    static func parse(_ data: Data, model: String, region: String) throws -> FirmwareVersions {
         let doc: XMLDocument
         do { doc = try XMLDocument.untrusted(data) } catch {
             throw FUSError.badResponse(String(localized: "version.xml inválido"))
@@ -72,8 +72,7 @@ public enum Versions {
     }
 
     public static func fetch(model: String, region: String, session: URLSession = .shared) async throws -> FirmwareVersions {
-        let model = model.uppercased(), region = region.uppercased()
-        try Identifiers.validate(model: model, region: region)
+        let (model, region) = try Identifiers.validated(model: model, region: region)
         guard let url = URL(string: String(format: urlTemplate, region, model)) else {
             throw FUSError.modelNotFound(model: model, region: region)
         }

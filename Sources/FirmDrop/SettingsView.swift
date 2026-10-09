@@ -30,7 +30,7 @@ struct SettingsView: View {
             Section {
                 Picker("Região padrão", selection: $defaultRegion) {
                     ForEach(Region.brazil) { region in
-                        Text("\(region.code) — \(region.name)").tag(region.code)
+                        Text(region.title).tag(region.code)
                     }
                 }
             } footer: {

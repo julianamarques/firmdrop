@@ -68,7 +68,7 @@ private func pkcs7(_ data: Data) -> Data {
 
     @Test func v2Key() {
         let key = FirmwareCrypto.v2Key(version: "V", model: "SM-X", region: "ZTO")
-        #expect(key.map { String(format: "%02x", $0) }.joined() == "a4c55baa5eb4c3a37686fa7952d3d093")
+        #expect(key.hexString == "a4c55baa5eb4c3a37686fa7952d3d093")
     }
 
     @Test func unpad() {
@@ -83,25 +83,24 @@ private func pkcs7(_ data: Data) -> Data {
         let enc = aesECBEncrypt(pkcs7(plain), key: key)
         #expect(try FirmwareCrypto.keyMatches(key, firstBlock: enc))
         #expect(try !FirmwareCrypto.keyMatches(Data(count: 16), firstBlock: enc))
-        let dec = try AESECBDecryptor(key: key).update(enc)
+        var dec = enc
+        try AESECBDecryptor(key: key).decrypt(&dec)
         #expect(FirmwareCrypto.unpad(dec) == plain)
     }
 
-    @Test func decryptFile() throws {
-        let dir = FileManager.default.temporaryDirectory.appending(path: "firmdrop-test-\(UUID().uuidString)")
-        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        defer { try? FileManager.default.removeItem(at: dir) }
+    @Test func decryptFile() async throws {
+        try await withTemporaryDirectory { dir in
+            let key = Data((0..<16).map { UInt8(15 - $0) })
+            let plain = Data([0x50, 0x4B, 0x03, 0x04] + (0..<(9 << 20)).map { UInt8($0 % 253) })
+            let src = dir.appending(path: "fw.zip.enc4")
+            let dst = dir.appending(path: "fw.zip")
+            try aesECBEncrypt(pkcs7(plain), key: key).write(to: src)
 
-        let key = Data((0..<16).map { UInt8(15 - $0) })
-        let plain = Data([0x50, 0x4B, 0x03, 0x04] + (0..<(9 << 20)).map { UInt8($0 % 253) })
-        let src = dir.appending(path: "fw.zip.enc4")
-        let dst = dir.appending(path: "fw.zip")
-        try aesECBEncrypt(pkcs7(plain), key: key).write(to: src)
-
-        try FirmwareDownload.decrypt(src, to: dst, key: key, onProgress: { _ in })
-        #expect(try Data(contentsOf: dst) == plain)
-        #expect(throws: FUSError.wrongKey) {
-            try FirmwareDownload.decrypt(src, to: dst, key: Data(count: 16), onProgress: { _ in })
+            try await FirmwareDownload.decrypt(src, to: dst, key: key, onProgress: { _ in })
+            #expect(try Data(contentsOf: dst) == plain)
+            await #expect(throws: FUSError.wrongKey) {
+                try await FirmwareDownload.decrypt(src, to: dst, key: Data(count: 16), onProgress: { _ in })
+            }
         }
     }
 
@@ -181,25 +180,25 @@ struct LiveDownloadTests {
     }
 
     @Test(.timeLimit(.minutes(3))) func pauseAndResume() async throws {
-        let dir = FileManager.default.temporaryDirectory.appending(path: "firmdrop-test-\(UUID().uuidString)")
-        defer { try? FileManager.default.removeItem(at: dir) }
-        let auth = try Authenticator.load()
-        let latest = try #require(try await Versions.fetch(model: "SM-R860", region: "ZTO").latest)
-        let job = FirmwareDownload(model: "SM-R860", region: "ZTO", version: latest, directory: dir)
+        try await withTemporaryDirectory { dir in
+            let auth = try Authenticator.load()
+            let latest = try #require(try await Versions.fetch(model: "SM-R860", region: "ZTO").latest)
+            let job = FirmwareDownload(model: "SM-R860", region: "ZTO", version: latest, directory: dir)
 
-        let box = Box()
-        await downloadUntil(20 << 20, job: job, auth: auth, box: box)
-        let file = dir.appending(path: try #require(box.info).localName)
-        let size1 = try #require(try FileManager.default.attributesOfItem(atPath: file.path)[.size] as? NSNumber).int64Value
-        #expect(size1 >= 20 << 20)
+            let box = Box()
+            await downloadUntil(20 << 20, job: job, auth: auth, box: box)
+            let file = dir.appending(path: try #require(box.info).localName)
+            let size1 = try #require(FileManager.default.fileSize(at: file))
+            #expect(size1 >= 20 << 20)
 
-        let box2 = Box()
-        await downloadUntil(size1 + (10 << 20), job: job, auth: auth, box: box2)
-        let size2 = try #require(try FileManager.default.attributesOfItem(atPath: file.path)[.size] as? NSNumber).int64Value
-        #expect(box2.phases.contains(.verifyingPartial))
-        #expect(size2 >= size1 + (10 << 20))
+            let box2 = Box()
+            await downloadUntil(size1 + (10 << 20), job: job, auth: auth, box: box2)
+            let size2 = try #require(FileManager.default.fileSize(at: file))
+            #expect(box2.phases.contains(.verifyingPartial))
+            #expect(size2 >= size1 + (10 << 20))
 
-        let head = try FileHandle(forReadingFrom: file).read(upToCount: 16) ?? Data()
-        #expect(try FirmwareCrypto.keyMatches(try #require(box.info?.key), firstBlock: head))
+            let head = try FileHandle(forReadingFrom: file).read(upToCount: 16) ?? Data()
+            #expect(try FirmwareCrypto.keyMatches(try #require(box.info?.key), firstBlock: head))
+        }
     }
 }
