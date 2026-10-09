@@ -135,4 +135,10 @@ FIRMDROP_LIVE=1 swift test     # inclui testes contra o servidor real (baixa ~30
 - Use para seus próprios aparelhos. Redistribuir os firmwares publicamente pode violar os
   termos de uso da Samsung.
 
-Créditos e licença do código de terceiros: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+## Licença
+
+O FirmDrop é distribuído sob a [licença Apache 2.0](LICENSE). Os créditos e as licenças de terceiros estão em [NOTICE](NOTICE) e acompanham o app em `Contents/Resources/`.
+
+## Créditos
+
+A autenticação no servidor FUS é um porte do [Bifrost](https://github.com/zacharee/SamloaderKotlin), de Zachary Wander, sob a licença MIT (texto completo em [Resources/licenses/Bifrost-LICENSE.txt](Resources/licenses/Bifrost-LICENSE.txt)). O `auth_param.dat` usado na autenticação não é distribuído com o app: ele é baixado do repositório do Bifrost na primeira busca.

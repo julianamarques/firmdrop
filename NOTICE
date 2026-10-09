@@ -1,0 +1,17 @@
+FirmDrop
+Copyright 2026 Juliana Marques
+
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This product includes third-party work:
+
+Bifrost / SamloaderKotlin (https://github.com/zacharee/SamloaderKotlin)
+Copyright (c) 2021 Zachary Wander
+Licensed under the MIT License (see Bifrost-LICENSE.txt).
+Sources/FirmDropCore/Authenticator.swift is a port of its
+CryptUtils.authenticateBlock, and Sources/FirmDropCore/FUSClient.swift
+follows its FUS client.
+
+The auth_param.dat file is not distributed with this product. It is
+downloaded at runtime from the Bifrost repository at a fixed commit and
+verified by its SHA-256 checksum.

@@ -1,14 +1,3 @@
-# Avisos de terceiros
-
-`Sources/FirmDropCore/Authenticator.swift` é um porte de `CryptUtils.authenticateBlock`, e o
-protocolo implementado em `Sources/FirmDropCore/FUSClient.swift` segue o cliente FUS do projeto
-[Bifrost (SamloaderKotlin)](https://github.com/zacharee/SamloaderKotlin).
-O arquivo `auth_param.dat` é baixado desse projeto em tempo de execução e não
-faz parte deste repositório.
-
-Licença do Bifrost:
-
-```
 MIT License
 
 Copyright (c) 2021 Zachary Wander
@@ -30,4 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-```
