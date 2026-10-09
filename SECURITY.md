@@ -45,6 +45,8 @@ Estão no escopo:
   pedidos, verificação do `auth_param.dat` embutido, download com retomada,
   verificação do CRC32, decifragem e gravação dos arquivos no disco.
 - A verificação de atualizações e os links que ela abre.
+- A integração de instalação USB, seleção e validação de pacotes, importação de
+  ZIP e o adaptador do motor de instalação.
 - Os scripts de build, empacotamento e publicação.
 
 Fora do escopo (reporte diretamente aos projetos de origem):
@@ -53,14 +55,16 @@ Fora do escopo (reporte diretamente aos projetos de origem):
   [Samsung Mobile Security](https://security.samsungmobile.com).
 - Vulnerabilidades no `auth_param.dat` ou no Bifrost:
   [zacharee/SamloaderKotlin](https://github.com/zacharee/SamloaderKotlin).
-- Problemas nas ferramentas de instalação de firmware, como Odin e Heimdall.
+- Problemas em outras ferramentas de instalação, como Odin e Heimdall. Para falhas
+  no Brokkr, informe também o projeto de origem; problemas na integração do FirmDrop
+  permanecem no escopo deste repositório.
 - Ataques que exigem acesso físico ao Mac desbloqueado.
 - O aviso do Gatekeeper na primeira abertura, causado pela assinatura local do
   app (comportamento conhecido e documentado no README).
 
 ## Considerações de Segurança para Usuários
 
-- O app não tem contas, não coleta dados e não envia telemetria. Ele se
+- O app não tem contas, não coleta dados e não envia telemetria. Na rede, ele se
   comunica apenas, e sempre por HTTPS, com:
   - `fota-cloud-dn.ospserver.net`, `neofussvr.sslcs.cdngc.net` e
     `cloud-neofussvr.samsungmobile.com`, servidores da Samsung, para consultar
@@ -71,7 +75,10 @@ Fora do escopo (reporte diretamente aos projetos de origem):
   contrário, a busca falha.
 - O firmware é baixado direto dos servidores da Samsung e conferido com o CRC32
   informado por eles antes de ser decifrado. Os `.tar.md5` dentro do `.zip`
-  trazem o MD5 da própria Samsung, que o Odin confere antes de gravar.
+  trazem o MD5 da própria Samsung, que o motor de instalação confere antes de gravar.
+- A instalação USB é experimental. O modelo informado e os nomes dos arquivos não
+  comprovam compatibilidade com o hardware ou com a revisão de bootloader. O app
+  exige revisão explícita antes de iniciar, usa uma única conexão USB e não envia PIT.
 - O app não instala atualizações sozinho: ele apenas abre o link do `.dmg` da
   nova versão no navegador. Confira se o endereço é
   `github.com/julianamarques/firmdrop` antes de baixar.

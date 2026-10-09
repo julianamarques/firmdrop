@@ -1,0 +1,42 @@
+# FirmDrop flash engine
+
+This directory is a separate **GPL-3.0-or-later** command-line adapter for
+[Brokkr](https://github.com/Gabriel2392/brokkr-flash), pinned to
+`f7ae23067b4ee6c2e0211a1dee563f4be991cb4d` (2.4.11). FirmDrop communicates with
+it through process arguments and stdout/stderr, without linking to Brokkr.
+
+The adapter uses the native macOS IOKit USB transport, requires one explicitly
+selected device with a matching registry connection ID, verifies TAR/MD5 packages,
+emits progress, and never uploads a PIT or requests a repartition. The patch rejects
+incomplete partition mappings before any partition write. `--probe` only opens a
+protocol session, reads its version, and ends the session without rebooting or
+writing partitions. It does not establish firmware/model compatibility.
+The macOS SDK patch removes a legacy pre-macOS 12 port-constant fallback; this
+build requires macOS 26 and uses `kIOMainPortDefault` directly.
+
+`--flash` accepts four `--file` arguments in BL/AP/CP/CSC order and requires
+`--target` and `--connection` from `--list`. `--preserve` refuses USERDATA images;
+`--no-reboot` keeps Download Mode after success. `--verify` validates the same four
+files offline. These are private integration arguments, not the upstream CLI.
+
+No S25 hardware validation has been performed. A successful build or USB listing
+does not establish that flashing a particular model works. Firmware filename
+checks in the app are not device identification or anti-rollback verification.
+
+## Rebuild the bundled binary
+
+Run `bash scripts/build-flash-engine.sh [--universal]` in the FirmDrop repository.
+Only Xcode Command Line Tools, Git and the macOS SDK are needed; no Qt or Homebrew
+libraries are required. Dependencies are pinned by full Git commit IDs.
+
+Every packaged app includes `Contents/Resources/flash-engine-source.tar.gz`,
+containing the complete engine and dependency sources, their licenses, the adapter,
+its patch and this build script. After extracting that archive, run:
+
+```sh
+bash adapter/build.sh "$PWD" "$PWD/output" --universal
+```
+
+The resulting executable is `output/firmdrop-flash`. The sources build offline.
+The original Brokkr GPL license is in `brokkr/LICENSE`. The adapter files and patch
+are distributed under GPL-3.0-or-later; the Swift app retains its Apache 2.0 license.

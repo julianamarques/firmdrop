@@ -11,6 +11,7 @@ struct FirmDropApp: App {
             ContentView()
                 .environment(search)
                 .environment(appDelegate.downloads)
+                .environment(appDelegate.flash)
                 .frame(minWidth: 760, minHeight: 560)
         }
         .defaultSize(width: 900, height: 760)
@@ -34,6 +35,7 @@ struct FirmDropApp: App {
 final class AppDelegate: NSObject, NSApplicationDelegate {
     let downloads = DownloadManager()
     let updates = UpdateModel()
+    let flash = FlashModel()
 
     override init() {
         SettingsKey.registerDefaults()
@@ -44,11 +46,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.setActivationPolicy(.regular)
         NSApp.activate()
 
-        updates.isBusy = { [downloads] in downloads.runningCount > 0 }
+        updates.isBusy = { [downloads, flash] in downloads.runningCount > 0 || flash.isBusy }
         updates.startAutomaticChecks()
     }
 
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        if flash.isBusy {
+            let alert = NSAlert()
+            alert.messageText = String(localized: "Há uma operação de firmware em andamento")
+            alert.informativeText = String(localized: "Aguarde a conclusão antes de fechar o FirmDrop. Durante a instalação, mantenha o cabo conectado.")
+            alert.addButton(withTitle: String(localized: "Aguardar"))
+            alert.runModal()
+            return .terminateCancel
+        }
         guard downloads.runningCount > 0 else { return .terminateNow }
         let alert = NSAlert()
         alert.messageText = String(localized: "Há downloads em andamento")
@@ -62,5 +72,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
         downloads.save()
+        flash.cleanup()
     }
 }

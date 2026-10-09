@@ -3,8 +3,32 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(DownloadManager.self) private var downloads
+    @Environment(FlashModel.self) private var flash
 
     var body: some View {
+        @Bindable var flash = flash
+        TabView(selection: $flash.selectedTab) {
+            Tab("Baixar firmware", systemImage: "arrow.down.circle", value: FirmwareTab.download) {
+                downloadContent
+            }
+            Tab("Instalar firmware", systemImage: "cable.connector", value: FirmwareTab.install) {
+                FlashView()
+            }
+        }
+        .padding(.top, 8)
+        .background { GlassBackdrop() }
+        .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                SettingsLink {
+                    Label("Ajustes", systemImage: "gearshape")
+                }
+                .help("Ajustes")
+            }
+        }
+    }
+
+    private var downloadContent: some View {
         ResultView()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .safeAreaInset(edge: .top, spacing: 0) {
@@ -22,16 +46,6 @@ struct ContentView: View {
                 }
             }
             .animation(.smooth, value: downloads.items.isEmpty)
-            .background { GlassBackdrop() }
-            .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    SettingsLink {
-                        Label("Ajustes", systemImage: "gearshape")
-                    }
-                    .help("Ajustes")
-                }
-            }
     }
 }
 

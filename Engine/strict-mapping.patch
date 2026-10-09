@@ -1,0 +1,12 @@
+--- a/src/protocol/odin/group_flasher.cpp
++++ b/src/protocol/odin/group_flasher.cpp
+@@ -416,6 +416,9 @@
+     stage("Verifying PIT mapping");
+ 
+     BRK_TRYV(eff, sources_common_mapping_or_empty(active, sources));
++    if (eff.empty() || eff.size() != sources.size())
++      return brokkr::core::fail("Selected images do not all match the device PIT. No partitions were written.");
++
+     effective_sources = std::move(eff);
+ 
+     if (effective_sources.empty() && !sources.empty())

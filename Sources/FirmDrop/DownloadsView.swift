@@ -53,6 +53,7 @@ struct DownloadsTray: View {
 
 struct DownloadRow: View {
     @Environment(DownloadManager.self) private var downloads
+    @Environment(FlashModel.self) private var flash
     let item: DownloadItem
     @State private var confirmCancel = false
 
@@ -137,7 +138,8 @@ struct DownloadRow: View {
                 case .failed:
                     iconButton("arrow.clockwise", help: "Tentar de novo") { downloads.resume(item) }
                 case .completed:
-                    EmptyView()
+                    iconButton("iphone.and.arrow.forward.outward", help: "Instalar este firmware") { flash.importDownload(item) }
+                        .disabled(flash.isBusy)
                 }
                 iconButton("magnifyingglass", help: "Mostrar no Finder") { downloads.reveal(item) }
                 if item.isCompleted {
@@ -154,6 +156,8 @@ struct DownloadRow: View {
     @ViewBuilder private var menuItems: some View {
         Button("Mostrar no Finder") { downloads.reveal(item) }
         if item.isCompleted {
+            Button("Instalar este firmware…") { flash.importDownload(item) }
+                .disabled(flash.isBusy)
             Button("Remover da lista") { downloads.remove(item) }
         } else {
             Button("Remover da lista (manter arquivo parcial)") { downloads.remove(item) }

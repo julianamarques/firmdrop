@@ -1,0 +1,13 @@
+--- a/src/platform/macos/sysfs_usb.cpp
++++ b/src/platform/macos/sysfs_usb.cpp
+@@ -34,10 +34,6 @@
+ #include <fmt/format.h>
+ #include <spdlog/spdlog.h>
+ 
+-#if !defined(kIOMainPortDefault)
+-  #define kIOMainPortDefault kIOMasterPortDefault
+-#endif
+-
+ namespace brokkr::macos {
+ namespace {
+ 

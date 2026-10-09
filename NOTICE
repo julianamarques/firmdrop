@@ -15,3 +15,21 @@ follows its FUS client.
 The bundled auth_param.dat file comes from the Bifrost repository at a
 fixed commit and is verified by its SHA-256 checksum. It is fetched at
 build time and is not stored in this source repository.
+
+The app bundles a separate firmware installation executable:
+
+Brokkr (https://github.com/Gabriel2392/brokkr-flash)
+Copyright (c) 2026 Gabriel2392
+Licensed under GPL-3.0-or-later (see Brokkr-LICENSE.txt).
+Pinned commit: f7ae23067b4ee6c2e0211a1dee563f4be991cb4d.
+Engine/main.cpp, Engine/compat.hpp, Engine/build.sh and
+Engine/strict-mapping.patch and Engine/macos-sdk.patch are the FirmDrop
+GPL-3.0-or-later adapter.
+The Swift app communicates with this executable through process arguments
+and stdout/stderr. It does not link to Brokkr.
+
+Contents/Resources/flash-engine-source.tar.gz contains the complete
+corresponding sources, including the adapter, the partition-mapping patch,
+build instructions, dependencies and their licenses. Brokkr-NOTICES.txt
+contains the upstream dependency notices. Dependencies include spdlog, fmt,
+function2, LZ4, xxHash and MD5; their license files remain in the source bundle.

@@ -1,6 +1,6 @@
 # FirmDrop — firmwares Samsung no Mac
 
-Aplicação open source macOS para baixar firmwares oficiais da Samsung direto do servidor FUS (Firmware Update Server). Os arquivos são os pacotes oficiais da Samsung, sem nenhuma modificação: o app só decifra o .enc4 com a chave fornecida pelo servidor. O .zip baixado contém os arquivos prontos para serem utilizados pelo Odin, Heimdall ou outro software de instalação de firmwares Samsung.
+Aplicação open source macOS para baixar firmwares oficiais da Samsung direto do servidor FUS (Firmware Update Server), com instalação experimental via USB. Os downloads são os pacotes oficiais da Samsung, sem nenhuma modificação: o app decifra o .enc4 com a chave fornecida pelo servidor. O .zip pode ser importado no FirmDrop ou utilizado com outra ferramenta de instalação.
 
 <p align="center">
   <img src="docs/images/tela-inicial.png" width="560" alt="Tela inicial do FirmDrop, com o campo de modelo, o menu de região ZTO · Brasil (desbloqueado), o botão Buscar e a mensagem Busque um modelo">
@@ -15,6 +15,7 @@ Aplicação open source macOS para baixar firmwares oficiais da Samsung direto d
   e mostra a contagem de downloads no Dock
 - Avisa quando há uma versão nova do app (Releases do GitHub)
 - Em português e inglês, conforme o idioma do macOS (inglês para os demais idiomas)
+- Instalação experimental de BL/AP/CP/CSC pelo motor [Brokkr](https://github.com/Gabriel2392/brokkr-flash), com USB nativo do macOS, teste de conexão, importação de ZIP e registro de progresso
 
 Visual Liquid Glass (barras e cartões de vidro flutuantes, modo claro e escuro).
 Requer **macOS 26** ou mais novo.
@@ -46,10 +47,16 @@ scripts/make-dmg.sh              # gera build/FirmDrop.dmg
 Opção para os dois scripts: `--universal` gera um binário para Apple Silicon e Intel.
 
 O build baixa o `auth_param.dat` uma vez (ver [abaixo](#auth_paramdat)) e o embute no app.
+Também compila o motor de instalação como um executável separado, usando revisões fixas
+do Brokkr e de suas dependências. A primeira compilação precisa de internet e Git;
+não precisa de Qt, Homebrew, Heimdall ou OdinMac. O motor e seus fontes completos
+acompanham o `.app`. Veja [Engine/README.md](Engine/README.md).
 
 Para desenvolver no Xcode, abra o `Package.swift` (`xed .`) e rode o esquema **FirmDrop**.
 Rodando fora do `.app`, o app usa o `Resources/auth_param.dat`: baixe-o antes com
 `scripts/fetch-auth-params.sh`.
+Para testar a instalação ao executar `swift run`, compile também o motor uma vez com
+`bash scripts/build-flash-engine.sh`.
 
 ## Traduções
 
@@ -89,6 +96,53 @@ repositório público.
 
 Os arquivos vão para `~/Downloads`; a pasta pode ser trocada em **FirmDrop › Ajustes** (⌘,).
 Também nos Ajustes: manter o `.enc4` depois de decifrar e escolher a região padrão.
+
+### Instalar firmware pelo Mac (experimental)
+
+**O suporte ao Galaxy S25 / SM-S931B ainda não foi validado em hardware.** A compilação,
+os testes offline e a detecção USB não comprovam a compatibilidade de instalação.
+O FirmDrop usa o transporte IOKit do Brokkr, diferente do Heimdall usado pelo OdinMac.
+Isso permite investigar a conexão por outra implementação, mas não garante resolver
+a causa de um aparelho não reconhecido.
+
+1. Abra a aba **Instalar firmware**, ou **Instalar este firmware…**
+   no download concluído.
+2. Importe o ZIP, abra a pasta já extraída ou selecione BL, AP, CP e CSC individualmente.
+   Use os quatro pacotes do mesmo download oficial. O app prioriza **HOME_CSC**, que
+   tenta preservar dados. O pacote **CSC** pode apagar o aparelho. Tenha backup em ambos os casos.
+3. Informe o modelo exato exibido como `PRODUCT NAME` no aparelho. O app verifica os
+   nomes dos pacotes e se BL/AP pertencem à mesma versão. Isso não identifica o
+   hardware nem verifica automaticamente CSC, anti-rollback, FRP, Knox ou bloqueios
+   do bootloader; essas restrições continuam sendo aplicadas pelo aparelho.
+4. No S25, desligue o telefone, segure os dois botões de volume ao conectar o cabo
+   ao Mac e confirme o modo Download com Volume +. Feche OdinMac, Smart Switch e
+   outros programas que usam a conexão USB.
+5. Clique em **Detectar** e **Testar conexão**. Detectar apenas enumera o USB;
+   testar abre uma sessão do protocolo, consulta sua versão e encerra sem reiniciar
+   ou gravar partições. Se precisar reconectar o cabo, teste novamente.
+6. Clique em **Revisar instalação…**, confira os arquivos, modelo e revisão do
+   bootloader e confirme. A gravação só começa depois dessa confirmação. Não
+   desconecte o cabo; o app impede o repouso por inatividade e bloqueia a saída
+   normal enquanto a operação estiver em andamento.
+
+O motor verifica o MD5 dos `.tar.md5` antes da comunicação de gravação. Arquivos
+`.tar` passam pela validação da estrutura, mas não possuem essa verificação MD5.
+O FirmDrop não envia PIT nem oferece reparticionamento, NAND erase, USERDATA avulso,
+flash parcial ou bypass de bloqueios. Todas as imagens selecionadas precisam
+corresponder ao mapa de partições do aparelho; caso contrário, a operação falha
+antes da gravação. A sessão fica vinculada à conexão USB escolhida, sem seleção
+automática de vários dispositivos. Não existe pausa ou retomada do flash.
+
+Se o aparelho não aparecer, teste cabo de dados e porta diretamente no Mac e
+confira a autorização de acessórios USB do macOS. Se aparecer, mas o teste de
+conexão falhar, copie o registro: ele permite distinguir descoberta do dispositivo,
+acesso exclusivo à interface e negociação do protocolo. Uma falha exige nova
+avaliação e confirmação; não há tentativa automática de reinstalação.
+
+O ZIP é mantido. A extração cria cópias temporárias apenas dos pacotes selecionáveis;
+reserve espaço para esses arquivos. Elas são apagadas ao substituir a importação
+ou encerrar normalmente o app. O registro mostra as mensagens originais do motor,
+que podem estar em inglês.
 
 ### Regiões do Brasil
 
@@ -137,8 +191,9 @@ Bifrost, e publicar uma nova versão.
 
 | Caminho | Conteúdo |
 |---|---|
-| `Sources/FirmDropCore/` | Protocolo FUS, autenticação, criptografia e motor de download (sem UI) |
-| `Sources/FirmDrop/` | App SwiftUI: busca, lista de downloads, ajustes |
+| `Sources/FirmDropCore/` | Protocolo FUS, autenticação, download, validação de pacotes e comunicação com o motor de instalação |
+| `Sources/FirmDrop/` | App SwiftUI: busca, downloads, instalação, ajustes |
+| `Engine/` | Adaptador GPL do Brokkr, patch de validação de partições e build reproduzível |
 | `Tests/FirmDropCoreTests/` | Testes (`swift test`) |
 | `Resources/` | `Info.plist`, ícone do app e traduções (`Localizable.xcstrings`) |
 | `scripts/` | `build-app.sh` (monta o .app), `fetch-auth-params.sh`, `sync-strings.sh`, `make-source-strings.swift`, `make-dmg.sh`, `release.sh` e `make-icon.sh` (gera o ícone) |
@@ -148,6 +203,7 @@ Bifrost, e publicar uma nova versão.
 ```sh
 scripts/fetch-auth-params.sh   # uma vez, para os testes de autenticação
 swift test                     # testes offline
+python3 Engine/test-engine.py build/flash-engine/firmdrop-flash # motor, sem acessar USB
 FIRMDROP_LIVE=1 swift test     # inclui testes contra o servidor real (baixa ~30 MB)
 ```
 
@@ -164,7 +220,9 @@ Correções e melhorias são bem-vindas. Veja o [guia de contribuição](CONTRIB
 
 ## Licença
 
-O FirmDrop é distribuído sob a [licença Apache 2.0](LICENSE). Os créditos e as licenças de terceiros estão em [NOTICE](NOTICE) e acompanham o app em `Contents/Resources/`.
+O app Swift é distribuído sob a [licença Apache 2.0](LICENSE). O motor separado de
+instalação e seu adaptador são GPL-3.0-or-later. Os créditos, licenças e fontes do
+motor estão em [NOTICE](NOTICE) e acompanham o app em `Contents/Resources/`.
 
 ## Créditos
 
