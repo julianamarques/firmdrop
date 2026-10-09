@@ -6,6 +6,10 @@ como o SamMobile fazem por trás. Os arquivos são os pacotes oficiais da Samsun
 nenhuma modificação: o app só decifra o `.enc4` com a chave fornecida pelo servidor, e o
 `.zip` sai pronto para o Odin.
 
+<p align="center">
+  <img src="docs/images/tela-inicial.png" width="560" alt="Tela inicial do FirmDrop, com o campo de modelo, o menu de região ZTO · Brasil (desbloqueado), o botão Buscar e a mensagem Busque um modelo">
+</p>
+
 - Busca por modelo e região (Brasil: ZTO, Claro, TIM, Vivo, ou qualquer outro CSC)
 - Mostra nome comercial, tamanho, versão do Android e versões anteriores com mês/ano
 - **Não exige IMEI**
