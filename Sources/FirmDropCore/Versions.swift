@@ -51,11 +51,15 @@ public enum Versions {
         let latestNode = try doc.nodes(forXPath: "/versioninfo/firmware/version/latest").first as? XMLElement
         let latestText = latestNode?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let latest = latestText.isEmpty ? nil : try normalize(latestText)
+        if let latest, !Identifiers.isValidVersion(latest) {
+            throw FUSError.badResponse("versão inválida no version.xml")
+        }
 
         let values = try doc.nodes(forXPath: "/versioninfo/firmware/version/upgrade/value")
             .compactMap { $0.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .filter { !$0.isEmpty }
-        let previous = Set(try values.map(normalize)).subtracting([latest].compactMap { $0 })
+            .compactMap { try? normalize($0) }
+            .filter(Identifiers.isValidVersion)
+        let previous = Set(values).subtracting([latest].compactMap { $0 })
             .sorted { sortKey($0) > sortKey($1) }
 
         return FirmwareVersions(
@@ -69,6 +73,7 @@ public enum Versions {
 
     public static func fetch(model: String, region: String, session: URLSession = .shared) async throws -> FirmwareVersions {
         let model = model.uppercased(), region = region.uppercased()
+        try Identifiers.validate(model: model, region: region)
         guard let url = URL(string: String(format: urlTemplate, region, model)) else {
             throw FUSError.modelNotFound(model: model, region: region)
         }

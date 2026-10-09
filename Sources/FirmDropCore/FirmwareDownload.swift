@@ -44,9 +44,8 @@ public struct FirmwareDownload: Sendable {
         onInfo(info)
 
         let fm = FileManager.default
+        let (encURL, decURL) = try Self.localURLs(for: info, in: directory)
         try fm.createDirectory(at: directory, withIntermediateDirectories: true)
-        let encURL = directory.appending(path: info.localName)
-        let decURL = directory.appending(path: info.decryptedName)
         let decrypting = decrypt && info.isEncrypted
 
         if decrypting, fm.fileExists(atPath: decURL.path) { return decURL }
@@ -57,6 +56,13 @@ public struct FirmwareDownload: Sendable {
         try Self.decrypt(encURL, to: decURL, key: key, onProgress: onProgress)
         if !keepEncrypted { try? fm.removeItem(at: encURL) }
         return decURL
+    }
+
+    static func localURLs(for info: BinaryInfo, in directory: URL) throws -> (encrypted: URL, decrypted: URL) {
+        for name in [info.localName, info.decryptedName] where !Identifiers.isPlainFileName(name) {
+            throw FUSError.unsafeFileName(name)
+        }
+        return (directory.appending(path: info.localName), directory.appending(path: info.decryptedName))
     }
 
     private func download(

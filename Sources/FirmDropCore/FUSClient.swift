@@ -91,6 +91,7 @@ public actor FUSClient {
 
     public func binaryInform(model: String, region: String, version: String) async throws -> BinaryInfo {
         let model = model.uppercased(), region = region.uppercased()
+        try Identifiers.validate(model: model, region: region)
         let lang = XMLElement(name: "CLIENT_LANGUAGE")
         lang.addChild(XMLElement(name: "Type", stringValue: "String"))
         lang.addChild(XMLElement(name: "Type", stringValue: "ISO 3166-1-alpha-3"))
@@ -119,8 +120,14 @@ public actor FUSClient {
         guard let filename = put("BINARY_NAME"), let size = put("BINARY_BYTE_SIZE").flatMap(Int64.init) else {
             throw FUSError.noBinary(model: model, region: region, version: version)
         }
+        guard Identifiers.isPlainFileName(filename), filename.contains(".zip") else {
+            throw FUSError.unsafeFileName(filename)
+        }
         let served = Self.text(doc, "/FUSMsg/FUSBody/Results/BINARY_SW_VERSION/Data")
             ?? put("BINARY_SW_VERSION") ?? version
+        guard Identifiers.isValidVersion(served) else {
+            throw FUSError.badResponse("versão inválida na resposta do servidor")
+        }
 
         var key: Data?
         if filename.hasSuffix(".enc4") {

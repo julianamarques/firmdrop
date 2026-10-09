@@ -2,6 +2,9 @@ import Foundation
 
 public enum FUSError: LocalizedError, Equatable, Sendable {
     case modelNotFound(model: String, region: String)
+    case invalidModel(String)
+    case invalidRegion(String)
+    case unsafeFileName(String)
     case noVersionAvailable(model: String, region: String)
     case invalidVersion(String)
     case http(endpoint: String, status: Int)
@@ -20,6 +23,12 @@ public enum FUSError: LocalizedError, Equatable, Sendable {
         switch self {
         case let .modelNotFound(model, region):
             "Nenhum firmware encontrado para \(model) na região \(region). Confira o modelo (ex.: SM-A556E) e o CSC."
+        case let .invalidModel(model):
+            "Modelo inválido: “\(model)”. Use o código do aparelho, por exemplo SM-A556E."
+        case let .invalidRegion(region):
+            "Região inválida: “\(region)”. Use o código CSC, por exemplo ZTO."
+        case let .unsafeFileName(name):
+            "O servidor informou um nome de arquivo inválido: “\(name)”."
         case let .noVersionAvailable(model, region):
             "Nenhuma versão publicada para \(model) em \(region)."
         case let .invalidVersion(v):
