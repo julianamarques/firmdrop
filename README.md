@@ -158,9 +158,9 @@ FIRMDROP_LIVE=1 swift test     # inclui testes contra o servidor real (baixa ~30
 - Use para seus próprios aparelhos. Redistribuir os firmwares publicamente pode violar os
   termos de uso da Samsung.
 
-## Segurança
+## Contribuindo
 
-Para reportar vulnerabilidades, siga a [política de segurança](SECURITY.md).
+Correções e melhorias são bem-vindas. Veja o [guia de contribuição](CONTRIBUTING.md). Para reportar vulnerabilidades, siga a [política de segurança](SECURITY.md).
 
 ## Licença
 
