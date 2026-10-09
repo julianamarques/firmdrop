@@ -130,7 +130,7 @@ private func pkcs7(_ data: Data) -> Data {
 @Suite struct AuthenticatorTests {
     @Test func knownVector() async throws {
         let auth: Authenticator
-        do { auth = try await Authenticator.load() } catch {
+        do { auth = try Authenticator.load() } catch {
             print("auth_param.dat indisponível, pulando: \(error)")
             return
         }
@@ -143,7 +143,7 @@ struct LiveTests {
     @Test func informAndFirstBlock() async throws {
         let versions = try await Versions.fetch(model: "SM-A556E", region: "ZTO")
         let latest = try #require(versions.latest)
-        let client = try await FUSClient(authenticator: try await Authenticator.load())
+        let client = try await FUSClient(authenticator: try Authenticator.load())
         let info = try await client.binaryInform(model: "SM-A556E", region: "ZTO", version: latest)
         #expect(info.size > 1_000_000_000)
         #expect(info.displayName?.contains("A55") == true)
@@ -183,7 +183,7 @@ struct LiveDownloadTests {
     @Test(.timeLimit(.minutes(3))) func pauseAndResume() async throws {
         let dir = FileManager.default.temporaryDirectory.appending(path: "firmdrop-test-\(UUID().uuidString)")
         defer { try? FileManager.default.removeItem(at: dir) }
-        let auth = try await Authenticator.load()
+        let auth = try Authenticator.load()
         let latest = try #require(try await Versions.fetch(model: "SM-R860", region: "ZTO").latest)
         let job = FirmwareDownload(model: "SM-R860", region: "ZTO", version: latest, directory: dir)
 

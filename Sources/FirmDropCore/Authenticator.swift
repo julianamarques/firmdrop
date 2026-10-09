@@ -2,10 +2,6 @@ import CryptoKit
 import Foundation
 
 public struct Authenticator: Sendable {
-    public static let paramsURL = URL(string:
-        "https://raw.githubusercontent.com/zacharee/SamloaderKotlin/"
-        + "ed73a034d3b27d84c68b2c21622a9de6618455de/"
-        + "common/src/commonMain/composeResources/files/auth_param.dat")!
     public static let paramsSHA256 = "6f969176bbe3eca193b51509313ca45d32366cf1825a907f04fde5b64d3f35b4"
 
     private static let headerSize = 56
@@ -95,30 +91,19 @@ public struct Authenticator: Sendable {
         return transform(block).map { String(format: "%02x", $0) }.joined()
     }
 
-    public static var cacheURL: URL {
-        let base = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
-        return base.appending(path: "FirmDrop/auth_param.dat")
+    static var paramsCandidates: [URL] {
+        [
+            Bundle.main.url(forResource: "auth_param", withExtension: "dat"),
+            URL(filePath: FileManager.default.currentDirectoryPath).appending(path: "Resources/auth_param.dat"),
+        ].compactMap { $0 }
     }
 
-    public static func load(session: URLSession = .shared) async throws -> Authenticator {
-        if let cached = try? Data(contentsOf: cacheURL), let auth = try? Authenticator(params: cached) {
-            return auth
-        }
-        let data: Data
-        do {
-            let (body, response) = try await session.data(from: paramsURL)
-            guard (response as? HTTPURLResponse)?.statusCode == 200 else {
-                throw FUSError.authParams("download retornou HTTP \((response as? HTTPURLResponse)?.statusCode ?? 0)")
+    public static func load() throws -> Authenticator {
+        for url in paramsCandidates {
+            if let data = try? Data(contentsOf: url) {
+                return try Authenticator(params: data)
             }
-            data = body
-        } catch let error as FUSError {
-            throw error
-        } catch {
-            throw FUSError.authParams(error.localizedDescription)
         }
-        let auth = try Authenticator(params: data)
-        try? FileManager.default.createDirectory(at: cacheURL.deletingLastPathComponent(), withIntermediateDirectories: true)
-        try? data.write(to: cacheURL, options: .atomic)
-        return auth
+        throw FUSError.authParams("auth_param.dat não encontrado no app; rode scripts/fetch-auth-params.sh")
     }
 }

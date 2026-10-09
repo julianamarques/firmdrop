@@ -11,3 +11,7 @@ DerivedData/
 *.enc4
 *.zip
 *.part
+
+# auth_param.dat (baixado por scripts/fetch-auth-params.sh)
+Resources/auth_param.dat
+Resources/auth_param.dat.download

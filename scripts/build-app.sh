@@ -20,6 +20,7 @@ swift build -c release --product FirmDrop ${ARCH_FLAGS[@]+"${ARCH_FLAGS[@]}"}
 BIN_DIR=$(swift build -c release --show-bin-path ${ARCH_FLAGS[@]+"${ARCH_FLAGS[@]}"})
 
 [ -f Resources/AppIcon.icns ] || scripts/make-icon.sh
+scripts/fetch-auth-params.sh
 
 APP=build/FirmDrop.app
 rm -rf "$APP"
@@ -28,6 +29,7 @@ cp "$BIN_DIR/FirmDrop" "$APP/Contents/MacOS/FirmDrop"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
 cp Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
 cp LICENSE NOTICE Resources/licenses/Bifrost-LICENSE.txt "$APP/Contents/Resources/"
+cp Resources/auth_param.dat "$APP/Contents/Resources/auth_param.dat"
 codesign --force --options runtime --sign - "$APP"
 
 echo "Pronto: $APP"

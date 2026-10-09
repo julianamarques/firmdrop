@@ -42,7 +42,7 @@ será acompanhado até a conclusão.
 Estão no escopo:
 
 - O código do app: comunicação com os servidores da Samsung, assinatura dos
-  pedidos, download e verificação do `auth_param.dat`, download com retomada,
+  pedidos, verificação do `auth_param.dat` embutido, download com retomada,
   verificação do CRC32, decifragem e gravação dos arquivos no disco.
 - A verificação de atualizações e os links que ela abre.
 - Os scripts de build, empacotamento e publicação.
@@ -65,10 +65,10 @@ Fora do escopo (reporte diretamente aos projetos de origem):
   - `fota-cloud-dn.ospserver.net`, `neofussvr.sslcs.cdngc.net` e
     `cloud-neofussvr.samsungmobile.com`, servidores da Samsung, para consultar
     versões e baixar os firmwares;
-  - `raw.githubusercontent.com`, para baixar o `auth_param.dat` do Bifrost;
   - `api.github.com`, para verificar se há uma versão nova do app.
-- O `auth_param.dat` é baixado de um commit fixo do Bifrost e só é usado se o
-  SHA-256 conferir com o valor embutido no app; caso contrário, a busca falha.
+- O `auth_param.dat` vem embutido no app, baixado de um commit fixo do Bifrost no
+  build. Ele só é usado se o SHA-256 conferir com o valor definido no código; caso
+  contrário, a busca falha.
 - O firmware é baixado direto dos servidores da Samsung e conferido com o CRC32
   informado por eles antes de ser decifrado. Os `.tar.md5` dentro do `.zip`
   trazem o MD5 da própria Samsung, que o Odin confere antes de gravar.

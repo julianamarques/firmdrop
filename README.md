@@ -49,7 +49,11 @@ scripts/make-dmg.sh              # gera build/FirmDrop.dmg
 
 Opção para os dois scripts: `--universal` gera um binário para Apple Silicon e Intel.
 
+O build baixa o `auth_param.dat` uma vez (ver [abaixo](#auth_paramdat)) e o embute no app.
+
 Para desenvolver no Xcode, abra o `Package.swift` (`xed .`) e rode o esquema **FirmDrop**.
+Rodando fora do `.app`, o app usa o `Resources/auth_param.dat`: baixe-o antes com
+`scripts/fetch-auth-params.sh`.
 
 ## Publicar uma versão
 
@@ -108,14 +112,17 @@ Durante a decifragem, o `.enc4` e o `.zip` existem ao mesmo tempo, então é pre
 
 ### `auth_param.dat`
 
-Na primeira busca, o app baixa o `auth_param.dat` (~800 KB) do projeto
-[Bifrost](https://github.com/zacharee/SamloaderKotlin) num commit fixo, confere o SHA-256
-e guarda em `~/Library/Caches/FirmDrop/`. Ele não é distribuído neste repositório.
+O `auth_param.dat` (~800 KB) vem embutido no app, então ele funciona sem depender de
+nenhum outro servidor além dos da Samsung. No build, o `scripts/fetch-auth-params.sh` baixa o
+arquivo do projeto [Bifrost](https://github.com/zacharee/SamloaderKotlin) num commit fixo e
+confere o SHA-256; o app confere de novo ao carregar. O arquivo não é versionado neste
+repositório.
 
 Se a Samsung trocar o esquema de autenticação, as buscas passam a falhar com
 "Autenticação recusada pelo servidor" (HTTP/status 401). Nesse caso, é preciso
-atualizar `paramsURL`/`paramsSHA256` em `Sources/FirmDropCore/Authenticator.swift`
-(e possivelmente o algoritmo) acompanhando o Bifrost.
+atualizar o commit em `scripts/fetch-auth-params.sh` e o `paramsSHA256` em
+`Sources/FirmDropCore/Authenticator.swift` (e possivelmente o algoritmo) acompanhando o
+Bifrost, e publicar uma nova versão.
 
 ## Estrutura
 
@@ -125,12 +132,13 @@ atualizar `paramsURL`/`paramsSHA256` em `Sources/FirmDropCore/Authenticator.swif
 | `Sources/FirmDrop/` | App SwiftUI: busca, lista de downloads, ajustes |
 | `Tests/FirmDropCoreTests/` | Testes (`swift test`) |
 | `Resources/` | `Info.plist` e ícone do app |
-| `scripts/` | `build-app.sh` (monta o .app), `make-dmg.sh`, `release.sh` e `make-icon.sh` (gera o ícone) |
+| `scripts/` | `build-app.sh` (monta o .app), `fetch-auth-params.sh`, `make-dmg.sh`, `release.sh` e `make-icon.sh` (gera o ícone) |
 
 ## Testes
 
 ```sh
-swift test                  # testes offline
+scripts/fetch-auth-params.sh   # uma vez, para os testes de autenticação
+swift test                     # testes offline
 FIRMDROP_LIVE=1 swift test     # inclui testes contra o servidor real (baixa ~30 MB)
 ```
 
@@ -151,4 +159,4 @@ O FirmDrop é distribuído sob a [licença Apache 2.0](LICENSE). Os créditos e 
 
 ## Créditos
 
-A autenticação no servidor FUS é um porte do [Bifrost](https://github.com/zacharee/SamloaderKotlin), de Zachary Wander, sob a licença MIT (texto completo em [Resources/licenses/Bifrost-LICENSE.txt](Resources/licenses/Bifrost-LICENSE.txt)). O `auth_param.dat` usado na autenticação não é distribuído com o app: ele é baixado do repositório do Bifrost na primeira busca.
+A autenticação no servidor FUS é um porte do [Bifrost](https://github.com/zacharee/SamloaderKotlin), de Zachary Wander, sob a licença MIT (texto completo em [Resources/licenses/Bifrost-LICENSE.txt](Resources/licenses/Bifrost-LICENSE.txt)). O `auth_param.dat` usado na autenticação vem do mesmo projeto e é embutido no app.

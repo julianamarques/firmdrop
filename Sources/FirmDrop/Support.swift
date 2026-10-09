@@ -44,7 +44,7 @@ actor AuthProvider {
 
     func authenticator() async throws -> Authenticator {
         if let cached { return cached }
-        let auth = try await Authenticator.load()
+        let auth = try Authenticator.load()
         cached = auth
         return auth
     }

@@ -12,6 +12,6 @@ Sources/FirmDropCore/Authenticator.swift is a port of its
 CryptUtils.authenticateBlock, and Sources/FirmDropCore/FUSClient.swift
 follows its FUS client.
 
-The auth_param.dat file is not distributed with this product. It is
-downloaded at runtime from the Bifrost repository at a fixed commit and
-verified by its SHA-256 checksum.
+The bundled auth_param.dat file comes from the Bifrost repository at a
+fixed commit and is verified by its SHA-256 checksum. It is fetched at
+build time and is not stored in this source repository.
