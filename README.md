@@ -3,8 +3,9 @@
 App nativo e open source para macOS (SwiftUI) que baixa firmwares **oficiais** da Samsung direto do
 servidor FUS (*Firmware Update Server*), o mesmo usado pelo Smart Switch. É o que sites
 como o SamMobile fazem por trás. Os arquivos são os pacotes oficiais da Samsung, sem
-nenhuma modificação: o app só decifra o `.enc4` com a chave fornecida pelo servidor, e o
-`.zip` sai pronto para o Odin.
+nenhuma modificação: o app só decifra o `.enc4` com a chave fornecida pelo servidor. O
+`.zip` baixado contém os arquivos prontos para serem utilizados pelo Odin, Heimdall ou outro
+software de instalação de firmwares Samsung.
 
 <p align="center">
   <img src="docs/images/tela-inicial.png" width="560" alt="Tela inicial do FirmDrop, com o campo de modelo, o menu de região ZTO · Brasil (desbloqueado), o botão Buscar e a mensagem Busque um modelo">
