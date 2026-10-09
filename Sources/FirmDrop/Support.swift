@@ -1,5 +1,5 @@
 import Foundation
-import SamFWCore
+import FirmDropCore
 
 enum SettingsKey {
     static let downloadFolder = "downloadFolder"

@@ -2,17 +2,17 @@
 import PackageDescription
 
 let package = Package(
-    name: "SamFW",
+    name: "FirmDrop",
     defaultLocalization: "pt",
     platforms: [.macOS(.v26)],
     products: [
-        .executable(name: "SamFW", targets: ["SamFW"]),
+        .executable(name: "FirmDrop", targets: ["FirmDrop"]),
     ],
     targets: [
         // Protocolo do servidor FUS, criptografia e download (sem dependência de UI).
-        .target(name: "SamFWCore"),
+        .target(name: "FirmDropCore"),
         // Aplicativo SwiftUI.
-        .executableTarget(name: "SamFW", dependencies: ["SamFWCore"]),
-        .testTarget(name: "SamFWCoreTests", dependencies: ["SamFWCore"]),
+        .executableTarget(name: "FirmDrop", dependencies: ["FirmDropCore"]),
+        .testTarget(name: "FirmDropCoreTests", dependencies: ["FirmDropCore"]),
     ]
 )

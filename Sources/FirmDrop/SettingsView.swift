@@ -1,4 +1,4 @@
-import SamFWCore
+import FirmDropCore
 import SwiftUI
 
 struct SettingsView: View {

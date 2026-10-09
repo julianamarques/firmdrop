@@ -3,13 +3,13 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleName</key>
-	<string>SamFW</string>
+	<string>FirmDrop</string>
 	<key>CFBundleDisplayName</key>
-	<string>SamFW</string>
+	<string>FirmDrop</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.julianamarques.SamFW</string>
+	<string>com.julianamarques.FirmDrop</string>
 	<key>CFBundleExecutable</key>
-	<string>SamFW</string>
+	<string>FirmDrop</string>
 	<key>CFBundleIconFile</key>
 	<string>AppIcon</string>
 	<key>CFBundlePackageType</key>

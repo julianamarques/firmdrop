@@ -1,4 +1,4 @@
-import SamFWCore
+import FirmDropCore
 import SwiftUI
 
 /// Bandeja de vidro flutuante com os downloads.

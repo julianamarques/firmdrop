@@ -1,5 +1,5 @@
 #!/bin/bash
-# Compila em modo release e monta build/SamFW.app (assinatura ad-hoc, para uso local).
+# Compila em modo release e monta build/FirmDrop.app (assinatura ad-hoc, para uso local).
 #   scripts/build-app.sh              → Apple Silicon (arm64)
 #   scripts/build-app.sh --universal  → arm64 + Intel
 #   scripts/build-app.sh --install    → também copia para /Applications
@@ -16,22 +16,22 @@ for arg in "$@"; do
   esac
 done
 
-swift build -c release --product SamFW ${ARCH_FLAGS[@]+"${ARCH_FLAGS[@]}"}
+swift build -c release --product FirmDrop ${ARCH_FLAGS[@]+"${ARCH_FLAGS[@]}"}
 BIN_DIR=$(swift build -c release --show-bin-path ${ARCH_FLAGS[@]+"${ARCH_FLAGS[@]}"})
 
 [ -f Resources/AppIcon.icns ] || scripts/make-icon.sh
 
-APP=build/SamFW.app
+APP=build/FirmDrop.app
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
-cp "$BIN_DIR/SamFW" "$APP/Contents/MacOS/SamFW"
+cp "$BIN_DIR/FirmDrop" "$APP/Contents/MacOS/FirmDrop"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
 cp Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
 codesign --force --sign - "$APP"
 
 echo "Pronto: $APP"
 if [ "$INSTALL" = 1 ]; then
-  rm -rf /Applications/SamFW.app
+  rm -rf /Applications/FirmDrop.app
   cp -R "$APP" /Applications/
-  echo "Instalado em /Applications/SamFW.app"
+  echo "Instalado em /Applications/FirmDrop.app"
 fi

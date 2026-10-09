@@ -2,12 +2,12 @@ import AppKit
 import SwiftUI
 
 @main
-struct SamFWApp: App {
+struct FirmDropApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @State private var search = SearchModel()
 
     var body: some Scene {
-        Window("SamFW", id: "main") {
+        Window("FirmDrop", id: "main") {
             ContentView()
                 .environment(search)
                 .environment(appDelegate.downloads)
@@ -38,7 +38,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard downloads.runningCount > 0 else { return .terminateNow }
         let alert = NSAlert()
         alert.messageText = "Há downloads em andamento"
-        alert.informativeText = "Eles serão pausados e poderão ser retomados quando você abrir o SamFW de novo."
+        alert.informativeText = "Eles serão pausados e poderão ser retomados quando você abrir o FirmDrop de novo."
         alert.addButton(withTitle: "Pausar e sair")
         alert.addButton(withTitle: "Cancelar")
         guard alert.runModal() == .alertFirstButtonReturn else { return .terminateCancel }

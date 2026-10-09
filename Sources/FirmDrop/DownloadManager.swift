@@ -1,7 +1,7 @@
 import AppKit
 import Foundation
 import Observation
-import SamFWCore
+import FirmDropCore
 import UserNotifications
 
 @MainActor @Observable

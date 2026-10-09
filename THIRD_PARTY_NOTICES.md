@@ -1,7 +1,7 @@
 # Avisos de terceiros
 
-`Sources/SamFWCore/Authenticator.swift` é um porte de `CryptUtils.authenticateBlock`, e o
-protocolo implementado em `Sources/SamFWCore/FUSClient.swift` segue o cliente FUS do projeto
+`Sources/FirmDropCore/Authenticator.swift` é um porte de `CryptUtils.authenticateBlock`, e o
+protocolo implementado em `Sources/FirmDropCore/FUSClient.swift` segue o cliente FUS do projeto
 [Bifrost (SamloaderKotlin)](https://github.com/zacharee/SamloaderKotlin).
 O arquivo `auth_param.dat` é baixado desse projeto em tempo de execução e não
 faz parte deste repositório.

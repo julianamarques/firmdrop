@@ -1,7 +1,7 @@
 import CommonCrypto
 import Foundation
 import Testing
-@testable import SamFWCore
+@testable import FirmDropCore
 
 private func aesECBEncrypt(_ data: Data, key: Data) -> Data {
     var out = Data(count: data.count)
@@ -89,7 +89,7 @@ private func pkcs7(_ data: Data) -> Data {
     }
 
     @Test func decryptFile() throws {
-        let dir = FileManager.default.temporaryDirectory.appending(path: "samfw-test-\(UUID().uuidString)")
+        let dir = FileManager.default.temporaryDirectory.appending(path: "firmdrop-test-\(UUID().uuidString)")
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: dir) }
 
@@ -141,8 +141,8 @@ private func pkcs7(_ data: Data) -> Data {
     }
 }
 
-/// Testes contra o servidor real; rode com `SAMFW_LIVE=1 swift test`.
-@Suite(.enabled(if: ProcessInfo.processInfo.environment["SAMFW_LIVE"] == "1"))
+/// Testes contra o servidor real; rode com `FIRMDROP_LIVE=1 swift test`.
+@Suite(.enabled(if: ProcessInfo.processInfo.environment["FIRMDROP_LIVE"] == "1"))
 struct LiveTests {
     @Test func informAndFirstBlock() async throws {
         let versions = try await Versions.fetch(model: "SM-A556E", region: "ZTO")
@@ -169,7 +169,7 @@ struct LiveTests {
 }
 
 /// Baixa ~20 MB, "pausa" (cancela), retoma e confere que o arquivo continua de onde parou.
-@Suite(.enabled(if: ProcessInfo.processInfo.environment["SAMFW_LIVE"] == "1"))
+@Suite(.enabled(if: ProcessInfo.processInfo.environment["FIRMDROP_LIVE"] == "1"))
 struct LiveDownloadTests {
     final class Box: @unchecked Sendable { var info: BinaryInfo?; var maxCompleted: Int64 = 0; var phases = Set<DownloadPhase>() }
 
@@ -186,7 +186,7 @@ struct LiveDownloadTests {
     }
 
     @Test(.timeLimit(.minutes(3))) func pauseAndResume() async throws {
-        let dir = FileManager.default.temporaryDirectory.appending(path: "samfw-test-\(UUID().uuidString)")
+        let dir = FileManager.default.temporaryDirectory.appending(path: "firmdrop-test-\(UUID().uuidString)")
         defer { try? FileManager.default.removeItem(at: dir) }
         let auth = try await Authenticator.load()
         let latest = try #require(try await Versions.fetch(model: "SM-R860", region: "ZTO").latest)

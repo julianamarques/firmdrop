@@ -1,4 +1,4 @@
-# SamFW — firmwares Samsung no Mac
+# FirmDrop — firmwares Samsung no Mac
 
 App nativo para macOS (SwiftUI) que baixa firmwares **oficiais** da Samsung direto do
 servidor FUS (*Firmware Update Server*), o mesmo usado pelo Smart Switch. É o que sites
@@ -21,14 +21,14 @@ Requer **macOS 26** ou mais novo.
 É preciso o Xcode 26 ou mais novo (ou as Command Line Tools com Swift 6.2+).
 
 ```sh
-scripts/build-app.sh             # gera build/SamFW.app
+scripts/build-app.sh             # gera build/FirmDrop.app
 scripts/build-app.sh --install   # e copia para /Applications
-open build/SamFW.app
+open build/FirmDrop.app
 ```
 
 Opções: `--universal` gera um binário para Apple Silicon e Intel.
 
-Para desenvolver no Xcode, abra o `Package.swift` (`xed .`) e rode o esquema **SamFW**.
+Para desenvolver no Xcode, abra o `Package.swift` (`xed .`) e rode o esquema **FirmDrop**.
 
 ### Levar para outro Mac
 
@@ -45,7 +45,7 @@ Developer.
 2. Escolha a região e clique em **Buscar**.
 3. Clique em **Baixar** na versão mais recente ou em qualquer versão anterior.
 
-Os arquivos vão para `~/Downloads`; a pasta pode ser trocada em **SamFW › Ajustes** (⌘,).
+Os arquivos vão para `~/Downloads`; a pasta pode ser trocada em **FirmDrop › Ajustes** (⌘,).
 Também nos Ajustes: manter o `.enc4` depois de decifrar e escolher a região padrão.
 
 ### Regiões do Brasil
@@ -81,20 +81,20 @@ Durante a decifragem, o `.enc4` e o `.zip` existem ao mesmo tempo, então é pre
 
 Na primeira busca, o app baixa o `auth_param.dat` (~800 KB) do projeto
 [Bifrost](https://github.com/zacharee/SamloaderKotlin) num commit fixo, confere o SHA-256
-e guarda em `~/Library/Caches/SamFW/`. Ele não é distribuído neste repositório.
+e guarda em `~/Library/Caches/FirmDrop/`. Ele não é distribuído neste repositório.
 
 Se a Samsung trocar o esquema de autenticação, as buscas passam a falhar com
 "Autenticação recusada pelo servidor" (HTTP/status 401). Nesse caso, é preciso
-atualizar `paramsURL`/`paramsSHA256` em `Sources/SamFWCore/Authenticator.swift`
+atualizar `paramsURL`/`paramsSHA256` em `Sources/FirmDropCore/Authenticator.swift`
 (e possivelmente o algoritmo) acompanhando o Bifrost.
 
 ## Estrutura
 
 | Caminho | Conteúdo |
 |---|---|
-| `Sources/SamFWCore/` | Protocolo FUS, autenticação, criptografia e motor de download (sem UI) |
-| `Sources/SamFW/` | App SwiftUI: busca, lista de downloads, ajustes |
-| `Tests/SamFWCoreTests/` | Testes (`swift test`) |
+| `Sources/FirmDropCore/` | Protocolo FUS, autenticação, criptografia e motor de download (sem UI) |
+| `Sources/FirmDrop/` | App SwiftUI: busca, lista de downloads, ajustes |
+| `Tests/FirmDropCoreTests/` | Testes (`swift test`) |
 | `Resources/` | `Info.plist` e ícone do app |
 | `scripts/` | `build-app.sh` (monta o .app) e `make-icon.sh` (gera o ícone) |
 
@@ -102,7 +102,7 @@ atualizar `paramsURL`/`paramsSHA256` em `Sources/SamFWCore/Authenticator.swift`
 
 ```sh
 swift test                  # testes offline
-SAMFW_LIVE=1 swift test     # inclui testes contra o servidor real (baixa ~30 MB)
+FIRMDROP_LIVE=1 swift test     # inclui testes contra o servidor real (baixa ~30 MB)
 ```
 
 ## Limitações

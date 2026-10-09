@@ -109,7 +109,7 @@ public struct Authenticator: Sendable {
 
     public static var cacheURL: URL {
         let base = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
-        return base.appending(path: "SamFW/auth_param.dat")
+        return base.appending(path: "FirmDrop/auth_param.dat")
     }
 
     /// Lê o `auth_param.dat` do cache ou baixa (e guarda no cache).

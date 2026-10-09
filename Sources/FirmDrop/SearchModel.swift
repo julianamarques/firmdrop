@@ -1,6 +1,6 @@
 import Foundation
 import Observation
-import SamFWCore
+import FirmDropCore
 
 @MainActor @Observable
 final class SearchModel {
