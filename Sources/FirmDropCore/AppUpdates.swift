@@ -1,6 +1,5 @@
 import Foundation
 
-/// Versão do app no formato X.Y.Z ou X.Y.Z-(alpha|beta|rc).N, com ou sem "v" na frente.
 public struct AppVersion: Comparable, CustomStringConvertible, Sendable {
     public let major: Int
     public let minor: Int
@@ -55,7 +54,6 @@ public struct AppVersion: Comparable, CustomStringConvertible, Sendable {
         }
     }
 
-    /// Versão do app em execução (`FirmDropReleaseVersion` guarda o sufixo de pré-lançamento).
     public static var current: AppVersion? {
         let info = Bundle.main.infoDictionary
         let text = info?["FirmDropReleaseVersion"] as? String ?? info?["CFBundleShortVersionString"] as? String
@@ -63,7 +61,6 @@ public struct AppVersion: Comparable, CustomStringConvertible, Sendable {
     }
 }
 
-/// Release publicada no GitHub.
 public struct AppRelease: Decodable, Equatable, Sendable {
     public struct Asset: Decodable, Equatable, Sendable {
         public let name: String
@@ -90,7 +87,6 @@ public struct AppRelease: Decodable, Equatable, Sendable {
 
     public var version: AppVersion? { AppVersion(tagName) }
 
-    /// O .dmg da release ou, se não houver, a página dela.
     public var downloadURL: URL {
         assets.first { $0.name.hasSuffix(".dmg") }?.browserDownloadURL ?? htmlURL
     }
@@ -109,7 +105,6 @@ public enum UpdateChecker {
         return try JSONDecoder().decode([AppRelease].self, from: data)
     }
 
-    /// Itens da seção "## Mudanças" das notas da release (gerada por scripts/release.sh).
     public static func summary(of notes: String?, limit: Int = 8) -> [String] {
         guard let notes else { return [] }
         var inChanges = false
@@ -124,7 +119,6 @@ public enum UpdateChecker {
         return Array(items.prefix(limit))
     }
 
-    /// A release mais nova que `current`. Quem usa uma versão estável não recebe pré-lançamentos.
     public static func newestRelease(in releases: [AppRelease], newerThan current: AppVersion) -> AppRelease? {
         releases
             .filter { !$0.draft && (current.isPrerelease || !$0.prerelease) }

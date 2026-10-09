@@ -55,7 +55,6 @@ private func pkcs7(_ data: Data) -> Data {
         let v = try Versions.parse(Data(xml.utf8), model: "SM-A556E", region: "ZTO")
         #expect(v.latest == "A556EXXSIDZI3/A556EOWOIDZI3/A556EXXSIDZI3/A556EXXSIDZI3")
         #expect(v.android == "16")
-        // ordem cronológica decrescente (ano Z > Y > X)
         #expect(v.previous.map { $0.split(separator: "/")[0] } == ["A556EXXS9CZB2", "A556EXXU5BYF3", "A556EXXU1AXC1"])
         #expect(v.previous[0] == "A556EXXS9CZB2/A556EOWO9CZB2/A556EXXS9CZB2/A556EXXS9CZB2")
     }
@@ -69,7 +68,7 @@ private func pkcs7(_ data: Data) -> Data {
 
     @Test func v2Key() {
         let key = FirmwareCrypto.v2Key(version: "V", model: "SM-X", region: "ZTO")
-        #expect(key.map { String(format: "%02x", $0) }.joined() == "a4c55baa5eb4c3a37686fa7952d3d093") // md5("ZTO:SM-X:V")
+        #expect(key.map { String(format: "%02x", $0) }.joined() == "a4c55baa5eb4c3a37686fa7952d3d093")
     }
 
     @Test func unpad() {
@@ -94,7 +93,6 @@ private func pkcs7(_ data: Data) -> Data {
         defer { try? FileManager.default.removeItem(at: dir) }
 
         let key = Data((0..<16).map { UInt8(15 - $0) })
-        // Maior que um bloco de leitura (8 MiB) para exercitar o laço e o unpad do último pedaço.
         let plain = Data([0x50, 0x4B, 0x03, 0x04] + (0..<(9 << 20)).map { UInt8($0 % 253) })
         let src = dir.appending(path: "fw.zip.enc4")
         let dst = dir.appending(path: "fw.zip")
@@ -130,7 +128,6 @@ private func pkcs7(_ data: Data) -> Data {
 }
 
 @Suite struct AuthenticatorTests {
-    /// Par nonce/assinatura aceito pelo servidor real em 2026-10-08.
     @Test func knownVector() async throws {
         let auth: Authenticator
         do { auth = try await Authenticator.load() } catch {
@@ -141,7 +138,6 @@ private func pkcs7(_ data: Data) -> Data {
     }
 }
 
-/// Testes contra o servidor real; rode com `FIRMDROP_LIVE=1 swift test`.
 @Suite(.enabled(if: ProcessInfo.processInfo.environment["FIRMDROP_LIVE"] == "1"))
 struct LiveTests {
     @Test func informAndFirstBlock() async throws {
@@ -168,7 +164,6 @@ struct LiveTests {
     }
 }
 
-/// Baixa ~20 MB, "pausa" (cancela), retoma e confere que o arquivo continua de onde parou.
 @Suite(.enabled(if: ProcessInfo.processInfo.environment["FIRMDROP_LIVE"] == "1"))
 struct LiveDownloadTests {
     final class Box: @unchecked Sendable { var info: BinaryInfo?; var maxCompleted: Int64 = 0; var phases = Set<DownloadPhase>() }

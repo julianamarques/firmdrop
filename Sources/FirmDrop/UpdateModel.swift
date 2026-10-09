@@ -3,13 +3,11 @@ import FirmDropCore
 import Observation
 import os
 
-/// Verifica novas versões do app nas Releases do GitHub: ao abrir, uma vez por dia e sob demanda.
 @MainActor @Observable
 final class UpdateModel {
     private(set) var isChecking = false
     private(set) var lastCheck: Date?
 
-    /// Enquanto retornar true, a verificação automática espera (para não interromper downloads).
     var isBusy: () -> Bool = { false }
 
     @ObservationIgnored private var scheduleTask: Task<Void, Never>?

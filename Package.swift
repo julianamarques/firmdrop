@@ -9,9 +9,7 @@ let package = Package(
         .executable(name: "FirmDrop", targets: ["FirmDrop"]),
     ],
     targets: [
-        // Protocolo do servidor FUS, criptografia e download (sem dependência de UI).
         .target(name: "FirmDropCore"),
-        // Aplicativo SwiftUI.
         .executableTarget(name: "FirmDrop", dependencies: ["FirmDropCore"]),
         .testTarget(name: "FirmDropCoreTests", dependencies: ["FirmDropCore"]),
     ]

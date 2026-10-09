@@ -1,14 +1,6 @@
 import CryptoKit
 import Foundation
 
-/// Assinatura dos pedidos ao FUS.
-///
-/// O servidor envia um nonce no header `NONCE`. A assinatura é o resultado de passar os
-/// 16 primeiros caracteres desse nonce por uma cifra AES "white-box" (chave embutida em
-/// tabelas), extraída do Smart Switch. As tabelas ficam no arquivo `auth_param.dat`, que é
-/// baixado do projeto Bifrost (MIT) num commit fixo e conferido por SHA-256.
-///
-/// Porte de `CryptUtils.authenticateBlock` do Bifrost: https://github.com/zacharee/SamloaderKotlin
 public struct Authenticator: Sendable {
     public static let paramsURL = URL(string:
         "https://raw.githubusercontent.com/zacharee/SamloaderKotlin/"
@@ -28,7 +20,6 @@ public struct Authenticator: Sendable {
         guard Self.sha256(params) == Self.paramsSHA256 else {
             throw FUSError.authParams("auth_param.dat com SHA-256 inesperado")
         }
-        // Cabeçalho: 14 inteiros little-endian (magic, alinhamento e pares offset/tamanho).
         let bytes = [UInt8](params)
         func int32(at index: Int) -> Int {
             let o = index * 4
@@ -98,21 +89,17 @@ public struct Authenticator: Sendable {
         }
     }
 
-    /// Assinatura (hex) para o nonce recebido no header `NONCE`.
     public func sign(nonce: String) -> String {
         var block = Array(nonce.utf8.prefix(16))
         block += [UInt8](repeating: UInt8(ascii: "0"), count: 16 - block.count)
         return transform(block).map { String(format: "%02x", $0) }.joined()
     }
 
-    // MARK: - Carregamento
-
     public static var cacheURL: URL {
         let base = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
         return base.appending(path: "FirmDrop/auth_param.dat")
     }
 
-    /// Lê o `auth_param.dat` do cache ou baixa (e guarda no cache).
     public static func load(session: URLSession = .shared) async throws -> Authenticator {
         if let cached = try? Data(contentsOf: cacheURL), let auth = try? Authenticator(params: cached) {
             return auth

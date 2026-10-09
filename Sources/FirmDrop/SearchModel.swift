@@ -14,7 +14,6 @@ final class SearchModel {
     var modelText = ""
     var region: String = UserDefaults.standard.string(forKey: SettingsKey.defaultRegion) ?? Region.defaultCode
     private(set) var state: State = .idle
-    /// Detalhes da versão mais recente (nome comercial, tamanho), obtidos do FUS.
     private(set) var latestInfo: BinaryInfo?
     private(set) var latestInfoError: String?
     private(set) var recentModels: [String] = UserDefaults.standard.stringArray(forKey: SettingsKey.recentModels) ?? []

@@ -1,6 +1,5 @@
 import Foundation
 
-/// Arquivo de firmware que o servidor entrega para um modelo/região/versão.
 public struct BinaryInfo: Sendable, Equatable, Codable {
     public var model: String
     public var region: String
@@ -9,21 +8,18 @@ public struct BinaryInfo: Sendable, Equatable, Codable {
     public var path: String
     public var size: Int64
     public var crc32: UInt32?
-    /// Chave AES do arquivo (nil se não for .enc2/.enc4).
     public var key: Data?
     public var modelType: String?
     public var displayName: String?
 
     public var remoteFile: String { path + filename }
 
-    /// Nome local do arquivo cifrado, com versão e região (o nome do servidor é opaco).
     public var localName: String {
         let tag = Versions.compact(version).replacingOccurrences(of: "/", with: "_")
         guard let range = filename.range(of: ".zip") else { return filename }
         return filename.replacingCharacters(in: range, with: "_\(tag)_\(region).zip")
     }
 
-    /// Nome local do ZIP decifrado.
     public var decryptedName: String {
         for ext in [".enc4", ".enc2"] where localName.hasSuffix(ext) {
             return String(localName.dropLast(ext.count))
@@ -34,8 +30,6 @@ public struct BinaryInfo: Sendable, Equatable, Codable {
     public var isEncrypted: Bool { key != nil }
 }
 
-/// Cliente do FUS (Firmware Update Server), o mesmo servidor usado pelo Smart Switch.
-/// Usa os endpoints "Smart" (`NF_SmartDownload*`), que não exigem IMEI/número de série.
 public actor FUSClient {
     static let baseURL = "https://neofussvr.sslcs.cdngc.net/"
     static let downloadURL = "https://cloud-neofussvr.samsungmobile.com/NF_SmartDownloadBinaryForMass.do"
@@ -54,7 +48,6 @@ public actor FUSClient {
     }
 
     private static func makeSession() -> URLSession {
-        // Sessão efêmera: cookies (SESSION/Incapsula) isolados por cliente e só em memória.
         let config = URLSessionConfiguration.ephemeral
         config.timeoutIntervalForRequest = 60
         config.httpAdditionalHeaders = ["User-Agent": userAgent]
@@ -65,7 +58,6 @@ public actor FUSClient {
         "FUS nonce=\"\(nonce)\", signature=\"\(signature)\", nc=\"\", type=\"\", realm=\"\""
     }
 
-    /// Abre uma sessão nova e pede um nonce novo ao servidor.
     public func reset() async throws {
         session.invalidateAndCancel()
         session = Self.makeSession()
@@ -82,7 +74,6 @@ public actor FUSClient {
         request.setValue(authorization, forHTTPHeaderField: "Authorization")
         let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse else { throw FUSError.badResponse(endpoint) }
-        // O servidor troca o nonce a cada resposta, inclusive nas de erro.
         if let newNonce = http.value(forHTTPHeaderField: "NONCE"), !newNonce.isEmpty {
             nonce = newNonce
             signature = authenticator.sign(nonce: newNonce)
@@ -98,7 +89,6 @@ public actor FUSClient {
         }
     }
 
-    /// Pergunta ao servidor qual arquivo corresponde à versão pedida.
     public func binaryInform(model: String, region: String, version: String) async throws -> BinaryInfo {
         let model = model.uppercased(), region = region.uppercased()
         let lang = XMLElement(name: "CLIENT_LANGUAGE")
@@ -154,7 +144,6 @@ public actor FUSClient {
         )
     }
 
-    /// Libera o download do arquivo (precisa ser chamado antes de baixar).
     public func binaryInit(_ info: BinaryInfo) async throws {
         let name = Array(info.filename)
         let stem = name.count >= 25 ? String(name[(name.count - 25)..<(name.count - 9)]) : ""
@@ -172,9 +161,7 @@ public actor FUSClient {
         }
     }
 
-    /// Sessão e pedido para baixar o arquivo a partir de `offset`.
     public func downloadRequest(for info: BinaryInfo, offset: Int64) -> (URLSession, URLRequest) {
-        // O caminho vai sem codificar as barras, como o Smart Switch faz.
         var request = URLRequest(url: URL(string: "\(Self.downloadURL)?file=\(info.remoteFile)")!)
         request.setValue(authorization, forHTTPHeaderField: "Authorization")
         request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
@@ -182,8 +169,6 @@ public actor FUSClient {
         request.timeoutInterval = 120
         return (session, request)
     }
-
-    // MARK: - XML
 
     private static func data(_ name: String, _ value: String) -> XMLElement {
         let element = XMLElement(name: name)

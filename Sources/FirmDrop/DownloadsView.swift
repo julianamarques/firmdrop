@@ -1,7 +1,6 @@
 import FirmDropCore
 import SwiftUI
 
-/// Bandeja de vidro flutuante com os downloads.
 struct DownloadsTray: View {
     @Environment(DownloadManager.self) private var downloads
 
@@ -31,7 +30,6 @@ struct DownloadsTray: View {
                 }
             }
 
-            // Até 3 itens a bandeja acompanha o conteúdo; acima disso vira uma lista rolável.
             if downloads.items.count <= 3 {
                 rows
             } else {
@@ -98,7 +96,6 @@ struct DownloadRow: View {
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
-        // A bandeja já é de vidro; a linha usa um preenchimento leve (vidro sobre vidro perde contraste).
         .background(.fill.quaternary, in: .rect(cornerRadius: 20))
         .contextMenu { menuItems }
         .confirmationDialog("Cancelar o download de \(item.title)?", isPresented: $confirmCancel) {
@@ -108,8 +105,6 @@ struct DownloadRow: View {
             Text("O que já foi baixado será apagado.")
         }
     }
-
-    // MARK: - Partes
 
     private var statusSymbol: (name: String, tint: Color?) {
         switch item.state {

@@ -39,7 +39,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        // Quando executado fora de um .app (swift run), garante janela e ícone no Dock.
         NSApp.setActivationPolicy(.regular)
         NSApp.activate()
 

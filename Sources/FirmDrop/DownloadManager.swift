@@ -41,7 +41,6 @@ final class DownloadItem: Identifiable {
     var isRunning: Bool { if case .running = state { true } else { false } }
     var fraction: Double? { total > 0 ? min(1, Double(completed) / Double(total)) : nil }
 
-    /// Arquivo cifrado (parcial ou completo) no disco, se existir.
     var encryptedFile: URL? {
         guard let info else { return nil }
         let url = directory.appending(path: info.localName)
@@ -60,8 +59,6 @@ final class DownloadManager {
     }
 
     var runningCount: Int { items.filter(\.isRunning).count }
-
-    // MARK: - Ações
 
     func start(model: String, region: String, version: String) {
         if let existing = items.first(where: { $0.model == model && $0.region == region && $0.version == version }) {
@@ -122,7 +119,6 @@ final class DownloadManager {
         item.task?.cancel()
     }
 
-    /// Para o download, apaga o arquivo parcial e tira o item da lista.
     func cancel(_ item: DownloadItem) {
         item.task?.cancel()
         if case .completed = item.state {} else if let file = item.encryptedFile {
@@ -157,9 +153,6 @@ final class DownloadManager {
         }
     }
 
-    // MARK: - Sistema
-
-    /// Impede o repouso por inatividade enquanto houver download, e mostra a contagem no Dock.
     private func updateActivity() {
         let running = runningCount
         NSApp?.dockTile.badgeLabel = running > 0 ? "\(running)" : nil
@@ -174,7 +167,6 @@ final class DownloadManager {
         }
     }
 
-    /// Notificações só funcionam quando o app roda como bundle (.app).
     private var notificationsAvailable: Bool { Bundle.main.bundleIdentifier != nil }
 
     private func requestNotificationPermission() {
@@ -190,8 +182,6 @@ final class DownloadManager {
         content.sound = .default
         UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil))
     }
-
-    // MARK: - Persistência
 
     private struct Record: Codable {
         var id: UUID
@@ -226,7 +216,6 @@ final class DownloadManager {
         guard let data = UserDefaults.standard.data(forKey: storeKey),
               let records = try? JSONDecoder().decode([Record].self, from: data) else { return }
         items = records.map { r in
-            // Downloads em andamento quando o app foi fechado voltam como pausados.
             let state: DownloadItem.State = if let url = r.completedFile { .completed(url) }
                 else if let failure = r.failure { .failed(failure) }
                 else { .paused }
@@ -234,7 +223,6 @@ final class DownloadManager {
                                     directory: r.directory, state: state)
             item.info = r.info
             item.total = r.total
-            // O tamanho real do arquivo parcial é a fonte da verdade para o progresso.
             if case .paused = state, let file = item.encryptedFile,
                let size = (try? FileManager.default.attributesOfItem(atPath: file.path)[.size] as? NSNumber)?.int64Value {
                 item.completed = size
@@ -263,7 +251,6 @@ extension DownloadItem {
             speedSample = nil
             return
         }
-        // Velocidade suavizada (média móvel exponencial sobre amostras de ~1 s).
         let now = Date()
         guard let sample = speedSample else { speedSample = (now, progress.completed); return }
         let elapsed = now.timeIntervalSince(sample.time)

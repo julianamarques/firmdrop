@@ -13,10 +13,6 @@ public struct DownloadProgress: Sendable {
     public var total: Int64
 }
 
-/// Baixa um firmware: consulta o FUS, baixa com retomada e CRC32, e decifra.
-///
-/// Cancelar a `Task` que executa `run` funciona como "pausar": o arquivo parcial fica
-/// no disco e uma nova execução continua de onde parou.
 public struct FirmwareDownload: Sendable {
     public var model: String
     public var region: String
@@ -63,8 +59,6 @@ public struct FirmwareDownload: Sendable {
         return decURL
     }
 
-    // MARK: - Download
-
     private func download(
         _ info: BinaryInfo,
         to url: URL,
@@ -77,7 +71,6 @@ public struct FirmwareDownload: Sendable {
         var offset = (try fm.attributesOfItem(atPath: url.path)[.size] as? NSNumber)?.int64Value ?? 0
         guard offset <= info.size else { throw FUSError.fileTooLarge }
 
-        // O CRC é calculado em streaming; ao retomar, primeiro relê o que já existe.
         var crc = CRC32()
         if offset > 0 {
             let reader = try FileHandle(forReadingFrom: url)
@@ -129,7 +122,7 @@ public struct FirmwareDownload: Sendable {
                     }
                     try flush()
                 } catch {
-                    try? flush() // guarda o que já chegou antes de pausar/tentar de novo
+                    try? flush()
                     throw error
                 }
                 guard offset >= info.size else {
@@ -142,7 +135,6 @@ public struct FirmwareDownload: Sendable {
                 guard attempt <= maxRetries else { throw error }
                 onRetry(attempt, error)
                 try await Task.sleep(for: .seconds(min(1 << attempt, 30)))
-                // Uma sessão nova evita nonce/autorização expirados em downloads longos.
                 do {
                     try await client.reset()
                     _ = try await client.binaryInform(model: info.model, region: info.region, version: info.version)
@@ -161,7 +153,6 @@ public struct FirmwareDownload: Sendable {
         }
     }
 
-    /// Repassa os pedaços de um data task como `AsyncThrowingStream`; cancelar o consumo cancela o pedido.
     static func stream(session: URLSession, request: URLRequest, expectPartial: Bool) -> AsyncThrowingStream<Data, Error> {
         AsyncThrowingStream { continuation in
             let delegate = StreamDelegate(continuation: continuation, expectPartial: expectPartial)
@@ -171,8 +162,6 @@ public struct FirmwareDownload: Sendable {
             task.resume()
         }
     }
-
-    // MARK: - Decifragem
 
     static func decrypt(_ src: URL, to dst: URL, key: Data, onProgress: @Sendable (DownloadProgress) -> Void) throws {
         let fm = FileManager.default

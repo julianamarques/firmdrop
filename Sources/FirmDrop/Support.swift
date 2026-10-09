@@ -24,7 +24,6 @@ enum AppDefaults {
     }
 }
 
-/// Códigos CSC (região/operadora) do Brasil. Todos servem o mesmo firmware multi-CSC "OWO".
 struct Region: Hashable, Identifiable {
     let code: String
     let name: String
@@ -39,7 +38,6 @@ struct Region: Hashable, Identifiable {
     static let defaultCode = "ZTO"
 }
 
-/// Carrega o `auth_param.dat` uma vez e compartilha entre buscas e downloads.
 actor AuthProvider {
     static let shared = AuthProvider()
     private var cached: Authenticator?
@@ -77,7 +75,6 @@ enum Format {
         return date.formatted(.dateTime.month(.wide).year())
     }
 
-    /// Aceita "SM-A556E/DS", " sm-a556e " etc. e devolve "SM-A556E".
     static func cleanModel(_ text: String) -> String {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
         return String(trimmed.split(separator: "/").first ?? "")

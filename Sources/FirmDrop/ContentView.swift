@@ -7,7 +7,6 @@ struct ContentView: View {
     var body: some View {
         ResultView()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            // Barras de vidro flutuantes; o conteúdo rola por baixo delas.
             .safeAreaInset(edge: .top, spacing: 0) {
                 SearchBar()
                     .padding(.horizontal, 20)
@@ -36,7 +35,6 @@ struct ContentView: View {
     }
 }
 
-/// Fundo com manchas de cor suaves, que dão ao vidro algo para refratar.
 struct GlassBackdrop: View {
     var body: some View {
         ZStack {
@@ -60,8 +58,6 @@ struct GlassBackdrop: View {
         .ignoresSafeArea()
     }
 }
-
-// MARK: - Busca
 
 struct SearchBar: View {
     @Environment(SearchModel.self) private var search
@@ -175,8 +171,6 @@ struct SearchBar: View {
     }
 }
 
-// MARK: - Resultado
-
 struct ResultView: View {
     @Environment(SearchModel.self) private var search
 
@@ -226,7 +220,6 @@ struct ResultView: View {
     }
 }
 
-/// Cartão de vidro usado nas seções de resultado.
 private struct GlassCard<Content: View>: View {
     let title: String
     let symbol: String
@@ -333,7 +326,6 @@ struct PreviousVersions: View {
     }
 }
 
-/// Botão que reflete o estado do download daquela versão (baixar, em andamento, retomar, concluído).
 struct DownloadButton: View {
     @Environment(DownloadManager.self) private var downloads
     let model: String
