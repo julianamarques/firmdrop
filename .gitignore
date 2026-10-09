@@ -1,0 +1,13 @@
+# Swift / Xcode
+.build/
+build/
+.swiftpm/
+*.xcodeproj/xcuserdata/
+DerivedData/
+.DS_Store
+
+# firmwares baixados
+*.enc2
+*.enc4
+*.zip
+*.part
