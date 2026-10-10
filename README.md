@@ -129,10 +129,10 @@ a causa de um aparelho não reconhecido.
 5. Clique em **Detectar** e **Testar conexão**. Detectar apenas enumera o USB;
    testar abre uma sessão do protocolo, consulta sua versão e encerra sem reiniciar
    ou gravar partições. Se precisar reconectar o cabo, teste novamente.
-6. Clique em **Revisar instalação…**, confira os arquivos, modelo e revisão do
-   bootloader e confirme. A gravação só começa depois dessa confirmação. Não
-   desconecte o cabo; o app impede o repouso por inatividade e bloqueia a saída
-   normal enquanto a operação estiver em andamento.
+6. Clique em **Instalar firmware…**, no rodapé da janela. Na revisão, confira os
+   arquivos, o modelo e a revisão do bootloader e confirme. A gravação só começa
+   depois dessa confirmação. Não desconecte o cabo; o app impede o repouso por
+   inatividade e bloqueia a saída normal enquanto a operação estiver em andamento.
 
 O botão ADB usa o `adb` do
 [Android SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools)

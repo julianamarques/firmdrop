@@ -459,6 +459,26 @@
         }
       }
     },
+    "Clique em Testar conexão.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Click Test connection."
+          }
+        }
+      }
+    },
+    "Coloque o aparelho em modo Download.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Put the device in Download mode."
+          }
+        }
+      }
+    },
     "Comunicação confirmada": {
       "localizations": {
         "en": {
@@ -475,6 +495,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Connecting to Samsung's server…"
+          }
+        }
+      }
+    },
+    "Conecte o aparelho e clique em Detectar.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect the device and click Detect."
           }
         }
       }
@@ -725,6 +755,16 @@
         }
       }
     },
+    "Falta selecionar: %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Still to select: %@."
+          }
+        }
+      }
+    },
     "FirmDrop": {
       "localizations": {
         "en": {
@@ -855,6 +895,16 @@
         }
       }
     },
+    "Informe o modelo do aparelho.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter the device model."
+          }
+        }
+      }
+    },
     "Iniciar instalação": {
       "localizations": {
         "en": {
@@ -901,6 +951,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Install firmware"
+          }
+        }
+      }
+    },
+    "Instalar firmware…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Install firmware…"
           }
         }
       }
@@ -1693,16 +1753,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Review installation"
-          }
-        }
-      }
-    },
-    "Revisar instalação…": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Review installation…"
           }
         }
       }

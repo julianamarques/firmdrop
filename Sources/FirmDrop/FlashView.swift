@@ -19,17 +19,6 @@ struct FlashView: View {
                 if !flash.stage.isEmpty || flash.error != nil {
                     statusCard
                 }
-                HStack {
-                    Toggle("Reiniciar após instalar", isOn: $flash.reboot)
-                        .disabled(flash.isBusy)
-                    Spacer()
-                    Button("Revisar instalação…") {
-                        if let plan = flash.review() { review = FlashReview(plan: plan) }
-                    }
-                    .buttonStyle(.glassProminent)
-                    .controlSize(.large)
-                    .disabled(!flash.canReview)
-                }
                 if !flash.logs.isEmpty { logCard }
             }
             .padding(20)
@@ -37,6 +26,28 @@ struct FlashView: View {
             .frame(maxWidth: .infinity)
         }
         .scrollEdgeEffectStyle(.soft, for: .all)
+        .safeAreaBar(edge: .bottom) {
+            HStack(spacing: 14) {
+                Toggle("Reiniciar após instalar", isOn: $flash.reboot)
+                    .disabled(flash.isBusy)
+                Spacer()
+                if !flash.isBusy, let requirement = flash.reviewRequirement {
+                    Label(requirement, systemImage: "info.circle")
+                        .font(.callout).foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
+                Button("Instalar firmware…") {
+                    if let plan = flash.review() { review = FlashReview(plan: plan) }
+                }
+                .buttonStyle(.glassProminent)
+                .controlSize(.large)
+                .disabled(!flash.canReview)
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 12)
+            .frame(maxWidth: 1000)
+            .frame(maxWidth: .infinity)
+        }
         .sheet(item: $review) { reviewed in
             FlashConfirmation(plan: reviewed.plan) { flash.start(reviewed.plan) }
         }
