@@ -15,7 +15,7 @@ import Testing
             try Data(repeating: 0, count: 512).write(to: url)
             return url
         }
-        return try FlashPackage.select(urls)
+        return try FlashPackage.select(urls).packages
     }
 
     private func executable(in directory: URL, body: String) throws -> URL {
@@ -33,14 +33,19 @@ import Testing
         }
     }
 
-    @Test func importPrefersHomeCSCAndRejectsAmbiguousSlots() async throws {
+    @Test func importLeavesTheCSCChoiceOpenAndRejectsAmbiguousSlots() async throws {
         try await withTemporaryDirectory { directory in
             let initial = try packages(in: directory)
+            #expect(try FlashPackage.select(initial.values.map(\.url)).packages[.csc]?.preservesData == true)
             let reset = directory.appending(path: "CSC_OXM_S931BOXM1AYB4_test.tar.md5")
             try Data(repeating: 0, count: 512).write(to: reset)
             let urls = initial.values.map(\.url) + [reset]
-            #expect(try FlashPackage.select(urls)[.csc]?.preservesData == true)
-            #expect(try FlashPackage.select(urls.reversed())[.csc]?.preservesData == true)
+            for order in [urls, urls.reversed()] {
+                let selection = try FlashPackage.select(order)
+                #expect(selection.packages[.csc] == nil)
+                #expect(selection.packages.count == 3)
+                #expect(selection.cscOptions.map(\.preservesData) == [true, false])
+            }
             let duplicate = directory.appending(path: "AP_S931BXXU2AYC1_test.tar")
             try Data(repeating: 0, count: 512).write(to: duplicate)
             #expect(throws: FlashError.ambiguousSlot("AP")) { try FlashPackage.select(urls + [duplicate]) }
@@ -213,6 +218,20 @@ import Testing
         #expect(throws: FlashError.invalidZIP) { try FlashImport.declaredSizes(lines, of: [names[1]]) }
     }
 
+    @Test func zipWithBothCSCPackagesWaitsForAChoice() async throws {
+        try await withTemporaryDirectory { directory in
+            let selected = try packages(in: directory)
+            let reset = directory.appending(path: "CSC_OXM_S931BOXM1AYB4_test.tar.md5")
+            try Data(repeating: 0, count: 512).write(to: reset)
+            let zip = directory.appending(path: "firmware.zip")
+            let result = try await CommandRunner.run(URL(filePath: "/usr/bin/zip"), arguments: ["-j", zip.path] + selected.values.map(\.url.path) + [reset.path])
+            try result.requireSuccess()
+            let imported = try await FlashImport.extractZIP(zip, into: directory.appending(path: "output"))
+            #expect(imported.packages[.csc] == nil)
+            #expect(imported.cscOptions.map(\.preservesData) == [true, false])
+        }
+    }
+
     @Test func importsOnlyFirmwareMembersFromZIP() async throws {
         try await withTemporaryDirectory { directory in
             let selected = try packages(in: directory)
@@ -222,7 +241,7 @@ import Testing
             let result = try await CommandRunner.run(URL(filePath: "/usr/bin/zip"), arguments: ["-j", zip.path] + selected.values.map(\.url.path) + [ignored.path])
             try result.requireSuccess()
             let output = directory.appending(path: "output")
-            let imported = try await FlashImport.extractZIP(zip, into: output)
+            let imported = try await FlashImport.extractZIP(zip, into: output).packages
             #expect(imported.count == 4)
             #expect(imported[.csc]?.preservesData == true)
             #expect(!FileManager.default.fileExists(atPath: output.appending(path: "unrelated.txt").path))

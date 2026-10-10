@@ -409,6 +409,16 @@
         }
       }
     },
+    "CSC · apaga os dados": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CSC · erases data"
+          }
+        }
+      }
+    },
     "CSC: esta instalação pode apagar todos os dados do aparelho.": {
       "localizations": {
         "en": {
@@ -699,6 +709,26 @@
         }
       }
     },
+    "Escolha HOME_CSC ou CSC.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose HOME_CSC or CSC."
+          }
+        }
+      }
+    },
+    "Escolha HOME_CSC para manter os dados ou CSC para uma instalação limpa, que apaga o aparelho.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose HOME_CSC to keep data or CSC for a clean install, which erases the device."
+          }
+        }
+      }
+    },
     "Escolher": {
       "localizations": {
         "en": {
@@ -825,12 +855,12 @@
         }
       }
     },
-    "HOME_CSC é escolhido por padrão ao importar. Para uma instalação limpa, selecione CSC no último campo.": {
+    "HOME_CSC · mantém os dados": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "HOME_CSC is selected by default when importing. For a clean installation, select CSC in the last field."
+            "value": "HOME_CSC · keeps data"
           }
         }
       }

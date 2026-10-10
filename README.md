@@ -115,8 +115,10 @@ a causa de um aparelho não reconhecido.
 1. Abra a aba **Instalar Firmware**, ou **Instalar este Firmware…**
    no download concluído.
 2. Importe o ZIP, abra a pasta já extraída ou selecione BL, AP, CP e CSC individualmente.
-   Use os quatro pacotes do mesmo download oficial. O app prioriza **HOME_CSC**, que
-   tenta preservar dados. O pacote **CSC** pode apagar o aparelho. Tenha backup em ambos os casos.
+   Use os quatro pacotes do mesmo download oficial. Quando o ZIP ou a pasta traz os dois,
+   o app não escolhe sozinho: escolha na linha do CSC entre **HOME_CSC**, que tenta
+   preservar os dados, e **CSC**, que apaga o aparelho. Dá para trocar a qualquer momento
+   antes de instalar. Tenha backup em ambos os casos.
 3. Ao reiniciar pelo ADB (passo 4), o app lê o modelo do aparelho (`ro.product.model`)
    e o usa no lugar do campo. Sem ADB, informe o modelo exato exibido como
    `PRODUCT NAME` na tela de Download. O app verifica se os nomes dos pacotes

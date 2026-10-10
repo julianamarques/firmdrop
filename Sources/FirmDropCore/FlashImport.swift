@@ -1,7 +1,7 @@
 import Foundation
 
 public enum FlashImport {
-    public static func folder(_ url: URL) throws -> [FlashSlot: FlashPackage] {
+    public static func folder(_ url: URL) throws -> FlashSelection {
         let files = try FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles])
         return try FlashPackage.select(files)
     }
@@ -33,7 +33,7 @@ public enum FlashImport {
     }
 
     public static func extractZIP(_ url: URL, into directory: URL,
-                                  onLine: @escaping @Sendable (String) -> Void = { _ in }) async throws -> [FlashSlot: FlashPackage] {
+                                  onLine: @escaping @Sendable (String) -> Void = { _ in }) async throws -> FlashSelection {
         guard url.isFileURL, url.pathExtension.lowercased() == "zip" else { throw FlashError.invalidZIP }
         let unzip = URL(filePath: "/usr/bin/unzip")
         let members = try zipMembers(try await CommandRunner.run(unzip, arguments: ["-Z1", url.path], timeout: 30).completeLines())
@@ -55,9 +55,11 @@ public enum FlashImport {
                 try result.requireSuccess()
                 guard FileManager.default.fileSize(at: output) == sizes[member] else { throw FlashError.invalidZIP }
             }
-            let packages = try folder(directory)
-            guard packages.count == FlashSlot.allCases.count else { throw FlashError.invalidZIP }
-            return packages
+            let selection = try folder(directory)
+            guard [.bl, .ap, .cp].allSatisfy({ selection.packages[$0] != nil }), !selection.cscOptions.isEmpty else {
+                throw FlashError.invalidZIP
+            }
+            return selection
         } catch {
             try? FileManager.default.removeItem(at: directory)
             throw error

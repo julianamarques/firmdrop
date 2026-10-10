@@ -152,13 +152,26 @@ struct FlashView: View {
                         .font(.system(.headline, design: .monospaced))
                         .frame(width: 44, alignment: .leading)
                     VStack(alignment: .leading, spacing: 3) {
+                        if slot == .csc, flash.cscOptions.count > 1 {
+                            Picker("CSC", selection: Binding(get: { flash.packages[.csc] },
+                                                             set: { $0.map(flash.chooseCSC) })) {
+                                ForEach(flash.cscOptions, id: \.url) { option in
+                                    Text(option.preservesData ? "HOME_CSC · mantém os dados" : "CSC · apaga os dados")
+                                        .tag(Optional(option))
+                                }
+                            }
+                            .pickerStyle(.segmented)
+                            .labelsHidden()
+                            .fixedSize()
+                            .disabled(flash.isBusy)
+                        }
                         if let package = flash.packages[slot] {
                             Text(package.url.lastPathComponent)
                                 .font(.system(.callout, design: .monospaced))
                                 .lineLimit(1).truncationMode(.middle)
                                 .help(package.url.path)
                             Text(Format.bytes(package.size)).font(.caption).foregroundStyle(.secondary)
-                        } else {
+                        } else if slot != .csc || flash.cscOptions.count < 2 {
                             Text("Nenhum arquivo selecionado").foregroundStyle(.secondary)
                         }
                     }
@@ -179,7 +192,7 @@ struct FlashView: View {
                         .foregroundStyle(.orange).font(.callout)
                 }
             } else {
-                Text("HOME_CSC é escolhido por padrão ao importar. Para uma instalação limpa, selecione CSC no último campo.")
+                Text("Escolha HOME_CSC para manter os dados ou CSC para uma instalação limpa, que apaga o aparelho.")
                     .font(.callout).foregroundStyle(.secondary)
             }
         }

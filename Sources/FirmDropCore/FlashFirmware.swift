@@ -12,7 +12,7 @@ public enum FlashSlot: String, CaseIterable, Sendable, Identifiable {
     }
 }
 
-public struct FlashPackage: Equatable, Sendable, Identifiable {
+public struct FlashPackage: Hashable, Sendable, Identifiable {
     public let url: URL
     public let slot: FlashSlot
     public let size: Int64
@@ -57,8 +57,8 @@ public struct FlashPackage: Equatable, Sendable, Identifiable {
         }
     }
 
-    public static func select(_ urls: [URL]) throws -> [FlashSlot: FlashPackage] {
-        var result: [FlashSlot: FlashPackage] = [:]
+    public static func select(_ urls: [URL]) throws -> FlashSelection {
+        var selection = FlashSelection()
         let packages = try urls.filter { FlashSlot.identify($0.lastPathComponent) != nil }.map { try FlashPackage(url: $0) }
         for slot in FlashSlot.allCases {
             let matching = packages.filter { $0.slot == slot }
@@ -66,14 +66,21 @@ public struct FlashPackage: Equatable, Sendable, Identifiable {
                 let home = matching.filter(\.preservesData)
                 let reset = matching.filter { !$0.preservesData }
                 guard home.count <= 1, reset.count <= 1 else { throw FlashError.ambiguousSlot(slot.rawValue) }
-                result[slot] = home.first ?? reset.first
+                selection.cscOptions = home + reset
+                if selection.cscOptions.count == 1 { selection.packages[slot] = selection.cscOptions[0] }
             } else {
                 guard matching.count <= 1 else { throw FlashError.ambiguousSlot(slot.rawValue) }
-                result[slot] = matching.first
+                selection.packages[slot] = matching.first
             }
         }
-        return result
+        return selection
     }
+}
+
+public struct FlashSelection: Sendable {
+    public var packages: [FlashSlot: FlashPackage] = [:]
+    public var cscOptions: [FlashPackage] = []
+    public var isEmpty: Bool { packages.isEmpty && cscOptions.isEmpty }
 }
 
 public struct FlashPlan: Equatable, Sendable {

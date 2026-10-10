@@ -15,6 +15,7 @@ final class FlashModel {
     var reboot = true
     private(set) var devices: [FlashDevice] = []
     private(set) var packages: [FlashSlot: FlashPackage] = [:]
+    private(set) var cscOptions: [FlashPackage] = []
     private(set) var probedDevice: FlashDevice?
     private(set) var isScanning = false
     private(set) var isBusy = false
@@ -39,6 +40,7 @@ final class FlashModel {
         guard let device = selectedDevice else { return String(localized: "Conecte o aparelho e clique em Detectar.") }
         guard device.isDownloadMode else { return String(localized: "Coloque o aparelho em modo Download.") }
         guard connectionTested else { return String(localized: "Clique em Testar Conexão.") }
+        if packages[.csc] == nil, cscOptions.count > 1 { return String(localized: "Escolha HOME_CSC ou CSC.") }
         let missing = FlashSlot.allCases.filter { packages[$0] == nil }
         guard missing.isEmpty else {
             return String(localized: "Falta selecionar: \(missing.map(\.rawValue).formatted(.list(type: .and))).")
@@ -147,10 +149,10 @@ final class FlashModel {
         panel.directoryURL = AppDefaults.downloadFolder
         if panel.runModal() == .OK, let url = panel.url {
             do {
-                let selected = try FlashImport.folder(url)
-                guard !selected.isEmpty else { throw FlashError.invalidZIP }
-                packages = selected
-                if let ownedDirectory, !selected.values.contains(where: { $0.url.deletingLastPathComponent() == ownedDirectory }) {
+                let selection = try FlashImport.folder(url)
+                guard !selection.isEmpty else { throw FlashError.invalidZIP }
+                apply(selection)
+                if let ownedDirectory, !(Array(packages.values) + cscOptions).contains(where: { $0.url.deletingLastPathComponent() == ownedDirectory }) {
                     cleanup()
                 }
                 error = nil
@@ -169,10 +171,21 @@ final class FlashModel {
                 let package = try FlashPackage(url: url)
                 guard package.slot == slot else { throw FlashError.invalidPackage(url.lastPathComponent) }
                 packages[slot] = package
+                if slot == .csc, !cscOptions.contains(package) { cscOptions = [] }
                 error = nil
                 success = false
             } catch { fail(error) }
         }
+    }
+
+    func chooseCSC(_ package: FlashPackage) {
+        guard !isBusy, cscOptions.contains(package) else { return }
+        packages[.csc] = package
+    }
+
+    private func apply(_ selection: FlashSelection) {
+        packages = selection.packages
+        cscOptions = selection.cscOptions
     }
 
     func review() -> FlashPlan? {
@@ -227,10 +240,10 @@ final class FlashModel {
         Task {
             defer { finish() }
             do {
-                let selected = try await FlashImport.extractZIP(url, into: directory, onLine: logHandler())
+                let selection = try await FlashImport.extractZIP(url, into: directory, onLine: logHandler())
                 cleanup()
                 ownedDirectory = directory
-                packages = selected
+                apply(selection)
                 stage = String(localized: "Pacotes preparados. Conecte e teste o aparelho.")
             } catch { fail(error) }
         }
