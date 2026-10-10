@@ -99,8 +99,6 @@ struct FlashView: View {
             Button("Reiniciar em Download (ADB)", systemImage: "arrow.clockwise") {
                 flash.rebootToDownload()
             }
-            .buttonStyle(.borderedProminent)
-            .tint(.indigo)
             .disabled(flash.isBusy || flash.selectedDevice?.isDownloadMode == true)
         }
     }
