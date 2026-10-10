@@ -80,6 +80,17 @@ enum CommandRunner {
             }
             timer.resume()
             defer { timer.cancel() }
+            // read(upToCount:) waits for a full buffer or EOF; read(2) returns what is available,
+            // so progress and stage lines reach the app while the process runs.
+            let descriptor = pipe.fileHandleForReading.fileDescriptor
+            var buffer = [UInt8](repeating: 0, count: 16384)
+            func readChunk() throws -> Data {
+                while true {
+                    let count = buffer.withUnsafeMutableBytes { read(descriptor, $0.baseAddress, $0.count) }
+                    if count >= 0 { return Data(buffer[..<count]) }
+                    guard errno == EINTR else { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
+                }
+            }
             var decoder = CommandLines()
             var lines: [String] = []
             var size = 0
@@ -96,13 +107,13 @@ enum CommandRunner {
                 }
             }
             do {
-                while let chunk = try pipe.fileHandleForReading.read(upToCount: 16384), !chunk.isEmpty {
+                while case let chunk = try readChunk(), !chunk.isEmpty {
                     receive(try decoder.append(chunk))
                 }
                 receive(try decoder.append(Data(), finished: true))
             } catch {
                 if process.isRunning { process.terminate() }
-                while let chunk = try? pipe.fileHandleForReading.read(upToCount: 16384), !chunk.isEmpty {}
+                while let chunk = try? readChunk(), !chunk.isEmpty {}
                 process.waitUntilExit()
                 throw error
             }

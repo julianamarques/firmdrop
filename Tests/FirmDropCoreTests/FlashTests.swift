@@ -140,6 +140,22 @@ import Testing
         #expect(throws: (any Error).self) { try result.requireSuccess() }
     }
 
+    @Test func runnerDeliversLinesWhileTheProcessRuns() async throws {
+        try await withTemporaryDirectory { directory in
+            let seen = directory.appending(path: "seen")
+            let url = try makeScript("streaming", body: """
+            echo first
+            i=0
+            while [ ! -f seen ] && [ $i -lt 100 ]; do sleep 0.05; i=$((i+1)); done
+            if [ -f seen ]; then echo streamed; else echo buffered; fi
+            """, in: directory)
+            let result = try await CommandRunner.run(url, arguments: [], timeout: 30) { line in
+                if line == "first" { FileManager.default.createFile(atPath: seen.path, contents: nil) }
+            }
+            #expect(result.lines == ["first", "streamed"])
+        }
+    }
+
     @Test func probeResumesOnlyWhenAskedAndErrorsHideEngineEvents() async throws {
         try await withTemporaryDirectory { directory in
             let url = try makeScript("fake-engine", body: "printf '%s\\n' \"$*\" >> \"$(dirname \"$0\")/calls\"\nprintf '@firmdrop\\tPROBE\\t4\\n'\n", in: directory)
