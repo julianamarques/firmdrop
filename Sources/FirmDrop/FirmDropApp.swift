@@ -14,7 +14,7 @@ struct FirmDropApp: App {
                 .environment(appDelegate.flash)
                 .frame(minWidth: 760, minHeight: 560)
         }
-        .defaultSize(width: 900, height: 760)
+        .defaultSize(width: 900, height: 900)
         .commands {
             CommandGroup(replacing: .newItem) {}
             CommandGroup(after: .appInfo) {

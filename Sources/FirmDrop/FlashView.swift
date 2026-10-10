@@ -7,65 +7,76 @@ struct FlashView: View {
 
     var body: some View {
         @Bindable var flash = flash
-        ScrollView {
-            VStack(alignment: .leading, spacing: 18) {
-                VStack(alignment: .leading, spacing: 5) {
-                    HStack(spacing: 12) {
-                        Text("Instalar Firmware").font(.largeTitle.bold())
-                        Label("Experimental", systemImage: "flask")
-                            .font(.callout.weight(.semibold))
-                            .foregroundStyle(.orange)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 4)
-                            .glassEffect(.regular.tint(.orange.opacity(0.25)), in: .capsule)
-                            .help("A instalação de firmware é experimental. Tenha backup e um plano de recuperação.")
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 18) {
+                    VStack(alignment: .leading, spacing: 5) {
+                        HStack(spacing: 12) {
+                            Text("Instalar Firmware").font(.largeTitle.bold())
+                            Label("Experimental", systemImage: "flask")
+                                .font(.callout.weight(.semibold))
+                                .foregroundStyle(.orange)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 4)
+                                .glassEffect(.regular.tint(.orange.opacity(0.25)), in: .capsule)
+                                .help("A instalação de firmware é experimental. Tenha backup e um plano de recuperação.")
+                        }
+                        Text("Instalação via USB · motor Brokkr")
+                            .foregroundStyle(.secondary)
                     }
-                    Text("Instalação via USB · motor Brokkr")
-                        .foregroundStyle(.secondary)
+                    deviceCard
+                    firmwareCard
+                    if !flash.stage.isEmpty || flash.error != nil {
+                        statusCard.id("status")
+                    }
+                    if !flash.logs.isEmpty { logCard }
                 }
-                deviceCard
-                firmwareCard
-                if !flash.stage.isEmpty || flash.error != nil {
-                    statusCard
-                }
-                if !flash.logs.isEmpty { logCard }
+                .padding(20)
+                .frame(maxWidth: 1000)
+                .frame(maxWidth: .infinity)
             }
-            .padding(20)
-            .frame(maxWidth: 1000)
-            .frame(maxWidth: .infinity)
-        }
-        .scrollEdgeEffectStyle(.soft, for: .all)
-        .safeAreaBar(edge: .bottom) {
-            let requirement = flash.reviewRequirement
-            HStack(spacing: 14) {
-                Toggle("Reiniciar após instalar", isOn: $flash.reboot)
-                    .disabled(flash.isBusy)
-                Spacer()
-                if !flash.isBusy, let requirement {
-                    Label(requirement, systemImage: "info.circle")
-                        .font(.callout).foregroundStyle(.secondary)
-                        .lineLimit(2)
+            .scrollEdgeEffectStyle(.soft, for: .all)
+            .onChange(of: flash.isBusy) { _, busy in if busy { revealStatus(proxy) } }
+            .onChange(of: flash.error) { _, error in if error != nil { revealStatus(proxy) } }
+            .safeAreaBar(edge: .bottom) {
+                let requirement = flash.reviewRequirement
+                HStack(spacing: 14) {
+                    Toggle("Reiniciar após instalar", isOn: $flash.reboot)
+                        .disabled(flash.isBusy)
+                    Spacer()
+                    if !flash.isBusy, let requirement {
+                        Label(requirement, systemImage: "info.circle")
+                            .font(.callout).foregroundStyle(.secondary)
+                            .lineLimit(2)
+                    }
+                    Button("Instalar Firmware…") {
+                        if let plan = flash.review() { review = FlashReview(plan: plan) }
+                    }
+                    .buttonStyle(.glassProminent)
+                    .controlSize(.large)
+                    .disabled(flash.isBusy || requirement != nil)
                 }
-                Button("Instalar Firmware…") {
-                    if let plan = flash.review() { review = FlashReview(plan: plan) }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 12)
+                .frame(maxWidth: 1000)
+                .frame(maxWidth: .infinity)
+            }
+            .sheet(item: $review) { reviewed in
+                FlashConfirmation(plan: reviewed.plan) { flash.start(reviewed.plan) }
+            }
+            .task {
+                while !Task.isCancelled {
+                    await flash.refreshDevices()
+                    do { try await Task.sleep(for: .seconds(4)) } catch { return }
                 }
-                .buttonStyle(.glassProminent)
-                .controlSize(.large)
-                .disabled(flash.isBusy || requirement != nil)
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 12)
-            .frame(maxWidth: 1000)
-            .frame(maxWidth: .infinity)
         }
-        .sheet(item: $review) { reviewed in
-            FlashConfirmation(plan: reviewed.plan) { flash.start(reviewed.plan) }
-        }
-        .task {
-            while !Task.isCancelled {
-                await flash.refreshDevices()
-                do { try await Task.sleep(for: .seconds(4)) } catch { return }
-            }
+    }
+
+    // The status card can appear in the same update, so scroll once it is laid out.
+    private func revealStatus(_ proxy: ScrollViewProxy) {
+        Task { @MainActor in
+            withAnimation(.smooth) { proxy.scrollTo("status", anchor: .bottom) }
         }
     }
 
