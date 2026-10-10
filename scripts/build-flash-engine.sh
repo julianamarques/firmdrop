@@ -28,7 +28,7 @@ bash Engine/build.sh "$SOURCES" "$OUTPUT" "${1:-}"
 cp "$SOURCES/brokkr/LICENSE" "$OUTPUT/Brokkr-LICENSE.txt"
 cp "$SOURCES/brokkr/THIRD_PARTY_NOTICES.txt" "$OUTPUT/Brokkr-NOTICES.txt"
 mkdir -p "$SOURCES/adapter"
-cp Engine/main.cpp Engine/compat.hpp Engine/build.sh Engine/strict-mapping.patch Engine/resume-session.patch Engine/macos-sdk.patch Engine/README.md Engine/LICENSE "$SOURCES/adapter/"
+cp Engine/main.cpp Engine/compat.hpp Engine/build.sh Engine/strict-mapping.patch Engine/resume-session.patch Engine/download-list.patch Engine/macos-sdk.patch Engine/README.md Engine/LICENSE "$SOURCES/adapter/"
 # Include complete corresponding sources and build instructions with every binary.
 COPYFILE_DISABLE=1 tar --exclude=.git -czf "$OUTPUT/flash-engine-source.tar.gz" \
   -C "$SOURCES" brokkr spdlog fmt function2 adapter

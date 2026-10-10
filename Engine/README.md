@@ -19,6 +19,10 @@ After a session ends without a reboot, the bootloader no longer answers the
 `--flash --resume` skip only that handshake and continue with the same session
 requests. The app passes `--resume` only after a successful probe on the same
 USB connection.
+HOME_CSC packages carry `meta-data/download-list.txt`, an allowlist of images to flash.
+Samsung names an image once per package that ships it (for example `vbmeta.img` in BL
+and AP), which upstream rejects as a duplicate; the download-list patch ignores repeated
+names instead. Packages without this list are not affected.
 The macOS SDK patch removes a legacy pre-macOS 12 port-constant fallback; this
 build requires macOS 26 and uses `kIOMainPortDefault` directly.
 
@@ -46,12 +50,12 @@ libraries are required. Dependencies are pinned by full Git commit IDs.
 
 Every packaged app includes `Contents/Resources/flash-engine-source.tar.gz`,
 containing the complete engine and dependency sources, their licenses, the adapter,
-its patch and this build script. After extracting that archive, run:
+its patches and this build script. After extracting that archive, run:
 
 ```sh
 bash adapter/build.sh "$PWD" "$PWD/output" --universal
 ```
 
 The resulting executable is `output/firmdrop-flash`. The sources build offline.
-The original Brokkr GPL license is in `brokkr/LICENSE`. The adapter files and patch
+The original Brokkr GPL license is in `brokkr/LICENSE`. The adapter files and patches
 are distributed under GPL-3.0-or-later; the Swift app retains its Apache 2.0 license.

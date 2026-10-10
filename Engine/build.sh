@@ -14,11 +14,13 @@ mkdir -p "$OUTPUT/patched"
 cp "$SOURCES/brokkr/src/protocol/odin/group_flasher.cpp" "$OUTPUT/patched/group_flasher.cpp"
 patch -s "$OUTPUT/patched/group_flasher.cpp" "$ADAPTER/strict-mapping.patch"
 patch -s "$OUTPUT/patched/group_flasher.cpp" "$ADAPTER/resume-session.patch"
+cp "$SOURCES/brokkr/src/protocol/odin/flash.cpp" "$OUTPUT/patched/flash.cpp"
+patch -s "$OUTPUT/patched/flash.cpp" "$ADAPTER/download-list.patch"
 cp "$SOURCES/brokkr/src/platform/macos/sysfs_usb.cpp" "$OUTPUT/patched/sysfs_usb.cpp"
 patch -s "$OUTPUT/patched/sysfs_usb.cpp" "$ADAPTER/macos-sdk.patch"
 FILES=(
   core/thread_pool.cpp io/random_access.cpp io/tar.cpp io/source.cpp io/lz4_frame.cpp
-  protocol/odin/odin_cmd.cpp protocol/odin/pit.cpp protocol/odin/flash.cpp
+  protocol/odin/odin_cmd.cpp protocol/odin/pit.cpp
   protocol/odin/pit_transfer.cpp app/md5_xxh3_cache.cpp app/md5_verify.cpp
   platform/posix-common/app_dirs.cpp platform/posix-common/signal_shield.cpp
   platform/posix-common/single_instance.cpp
@@ -35,7 +37,8 @@ for ARCH in "${ARCHES[@]}"; do
   CPP_FILES=()
   for FILE in "${FILES[@]}"; do CPP_FILES+=("$SOURCES/brokkr/src/$FILE"); done
   xcrun clang++ "${FLAGS[@]}" -std=c++23 -pthread -DFMT_HEADER_ONLY \
-    -include "$ADAPTER/compat.hpp" "${CPP_FILES[@]}" "$OUTPUT/patched/group_flasher.cpp" "$OUTPUT/patched/sysfs_usb.cpp" \
+    -include "$ADAPTER/compat.hpp" "${CPP_FILES[@]}" "$OUTPUT/patched/group_flasher.cpp" "$OUTPUT/patched/flash.cpp" \
+    "$OUTPUT/patched/sysfs_usb.cpp" \
     "$ADAPTER/main.cpp" "$OBJECTS/lz4.o" "$OBJECTS/md5.o" \
     -framework IOKit -framework CoreFoundation -o "$OBJECTS/firmdrop-flash"
 done

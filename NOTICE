@@ -23,13 +23,14 @@ Copyright (c) 2026 Gabriel2392
 Licensed under GPL-3.0-or-later (see Brokkr-LICENSE.txt).
 Pinned commit: f7ae23067b4ee6c2e0211a1dee563f4be991cb4d.
 Engine/main.cpp, Engine/compat.hpp, Engine/build.sh,
-Engine/strict-mapping.patch, Engine/resume-session.patch and
-Engine/macos-sdk.patch are the FirmDrop GPL-3.0-or-later adapter.
+Engine/strict-mapping.patch, Engine/resume-session.patch,
+Engine/download-list.patch and Engine/macos-sdk.patch are the FirmDrop
+GPL-3.0-or-later adapter.
 The Swift app communicates with this executable through process arguments
 and stdout/stderr. It does not link to Brokkr.
 
 Contents/Resources/flash-engine-source.tar.gz contains the complete
-corresponding sources, including the adapter, the partition-mapping patch,
+corresponding sources, including the adapter, its patches,
 build instructions, dependencies and their licenses. Brokkr-NOTICES.txt
 contains the upstream dependency notices. Dependencies include spdlog, fmt,
 function2, LZ4, xxHash and MD5; their license files remain in the source bundle.

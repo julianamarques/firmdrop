@@ -1,0 +1,13 @@
+--- a/src/protocol/odin/flash.cpp
++++ b/src/protocol/odin/flash.cpp
+@@ -77,7 +77,9 @@
+ 
+     if (line.empty()) continue;
+     std::string name(line);
+-    if (!seen.insert(name).second) return brokkr::core::fail("download-list.txt contains duplicate entry: " + name);
++    // Samsung lists an image once per package that ships it (vbmeta.img in BL and AP); the list
++    // is an allowlist, so a repeated name adds nothing.
++    if (!seen.insert(name).second) continue;
+     names.push_back(std::move(name));
+   }
+ 

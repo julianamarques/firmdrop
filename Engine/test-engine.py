@@ -42,6 +42,20 @@ with tempfile.TemporaryDirectory(prefix="firmdrop-engine-tests-") as temp:
                                          success=False).lower()
     assert "firmdrop-flash/1" in run("--version", success=True)
     run("--verify", "--preserve", *args, success=True)
+    # Samsung's HOME_CSC allowlist names vbmeta.img once per package that ships it.
+    allowlist = root / "download-list.txt"
+    allowlist.write_text("boot.img\nvbmeta.img\nsboot.bin\nvbmeta.img\nmodem.bin\ncache.img\n")
+    home = root / "HOME_CSC_S931BXXU1AYB4_list.tar.md5"
+    payload = io.BytesIO()
+    with tarfile.open(fileobj=payload, mode="w", format=tarfile.USTAR_FORMAT) as archive:
+        archive.add(allowlist, arcname="meta-data/download-list.txt")
+        entry = tarfile.TarInfo("cache.img")
+        entry.size = 1024
+        archive.addfile(entry, io.BytesIO(b"F" * entry.size))
+    data = payload.getvalue()
+    home.write_bytes(data + hashlib.md5(data).hexdigest().encode() + b"  firmware.tar\n")
+    listed = [part for path in [*files[:3], home] for part in ("--file", str(path))]
+    run("--verify", "--preserve", *listed, success=True)
     assert "--resume" in run("--verify", "--resume", *args, success=False)
     run("--list", "--resume", success=False)
     contents = files[1].read_bytes()

@@ -230,7 +230,7 @@ Bifrost, e publicar uma nova versão.
 |---|---|
 | `Sources/FirmDropCore/` | Protocolo FUS, autenticação, download, validação de pacotes e comunicação com o motor de instalação |
 | `Sources/FirmDrop/` | App SwiftUI: busca, downloads, instalação, ajustes |
-| `Engine/` | Adaptador GPL do Brokkr, patch de validação de partições e build reproduzível |
+| `Engine/` | Adaptador GPL do Brokkr, patches do motor e build reproduzível |
 | `Tests/FirmDropCoreTests/` | Testes (`swift test`) |
 | `Resources/` | `Info.plist`, ícone do app e traduções (`Localizable.xcstrings`) |
 | `scripts/` | `build-app.sh` (monta o .app), `fetch-auth-params.sh`, `fetch-adb.sh`, `sync-strings.sh`, `make-source-strings.swift`, `make-dmg.sh`, `release.sh` e `make-icon.sh` (gera o ícone) |
