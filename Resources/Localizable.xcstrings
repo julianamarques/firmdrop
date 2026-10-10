@@ -77,12 +77,12 @@
         }
       }
     },
-    "A instalação pode causar perda de dados ou impedir a inicialização se o firmware for incompatível. O teste de USB não verifica modelo, bloqueios de segurança ou anti-rollback. A instalação no S25 ainda não foi validada em hardware.": {
+    "A instalação pode causar perda de dados ou impedir a inicialização se o firmware for incompatível. O teste de USB não verifica modelo, bloqueios de segurança ou anti-rollback. A instalação no S25 foi testada uma vez, com CSC completo, e continua experimental.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Installing incompatible firmware may erase data or prevent the device from booting. The USB test does not check the model, security locks or anti-rollback. Firmware installation on S25 has not yet been validated on hardware."
+            "value": "Installing incompatible firmware may erase data or prevent the device from booting. The USB test does not check the model, security locks or anti-rollback. Firmware installation on S25 was tested once, with a full CSC, and remains experimental."
           }
         }
       }
@@ -349,12 +349,12 @@
         }
       }
     },
-    "Baixar firmware": {
+    "Baixar Firmware": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Download firmware"
+            "value": "Download Firmware"
           }
         }
       }
@@ -955,42 +955,42 @@
         }
       }
     },
-    "Instalar este firmware": {
+    "Instalar Firmware": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Install this firmware"
+            "value": "Install Firmware"
           }
         }
       }
     },
-    "Instalar este firmware…": {
+    "Instalar Firmware…": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Install this firmware…"
+            "value": "Install Firmware…"
           }
         }
       }
     },
-    "Instalar firmware": {
+    "Instalar este Firmware": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Install firmware"
+            "value": "Install This Firmware"
           }
         }
       }
     },
-    "Instalar firmware…": {
+    "Instalar este Firmware…": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Install firmware…"
+            "value": "Install This Firmware…"
           }
         }
       }
@@ -1617,7 +1617,7 @@
         }
       }
     },
-    "Pacotes do firmware": {
+    "Pacotes do Firmware": {
       "localizations": {
         "en": {
           "stringUnit": {

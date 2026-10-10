@@ -8,10 +8,10 @@ struct ContentView: View {
     var body: some View {
         @Bindable var flash = flash
         TabView(selection: $flash.selectedTab) {
-            Tab("Baixar firmware", systemImage: "arrow.down.circle", value: FirmwareTab.download) {
+            Tab("Baixar Firmware", systemImage: "arrow.down.circle", value: FirmwareTab.download) {
                 downloadContent
             }
-            Tab("Instalar firmware", systemImage: "cable.connector", value: FirmwareTab.install) {
+            Tab("Instalar Firmware", systemImage: "cable.connector", value: FirmwareTab.install) {
                 FlashView()
             }
         }

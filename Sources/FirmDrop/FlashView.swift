@@ -11,7 +11,7 @@ struct FlashView: View {
             VStack(alignment: .leading, spacing: 18) {
                 VStack(alignment: .leading, spacing: 5) {
                     HStack(spacing: 12) {
-                        Text("Instalar firmware").font(.largeTitle.bold())
+                        Text("Instalar Firmware").font(.largeTitle.bold())
                         Label("Experimental", systemImage: "flask")
                             .font(.callout.weight(.semibold))
                             .foregroundStyle(.orange)
@@ -46,7 +46,7 @@ struct FlashView: View {
                         .font(.callout).foregroundStyle(.secondary)
                         .lineLimit(2)
                 }
-                Button("Instalar firmware…") {
+                Button("Instalar Firmware…") {
                     if let plan = flash.review() { review = FlashReview(plan: plan) }
                 }
                 .buttonStyle(.glassProminent)
@@ -126,7 +126,7 @@ struct FlashView: View {
 
     private var firmwareCard: some View {
         @Bindable var flash = flash
-        return FlashCard(title: "Pacotes do firmware", symbol: "shippingbox") {
+        return FlashCard(title: "Pacotes do Firmware", symbol: "shippingbox") {
             HStack {
                 if let model = flash.deviceModel {
                     Text(model).font(.system(.body, design: .monospaced).weight(.semibold))
@@ -265,7 +265,7 @@ private struct FlashConfirmation: View {
             }
             Text(plan.preservesData ? String(localized: "HOME_CSC: preservar dados") : String(localized: "CSC: instalação limpa, com possível perda de dados"))
                 .font(.headline)
-            Text("A instalação pode causar perda de dados ou impedir a inicialização se o firmware for incompatível. O teste de USB não verifica modelo, bloqueios de segurança ou anti-rollback. A instalação no S25 ainda não foi validada em hardware.")
+            Text("A instalação pode causar perda de dados ou impedir a inicialização se o firmware for incompatível. O teste de USB não verifica modelo, bloqueios de segurança ou anti-rollback. A instalação no S25 foi testada uma vez, com CSC completo, e continua experimental.")
                 .font(.callout)
             Toggle("Conferi o PRODUCT NAME e a revisão do bootloader na tela do aparelho e tenho backup.", isOn: $confirmed)
             if !plan.preservesData {

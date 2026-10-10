@@ -112,7 +112,7 @@ O FirmDrop usa o transporte IOKit do Brokkr, diferente do Heimdall usado pelo Od
 Isso permite investigar a conexão por outra implementação, mas não garante resolver
 a causa de um aparelho não reconhecido.
 
-1. Abra a aba **Instalar firmware**, ou **Instalar este firmware…**
+1. Abra a aba **Instalar Firmware**, ou **Instalar este Firmware…**
    no download concluído.
 2. Importe o ZIP, abra a pasta já extraída ou selecione BL, AP, CP e CSC individualmente.
    Use os quatro pacotes do mesmo download oficial. O app prioriza **HOME_CSC**, que
@@ -136,7 +136,7 @@ a causa de um aparelho não reconhecido.
    ou gravar partições. A instalação retoma essa sessão sem repetir o handshake,
    como o `--resume` do Heimdall. Se precisar reconectar o cabo, teste novamente;
    se a instalação falhar, saia do modo Download e entre de novo antes de repetir.
-6. Clique em **Instalar firmware…**, no rodapé da janela. Na revisão, confira os
+6. Clique em **Instalar Firmware…**, no rodapé da janela. Na revisão, confira os
    arquivos, o modelo e a revisão do bootloader e confirme. A gravação só começa
    depois dessa confirmação. Não desconecte o cabo; o app impede o repouso por
    inatividade e bloqueia a saída normal enquanto a operação estiver em andamento.

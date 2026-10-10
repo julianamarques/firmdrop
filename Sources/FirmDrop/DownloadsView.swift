@@ -138,7 +138,7 @@ struct DownloadRow: View {
                 case .failed:
                     iconButton("arrow.clockwise", help: "Tentar de novo") { downloads.resume(item) }
                 case .completed:
-                    iconButton("iphone.and.arrow.forward.outward", help: "Instalar este firmware") { flash.importDownload(item) }
+                    iconButton("iphone.and.arrow.forward.outward", help: "Instalar este Firmware") { flash.importDownload(item) }
                         .disabled(flash.isBusy)
                 }
                 iconButton("magnifyingglass", help: "Mostrar no Finder") { downloads.reveal(item) }
@@ -156,7 +156,7 @@ struct DownloadRow: View {
     @ViewBuilder private var menuItems: some View {
         Button("Mostrar no Finder") { downloads.reveal(item) }
         if item.isCompleted {
-            Button("Instalar este firmware…") { flash.importDownload(item) }
+            Button("Instalar este Firmware…") { flash.importDownload(item) }
                 .disabled(flash.isBusy)
             Button("Remover da lista") { downloads.remove(item) }
         } else {
