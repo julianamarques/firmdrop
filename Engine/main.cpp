@@ -106,6 +106,11 @@ brokkr::core::Result<std::vector<brokkr::odin::ImageSpec>> verify(
   std::vector<brokkr::odin::ImageSpec> filtered;
   for (auto& spec : specs) {
     if (brokkr::odin::is_pit_name(spec.basename)) continue;
+    // Package metadata (fota.zip, super_used_size.txt, ...) has no partition.
+    const auto& entry = spec.entry.name;
+    if (spec.kind == brokkr::odin::ImageSpec::Kind::TarEntry &&
+        (entry.starts_with("meta-data/") || entry.starts_with("./meta-data/")))
+      continue;
     if (args.preserve && (spec.basename == "userdata.img" || spec.basename == "userdata.bin"))
       return brokkr::core::fail("A USERDATA image cannot be flashed with Preserve Data selected.");
     filtered.push_back(std::move(spec));

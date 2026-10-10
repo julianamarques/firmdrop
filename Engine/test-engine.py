@@ -18,21 +18,28 @@ def run(*args, success):
     return result.stdout + result.stderr
 
 
-with tempfile.TemporaryDirectory(prefix="firmdrop-engine-tests-") as temp:
-    root = pathlib.Path(temp)
-    files = []
-    for slot, image in [("BL", "sboot.bin"), ("AP", "boot.img"), ("CP", "modem.bin"), ("HOME_CSC", "cache.img")]:
-        path = root / f"{slot}_S931BXXU1AYB4_test.tar.md5"
-        payload = io.BytesIO()
-        with tarfile.open(fileobj=payload, mode="w", format=tarfile.USTAR_FORMAT) as archive:
+def package(path, *images):
+    payload = io.BytesIO()
+    with tarfile.open(fileobj=payload, mode="w", format=tarfile.USTAR_FORMAT) as archive:
+        for image in images:
             entry = tarfile.TarInfo(image)
             entry.size = 1024
             archive.addfile(entry, io.BytesIO(b"F" * entry.size))
-        data = payload.getvalue()
-        digest = hashlib.md5(data).hexdigest().encode()
-        path.write_bytes(data + digest + b"  firmware.tar\n")
-        files.append(path)
+    data = payload.getvalue()
+    digest = hashlib.md5(data).hexdigest().encode()
+    path.write_bytes(data + digest + b"  firmware.tar\n")
+    return path
+
+
+with tempfile.TemporaryDirectory(prefix="firmdrop-engine-tests-") as temp:
+    root = pathlib.Path(temp)
+    files = [package(root / f"{slot}_S931BXXU1AYB4_test.tar.md5", image, "meta-data/fota.zip")
+             for slot, image in [("BL", "sboot.bin"), ("AP", "boot.img"), ("CP", "modem.bin"), ("HOME_CSC", "cache.img")]]
     args = [part for path in files for part in ("--file", str(path))]
+    metadata = [package(root / f"{slot}_S931BXXU1AYB4_meta.tar.md5", "meta-data/fota.zip", "meta-data/super_used_size.txt")
+                for slot in ["BL", "AP", "CP", "CSC"]]
+    assert "no flashable images" in run("--verify", *[part for path in metadata for part in ("--file", str(path))],
+                                         success=False).lower()
     assert "firmdrop-flash/1" in run("--version", success=True)
     run("--verify", "--preserve", *args, success=True)
     assert "--resume" in run("--verify", "--resume", *args, success=False)
@@ -47,4 +54,4 @@ with tempfile.TemporaryDirectory(prefix="firmdrop-engine-tests-") as temp:
     run("--flash", success=False)
     run("--probe", success=False)
     run("--flash", "--use-pit", "unused.pit", success=False)
-print("Engine offline checks passed: valid MD5, corrupt/missing digest, invalid TAR, explicit target and prohibited PIT.")
+print("Engine offline checks passed: valid MD5, corrupt/missing digest, invalid TAR, package metadata, explicit target and prohibited PIT.")

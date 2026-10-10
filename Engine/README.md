@@ -7,8 +7,10 @@ it through process arguments and stdout/stderr, without linking to Brokkr.
 
 The adapter uses the native macOS IOKit USB transport, requires one explicitly
 selected device with a matching registry connection ID, verifies TAR/MD5 packages,
-emits progress, and never uploads a PIT or requests a repartition. The patch rejects
-incomplete partition mappings before any partition write. `--probe` only opens a
+emits progress, and never uploads a PIT or requests a repartition. The strict-mapping patch
+rejects incomplete partition mappings before any partition write and names the
+images without a PIT entry. Package metadata under `meta-data/` (for example
+`fota.zip` and `super_used_size.txt`) has no partition and is not flashed. `--probe` only opens a
 protocol session, reads its version, and ends the session without rebooting or
 writing partitions. It does not establish firmware/model compatibility.
 After a session ends without a reboot, the bootloader no longer answers the
