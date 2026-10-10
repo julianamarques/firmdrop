@@ -10,8 +10,17 @@ struct FlashView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 VStack(alignment: .leading, spacing: 5) {
-                    Text("Instalar firmware").font(.largeTitle.bold())
-                    Text("Instalação experimental via USB · motor Brokkr")
+                    HStack(spacing: 12) {
+                        Text("Instalar firmware").font(.largeTitle.bold())
+                        Label("Experimental", systemImage: "flask")
+                            .font(.callout.weight(.semibold))
+                            .foregroundStyle(.orange)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 4)
+                            .glassEffect(.regular.tint(.orange.opacity(0.25)), in: .capsule)
+                            .help("A instalação de firmware é experimental. Tenha backup e um plano de recuperação.")
+                    }
+                    Text("Instalação via USB · motor Brokkr")
                         .foregroundStyle(.secondary)
                 }
                 deviceCard

@@ -67,6 +67,16 @@
         }
       }
     },
+    "A instalação de firmware é experimental. Tenha backup e um plano de recuperação.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Firmware installation is experimental. Keep a backup and a recovery plan."
+          }
+        }
+      }
+    },
     "A instalação pode causar perda de dados ou impedir a inicialização se o firmware for incompatível. O teste de USB não verifica modelo, bloqueios de segurança ou anti-rollback. A instalação no S25 ainda não foi validada em hardware.": {
       "localizations": {
         "en": {
@@ -709,6 +719,16 @@
         }
       }
     },
+    "Experimental": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Experimental"
+          }
+        }
+      }
+    },
     "Extraindo %@…": {
       "localizations": {
         "en": {
@@ -1001,12 +1021,12 @@
         }
       }
     },
-    "Instalação experimental via USB · motor Brokkr": {
+    "Instalação via USB · motor Brokkr": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Experimental USB installation · Brokkr engine"
+            "value": "USB installation · Brokkr engine"
           }
         }
       }
