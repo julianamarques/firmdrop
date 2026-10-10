@@ -1647,12 +1647,12 @@
         }
       }
     },
-    "Pacotes preparados. Conecte e teste o aparelho.": {
+    "Pacotes preparados. Prossiga para a instalação.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Packages prepared. Connect and test the device."
+            "value": "Packages prepared. Continue to the installation."
           }
         }
       }

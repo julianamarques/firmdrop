@@ -247,7 +247,7 @@ final class FlashModel {
                 cleanup()
                 ownedDirectory = directory
                 apply(selection)
-                stage = String(localized: "Pacotes preparados. Conecte e teste o aparelho.")
+                stage = String(localized: "Pacotes preparados. Prossiga para a instalação.")
             } catch { fail(error) }
         }
     }
