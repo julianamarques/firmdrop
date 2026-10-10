@@ -109,7 +109,7 @@ struct SearchBar: View {
                     }
 
                     Button {
-                        search.search()
+                        if search.canSearch { search.search() } else { modelFocused = true }
                     } label: {
                         Label("Buscar", systemImage: "magnifyingglass")
                             .labelStyle(.titleAndIcon)
@@ -119,7 +119,6 @@ struct SearchBar: View {
                     .buttonStyle(.glassProminent)
                     .controlSize(.large)
                     .keyboardShortcut(.defaultAction)
-                    .disabled(!search.canSearch)
                 }
             }
 
