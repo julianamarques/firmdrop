@@ -19,6 +19,7 @@ final class FlashModel {
     private(set) var isScanning = false
     private(set) var isBusy = false
     private(set) var isFlashing = false
+    private(set) var isADBOperation = false
     private(set) var progress: Double?
     private(set) var stage = ""
     private(set) var logs: [String] = []
@@ -63,6 +64,62 @@ final class FlashModel {
                 guard devices.contains(device), selectedDevice == device else { throw FlashError.deviceChanged }
                 probedDevice = device
                 stage = String(localized: "Conexão testada · protocolo \(version)")
+                append(stage)
+            } catch { fail(error) }
+        }
+    }
+
+    func rebootToDownload() {
+        guard !isBusy else { return }
+        begin(String(localized: "Verificando o ADB e o Modo de manutenção…"), adb: true)
+        probedDevice = nil
+        Task {
+            defer { finish() }
+            do {
+                let preferred = UserDefaults.standard.string(forKey: "adbExecutablePath").map { URL(filePath: $0) }
+                let adb = try ADBDownload.installed(preferred: preferred)
+                let engine = try FlashEngine.bundled()
+                let connected = try await engine.devices()
+                guard connected.count <= 1 else { throw ADBError.multipleDevices }
+                guard let source = connected.first else { throw ADBError.noDevice }
+                try await adb.rebootToDownload(from: source, using: engine, onLine: logHandler())
+                stage = String(localized: "Reinício solicitado. Aguardando o modo Download…")
+                append(stage)
+                let deadline = ContinuousClock.now + .seconds(45)
+                while ContinuousClock.now < deadline {
+                    let found = try await engine.devices()
+                    devices = found
+                    if !found.contains(where: { $0.id == selectedDeviceID }) { selectedDeviceID = "" }
+                    if let target = found.first(where: {
+                        $0.target == source.target && $0.connection != source.connection && $0.isDownloadMode
+                    }) {
+                        selectedDeviceID = target.id
+                        deviceError = nil
+                        stage = String(localized: "Modo Download detectado. Clique em Testar conexão para continuar.")
+                        append(stage)
+                        return
+                    }
+                    try await Task.sleep(for: .seconds(1))
+                }
+                throw ADBError.downloadNotDetected
+            } catch { fail(error) }
+        }
+    }
+
+    func chooseADB() {
+        guard !isBusy else { return }
+        let panel = NSOpenPanel()
+        panel.message = String(localized: "Selecione o executável adb da pasta platform-tools do Android SDK.")
+        panel.prompt = String(localized: "Selecionar ADB")
+        if panel.runModal() == .OK, let url = panel.url {
+            isADBOperation = true
+            do {
+                _ = try ADBDownload.installed(preferred: url)
+                UserDefaults.standard.set(url.path, forKey: "adbExecutablePath")
+                error = nil
+                success = false
+                progress = nil
+                stage = String(localized: "ADB selecionado. Ative o Modo de manutenção antes de reiniciar em Download.")
                 append(stage)
             } catch { fail(error) }
         }
@@ -180,8 +237,9 @@ final class FlashModel {
         }
     }
 
-    private func begin(_ message: String) {
+    private func begin(_ message: String, adb: Bool = false) {
         isBusy = true
+        isADBOperation = adb
         error = nil
         success = false
         progress = nil

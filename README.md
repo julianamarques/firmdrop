@@ -99,8 +99,10 @@ Também nos Ajustes: manter o `.enc4` depois de decifrar e escolher a região pa
 
 ### Instalar firmware pelo Mac (experimental)
 
-**O suporte ao Galaxy S25 / SM-S931B ainda não foi validado em hardware.** A compilação,
-os testes offline e a detecção USB não comprovam a compatibilidade de instalação.
+**A instalação no Galaxy S25 / SM-S931B ainda não foi validada em hardware.**
+A detecção USB e a comunicação com o protocolo Odin 3 foram verificadas em um
+SM-S931B com One UI 9 (`S931BXXUCDZIF`), após entrar no Modo de manutenção e
+reiniciar para Download pelo ADB. Isso não comprova a compatibilidade de gravação.
 O FirmDrop usa o transporte IOKit do Brokkr, diferente do Heimdall usado pelo OdinMac.
 Isso permite investigar a conexão por outra implementação, mas não garante resolver
 a causa de um aparelho não reconhecido.
@@ -114,9 +116,14 @@ a causa de um aparelho não reconhecido.
    nomes dos pacotes e se BL/AP pertencem à mesma versão. Isso não identifica o
    hardware nem verifica automaticamente CSC, anti-rollback, FRP, Knox ou bloqueios
    do bootloader; essas restrições continuam sendo aplicadas pelo aparelho.
-4. No S25, desligue o telefone, segure os dois botões de volume ao conectar o cabo
-   ao Mac e confirme o modo Download com Volume +. Feche OdinMac, Smart Switch e
-   outros programas que usam a conexão USB.
+4. Na One UI 9, ative o **Modo de manutenção** no Samsung, aguarde o reinício e
+   mantenha o telefone ligado nesse modo. Conecte ao Mac, autorize a depuração USB
+   na tela do aparelho e clique em **Reiniciar em Download (ADB)**. O app verifica
+   que a manutenção está ativa, solicita o reinício direto e aguarda até 45 segundos
+   pelo modo Download na mesma porta USB. Não é preciso desligar pelo menu nem
+   desativar a manutenção. Em versões que permitem a combinação de botões, desligue
+   o telefone e segure os dois botões de volume ao conectar o cabo; confirme com
+   Volume +. Feche OdinMac, Smart Switch e outros programas que usam a conexão USB.
 5. Clique em **Detectar** e **Testar conexão**. Detectar apenas enumera o USB;
    testar abre uma sessão do protocolo, consulta sua versão e encerra sem reiniciar
    ou gravar partições. Se precisar reconectar o cabo, teste novamente.
@@ -124,6 +131,20 @@ a causa de um aparelho não reconhecido.
    bootloader e confirme. A gravação só começa depois dessa confirmação. Não
    desconecte o cabo; o app impede o repouso por inatividade e bloqueia a saída
    normal enquanto a operação estiver em andamento.
+
+O botão ADB usa uma instalação local do
+[Android SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools),
+que não é incluída no app. O FirmDrop procura `adb` nas instalações padrão do
+Homebrew, em `~/Library/Android/sdk/platform-tools`, em `ANDROID_HOME`,
+`ANDROID_SDK_ROOT` e no `PATH` do processo. **Selecionar ADB…** permite escolher
+outro executável e salva essa preferência. Para esse reinício, conecte apenas um
+Samsung por USB e apenas um aparelho USB ao ADB; conexões ADB por Wi-Fi são ignoradas.
+O comando é direcionado à conexão ADB verificada, com nova checagem do aparelho
+antes do reinício. A instalação de firmware continua sendo uma operação separada.
+
+Se o telefone mostrar **Reboot Device - D2**, ele não permaneceu em modo Download.
+O fluxo de manutenção com ADB funcionou no SM-S931B testado, mas não estabelece
+compatibilidade com todos os modelos ou versões da One UI.
 
 O motor verifica o MD5 dos `.tar.md5` antes da comunicação de gravação. Arquivos
 `.tar` passam pela validação da estrutura, mas não possuem essa verificação MD5.

@@ -19,9 +19,12 @@ build requires macOS 26 and uses `kIOMainPortDefault` directly.
 `--no-reboot` keeps Download Mode after success. `--verify` validates the same four
 files offline. These are private integration arguments, not the upstream CLI.
 
-No S25 hardware validation has been performed. A successful build or USB listing
-does not establish that flashing a particular model works. Firmware filename
-checks in the app are not device identification or anti-rollback verification.
+USB discovery and the Odin protocol 3 handshake were validated on a Galaxy S25
+SM-S931B running One UI 9 (`S931BXXUCDZIF`). The phone entered Download Mode through
+`adb reboot download` with Maintenance Mode active. No firmware was flashed:
+successful discovery and a protocol probe do not establish flashing compatibility.
+Firmware filename checks in the app are not device identification or anti-rollback
+verification. ADB is an optional, separate local dependency managed by the Swift app.
 
 ## Rebuild the bundled binary
 

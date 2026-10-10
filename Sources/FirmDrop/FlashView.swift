@@ -86,11 +86,29 @@ struct FlashView: View {
                 }
                 .font(.callout)
             }
-            Text("No S25: desligue, segure os dois botões de volume e conecte o cabo ao Mac. Confirme o modo Download com Volume +. Feche OdinMac, Smart Switch e outros programas que usam o aparelho.")
+            Text("Em versões que permitem entrar por botões: desligue, segure os dois botões de volume e conecte o cabo ao Mac. Confirme com Volume +. Feche OdinMac, Smart Switch e outros programas que usam o aparelho.")
                 .font(.callout).foregroundStyle(.secondary)
-            Text("Detectar consulta o USB. Testar conexão abre uma sessão do protocolo sem gravar partições. O suporte ao S25 ainda precisa ser validado com um aparelho real.")
+            Text("Testar conexão confirma a comunicação USB, mas não confirma a compatibilidade do firmware. A instalação no S25 continua experimental.")
                 .font(.caption).foregroundStyle(.secondary)
             if let error = flash.deviceError { Text(error).foregroundStyle(.red).textSelection(.enabled) }
+            Divider()
+            Label("One UI 9 · entrar em Download por ADB", systemImage: "terminal")
+                .font(.subheadline.bold())
+            Text("Ative o Modo de manutenção no Samsung e aguarde o reinício. Mantenha o telefone ligado nesse modo, conectado ao Mac, com a depuração USB autorizada. O botão abaixo reinicia diretamente em Download.")
+                .font(.callout).foregroundStyle(.secondary)
+            HStack {
+                Button("Reiniciar em Download (ADB)", systemImage: "arrow.clockwise") {
+                    flash.rebootToDownload()
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.indigo)
+                .disabled(flash.isBusy || flash.selectedDevice?.isDownloadMode == true)
+                Button("Selecionar ADB…") { flash.chooseADB() }
+                    .disabled(flash.isBusy)
+                Link("Obter Platform-Tools", destination: URL(string: "https://developer.android.com/tools/releases/platform-tools")!)
+            }
+            Text("Requer o Android SDK Platform-Tools. O FirmDrop procura o ADB instalado no Mac; use Selecionar ADB se ele estiver em outra pasta.")
+                .font(.caption).foregroundStyle(.secondary)
         }
     }
 
@@ -159,8 +177,10 @@ struct FlashView: View {
             }
             if let error = flash.error {
                 Text(error).foregroundStyle(.red).textSelection(.enabled)
-                Text("Se o teste de conexão falhar, reconecte em modo Download e teste outra porta ou cabo de dados diretamente no Mac. Consulte o registro para distinguir acesso USB de falha no protocolo.")
-                    .font(.callout).foregroundStyle(.secondary)
+                if !flash.isADBOperation {
+                    Text("Se o teste de conexão falhar, reconecte em modo Download e teste outra porta ou cabo de dados diretamente no Mac. Consulte o registro para distinguir acesso USB de falha no protocolo.")
+                        .font(.callout).foregroundStyle(.secondary)
+                }
             }
         }
     }
@@ -168,7 +188,7 @@ struct FlashView: View {
     private var logCard: some View {
         FlashCard(title: "Registro da operação", symbol: "text.alignleft") {
             HStack {
-                Text("Mensagens do motor de instalação")
+                Text("Mensagens de conexão e instalação")
                     .font(.caption).foregroundStyle(.secondary)
                 Spacer()
                 Button("Copiar registro") { flash.copyLog() }
@@ -224,7 +244,7 @@ private struct FlashConfirmation: View {
             }
             Text(plan.preservesData ? String(localized: "HOME_CSC: preservar dados") : String(localized: "CSC: instalação limpa, com possível perda de dados"))
                 .font(.headline)
-            Text("A instalação pode causar perda de dados ou impedir a inicialização se o firmware for incompatível. O teste de USB não verifica modelo, bloqueios de segurança ou anti-rollback. A compatibilidade com o S25 ainda não foi validada em hardware.")
+            Text("A instalação pode causar perda de dados ou impedir a inicialização se o firmware for incompatível. O teste de USB não verifica modelo, bloqueios de segurança ou anti-rollback. A instalação no S25 ainda não foi validada em hardware.")
                 .font(.callout)
             Toggle("Conferi o PRODUCT NAME e a revisão do bootloader na tela do aparelho e tenho backup.", isOn: $confirmed)
             if !plan.preservesData {

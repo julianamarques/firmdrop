@@ -57,12 +57,22 @@
         }
       }
     },
-    "A instalação pode causar perda de dados ou impedir a inicialização se o firmware for incompatível. O teste de USB não verifica modelo, bloqueios de segurança ou anti-rollback. A compatibilidade com o S25 ainda não foi validada em hardware.": {
+    "A conexão do aparelho mudou durante a verificação do ADB. Confira o cabo e tente novamente.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Installing incompatible firmware may erase data or prevent the device from booting. The USB test does not check the model, security locks or anti-rollback. S25 compatibility has not yet been validated on hardware."
+            "value": "The device connection changed during the ADB check. Check the cable and try again."
+          }
+        }
+      }
+    },
+    "A instalação pode causar perda de dados ou impedir a inicialização se o firmware for incompatível. O teste de USB não verifica modelo, bloqueios de segurança ou anti-rollback. A instalação no S25 ainda não foi validada em hardware.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installing incompatible firmware may erase data or prevent the device from booting. The USB test does not check the model, security locks or anti-rollback. Firmware installation on S25 has not yet been validated on hardware."
           }
         }
       }
@@ -115,6 +125,26 @@
           "stringUnit": {
             "state": "new",
             "value": "A versão %1$@ está disponível. Você está usando a %2$@."
+          }
+        }
+      }
+    },
+    "ADB não encontrado. Instale o Android SDK Platform-Tools ou use Selecionar ADB para localizar o executável adb.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ADB not found. Install Android SDK Platform-Tools or use Select ADB to locate the adb executable."
+          }
+        }
+      }
+    },
+    "ADB selecionado. Ative o Modo de manutenção antes de reiniciar em Download.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ADB selected. Enable Maintenance Mode before rebooting to Download Mode."
           }
         }
       }
@@ -219,6 +249,26 @@
         }
       }
     },
+    "Ative o Modo de manutenção no Samsung e aguarde o reinício. Deixe esse modo ativo e o telefone ligado para reiniciar em Download por ADB.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enable Maintenance Mode on the Samsung device and wait for it to restart. Keep this mode active and the phone powered on to reboot to Download Mode using ADB."
+          }
+        }
+      }
+    },
+    "Ative o Modo de manutenção no Samsung e aguarde o reinício. Mantenha o telefone ligado nesse modo, conectado ao Mac, com a depuração USB autorizada. O botão abaixo reinicia diretamente em Download.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enable Maintenance Mode on the Samsung device and wait for it to restart. Keep the phone powered on in this mode, connected to your Mac, with USB debugging authorized. The button below reboots directly to Download Mode."
+          }
+        }
+      }
+    },
     "Atualizações": {
       "localizations": {
         "en": {
@@ -235,6 +285,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "The server rejected the authentication. The authentication scheme may have changed."
+          }
+        }
+      }
+    },
+    "Autorize a depuração USB neste Mac pela tela do aparelho e tente novamente.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Authorize USB debugging for this Mac on the device screen and try again."
           }
         }
       }
@@ -549,16 +609,6 @@
         }
       }
     },
-    "Detectar consulta o USB. Testar conexão abre uma sessão do protocolo sem gravar partições. O suporte ao S25 ainda precisa ser validado com um aparelho real.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Detect queries USB. Test connection opens a protocol session without writing partitions. S25 support still needs validation with a real device."
-          }
-        }
-      }
-    },
     "Digite o modelo do aparelho (Configurações › Sobre o telefone), por exemplo SM-A556E ou SM-S928B.": {
       "localizations": {
         "en": {
@@ -605,6 +655,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "They will be paused and can be resumed the next time you open FirmDrop."
+          }
+        }
+      }
+    },
+    "Em versões que permitem entrar por botões: desligue, segure os dois botões de volume e conecte o cabo ao Mac. Confirme com Volume +. Feche OdinMac, Smart Switch e outros programas que usam o aparelho.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On versions that support the button combination: power off, hold both volume buttons and connect the cable to your Mac. Confirm with Volume Up. Close OdinMac, Smart Switch and other apps using the device."
           }
         }
       }
@@ -731,6 +791,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Downloads are in progress"
+          }
+        }
+      }
+    },
+    "Há mais de um aparelho conectado. Para reiniciar por ADB, deixe apenas o Samsung desejado conectado por USB.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "More than one device is connected. To reboot using ADB, leave only the intended Samsung device connected over USB."
           }
         }
       }
@@ -921,12 +991,12 @@
         }
       }
     },
-    "Mensagens do motor de instalação": {
+    "Mensagens de conexão e instalação": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Flash engine messages"
+            "value": "Connection and installation messages"
           }
         }
       }
@@ -981,6 +1051,16 @@
         }
       }
     },
+    "Modo Download detectado. Clique em Testar conexão para continuar.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download Mode detected. Click Test connection to continue."
+          }
+        }
+      }
+    },
     "Modo Download detectado. Teste a comunicação antes de instalar.": {
       "localizations": {
         "en": {
@@ -1007,6 +1087,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "No Samsung device detected on USB"
+          }
+        }
+      }
+    },
+    "Nenhum aparelho USB disponível no ADB. Mantenha o Samsung ligado, ative a depuração USB e autorize este Mac na tela do aparelho.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No USB device is available in ADB. Keep the Samsung device powered on, enable USB debugging and authorize this Mac on the device screen."
           }
         }
       }
@@ -1059,16 +1149,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "No Published Firmware"
-          }
-        }
-      }
-    },
-    "No S25: desligue, segure os dois botões de volume e conecte o cabo ao Mac. Confirme o modo Download com Volume +. Feche OdinMac, Smart Switch e outros programas que usam o aparelho.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "On S25: power off, hold both volume buttons and connect the cable to your Mac. Confirm Download Mode with Volume Up. Close OdinMac, Smart Switch and other apps using the device."
           }
         }
       }
@@ -1185,6 +1265,36 @@
         }
       }
     },
+    "O aparelho conectado ao ADB não foi identificado como Samsung.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The device connected to ADB was not identified as a Samsung device."
+          }
+        }
+      }
+    },
+    "O aparelho está offline no ADB. Desbloqueie a tela, reconecte o cabo e tente novamente.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The device is offline in ADB. Unlock the screen, reconnect the cable and try again."
+          }
+        }
+      }
+    },
+    "O aparelho já está em modo Download. Use Testar conexão para continuar.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The device is already in Download Mode. Use Test connection to continue."
+          }
+        }
+      }
+    },
     "O aparelho não está em modo Download.": {
       "localizations": {
         "en": {
@@ -1281,6 +1391,16 @@
         }
       }
     },
+    "O reinício foi solicitado, mas o modo Download não apareceu no USB a tempo. Confira a tela do aparelho. Se aparecer Reboot Device - D2, ele não permaneceu em modo Download.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The reboot was requested, but Download Mode was not detected over USB in time. Check the device screen. If it shows Reboot Device - D2, it did not stay in Download Mode."
+          }
+        }
+      }
+    },
     "O servidor exigiu IMEI/número de série para este modelo.": {
       "localizations": {
         "en": {
@@ -1333,6 +1453,26 @@
           "stringUnit": {
             "state": "new",
             "value": "O servidor respondeu HTTP %1$lld em %2$@."
+          }
+        }
+      }
+    },
+    "Obter Platform-Tools": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get Platform-Tools"
+          }
+        }
+      }
+    },
+    "One UI 9 · entrar em Download por ADB": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One UI 9 · enter Download Mode using ADB"
           }
         }
       }
@@ -1497,6 +1637,26 @@
         }
       }
     },
+    "Reiniciar em Download (ADB)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reboot to Download Mode (ADB)"
+          }
+        }
+      }
+    },
+    "Reinício solicitado. Aguardando o modo Download…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reboot requested. Waiting for Download Mode…"
+          }
+        }
+      }
+    },
     "Remover da lista": {
       "localizations": {
         "en": {
@@ -1513,6 +1673,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Remove from List (Keep Partial File)"
+          }
+        }
+      }
+    },
+    "Requer o Android SDK Platform-Tools. O FirmDrop procura o ADB instalado no Mac; use Selecionar ADB se ele estiver em outra pasta.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Requires Android SDK Platform-Tools. FirmDrop looks for ADB installed on your Mac; use Select ADB if it is in another folder."
           }
         }
       }
@@ -1587,6 +1757,26 @@
         }
       }
     },
+    "Selecionar ADB": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select ADB"
+          }
+        }
+      }
+    },
+    "Selecionar ADB…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select ADB…"
+          }
+        }
+      }
+    },
     "Selecionar…": {
       "localizations": {
         "en": {
@@ -1603,6 +1793,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Select a device"
+          }
+        }
+      }
+    },
+    "Selecione o executável adb da pasta platform-tools do Android SDK.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select the adb executable from the Android SDK platform-tools folder."
           }
         }
       }
@@ -1663,6 +1863,16 @@
         }
       }
     },
+    "Testar conexão confirma a comunicação USB, mas não confirma a compatibilidade do firmware. A instalação no S25 continua experimental.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test connection confirms USB communication, but does not confirm firmware compatibility. Firmware installation on S25 remains experimental."
+          }
+        }
+      }
+    },
     "Teste a conexão com o aparelho antes de instalar.": {
       "localizations": {
         "en": {
@@ -1679,6 +1889,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "USB 04e8:%@"
+          }
+        }
+      }
+    },
+    "Verificando o ADB e o Modo de manutenção…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checking ADB and Maintenance Mode…"
           }
         }
       }
