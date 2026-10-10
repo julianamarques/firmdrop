@@ -34,21 +34,24 @@ public struct ADBDownload: Sendable {
         return environment
     }()
 
+    @discardableResult
     public func rebootToDownload(from device: FlashDevice, using engine: FlashEngine,
-                                 onLine: @escaping @Sendable (String) -> Void = { _ in }) async throws {
+                                 onLine: @escaping @Sendable (String) -> Void = { _ in }) async throws -> String? {
         guard !device.isDownloadMode else { throw ADBError.alreadyInDownloadMode }
         let startedServer = try await command(["start-server"]).contains("daemon started successfully")
+        let model: String?
         do {
-            try await reboot(device, using: engine, onLine: onLine)
+            model = try await reboot(device, using: engine, onLine: onLine)
         } catch {
             if startedServer { _ = try? await command(["kill-server"]) }
             throw error
         }
         if startedServer { _ = try? await command(["kill-server"]) }
+        return model
     }
 
     private func reboot(_ device: FlashDevice, using engine: FlashEngine,
-                        onLine: @escaping @Sendable (String) -> Void) async throws {
+                        onLine: @escaping @Sendable (String) -> Void) async throws -> String? {
         try await checkUSB(device, using: engine)
         let target = try await singleDevice()
         let prefix = ["-t", String(target.transport)]
@@ -56,9 +59,11 @@ public struct ADBDownload: Sendable {
         guard manufacturer.lowercased() == "samsung" else { throw ADBError.notSamsung }
         let maintenance = try await command(prefix + ["shell", "getprop", "persist.sys.is_in_maintenance_mode"])
         guard maintenance == "true" else { throw ADBError.maintenanceRequired }
+        let model = try await command(prefix + ["shell", "getprop", "ro.product.model"]).uppercased()
         guard try await singleDevice() == target else { throw ADBError.deviceChanged }
         try await checkUSB(device, using: engine)
         _ = try await command(prefix + ["reboot", "download"], onLine: onLine)
+        return Identifiers.isDeviceModel(model) ? model : nil
     }
 
     private func singleDevice() async throws -> ADBDevice {

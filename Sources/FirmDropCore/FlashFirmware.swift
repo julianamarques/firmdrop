@@ -85,7 +85,7 @@ public struct FlashPlan: Equatable, Sendable {
 
     public init(model: String, packages: [FlashSlot: FlashPackage], device: FlashDevice, reboot: Bool) throws {
         let model = model.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-        guard model.wholeMatch(of: /SM-[A-Z0-9]{5,12}/) != nil else { throw FUSError.invalidModel(model) }
+        guard Identifiers.isDeviceModel(model) else { throw FUSError.invalidModel(model) }
         guard device.isDownloadMode else { throw FlashError.notInDownloadMode }
         var ordered: [FlashPackage] = []
         for slot in FlashSlot.allCases {

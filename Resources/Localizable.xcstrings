@@ -123,6 +123,16 @@
         }
       }
     },
+    "A revisão mínima do bootloader não é verificada; confira-a na tela de Download.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The minimum bootloader revision is not checked; verify it on the Download screen."
+          }
+        }
+      }
+    },
     "A versão %@ está disponível. Você está usando a %@.": {
       "localizations": {
         "en": {
@@ -915,16 +925,6 @@
         }
       }
     },
-    "Informe o PRODUCT NAME exibido na tela de Download. O USB não confirma o modelo nem a revisão mínima do bootloader.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enter PRODUCT NAME from the Download Mode screen. USB does not confirm the model or the minimum bootloader revision."
-          }
-        }
-      }
-    },
     "Informe o modelo do aparelho.": {
       "localizations": {
         "en": {
@@ -1027,6 +1027,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "USB installation · Brokkr engine"
+          }
+        }
+      }
+    },
+    "Lido do aparelho pelo ADB": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Read from the device over ADB"
           }
         }
       }
@@ -1431,6 +1441,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "macOS detected the device, but it is not in Download Mode."
+          }
+        }
+      }
+    },
+    "O modelo é lido do aparelho ao reiniciar pelo ADB. Sem ADB, informe o PRODUCT NAME exibido na tela de Download. A revisão mínima do bootloader não é verificada.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The model is read from the device when rebooting over ADB. Without ADB, enter the PRODUCT NAME shown on the Download screen. The minimum bootloader revision is not checked."
           }
         }
       }

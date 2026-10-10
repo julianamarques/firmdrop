@@ -128,15 +128,23 @@ struct FlashView: View {
         @Bindable var flash = flash
         return FlashCard(title: "Pacotes do firmware", symbol: "shippingbox") {
             HStack {
-                TextField("Modelo do aparelho, ex.: SM-S931B", text: $flash.modelText)
-                    .textFieldStyle(.roundedBorder)
-                    .frame(maxWidth: 340)
+                if let model = flash.deviceModel {
+                    Text(model).font(.system(.body, design: .monospaced).weight(.semibold))
+                    Label("Lido do aparelho pelo ADB", systemImage: "checkmark.seal.fill")
+                        .font(.callout).foregroundStyle(.green)
+                } else {
+                    TextField("Modelo do aparelho, ex.: SM-S931B", text: $flash.modelText)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(maxWidth: 340)
+                }
                 Spacer()
                 Button("Importar ZIP…") { flash.chooseZIP() }
                 Button("Abrir pasta…") { flash.chooseFolder() }
             }
             .disabled(flash.isBusy)
-            Text("Informe o PRODUCT NAME exibido na tela de Download. O USB não confirma o modelo nem a revisão mínima do bootloader.")
+            Text(flash.deviceModel == nil
+                 ? "O modelo é lido do aparelho ao reiniciar pelo ADB. Sem ADB, informe o PRODUCT NAME exibido na tela de Download. A revisão mínima do bootloader não é verificada."
+                 : "A revisão mínima do bootloader não é verificada; confira-a na tela de Download.")
                 .font(.caption).foregroundStyle(.secondary)
             ForEach(FlashSlot.allCases) { slot in
                 HStack(spacing: 12) {

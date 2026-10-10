@@ -28,9 +28,12 @@ final class FlashModel {
     private(set) var success = false
     private var ownedDirectory: URL?
     private var closedSession: FlashDevice?
+    private var reportedModel: (device: FlashDevice, model: String)?
     private var activity: NSObjectProtocol?
 
     var selectedDevice: FlashDevice? { devices.first { $0.id == selectedDeviceID } }
+    var deviceModel: String? { reportedModel.flatMap { $0.device == selectedDevice ? $0.model : nil } }
+    var model: String { deviceModel ?? Format.cleanModel(modelText) }
     var connectionTested: Bool { selectedDevice != nil && selectedDevice == probedDevice }
     var reviewRequirement: String? {
         guard let device = selectedDevice else { return String(localized: "Conecte o aparelho e clique em Detectar.") }
@@ -40,7 +43,7 @@ final class FlashModel {
         guard missing.isEmpty else {
             return String(localized: "Falta selecionar: \(missing.map(\.rawValue).formatted(.list(type: .and))).")
         }
-        guard !modelText.isEmpty else { return String(localized: "Informe o modelo do aparelho.") }
+        guard !model.isEmpty else { return String(localized: "Informe o modelo do aparelho.") }
         return nil
     }
 
@@ -58,6 +61,7 @@ final class FlashModel {
             }
             if let probedDevice, !found.contains(probedDevice) { self.probedDevice = nil }
             if let closedSession, !found.contains(closedSession) { self.closedSession = nil }
+            if let reportedModel, !found.contains(reportedModel.device) { self.reportedModel = nil }
         } catch {
             deviceError = error.localizedDescription
             devices = []
@@ -94,7 +98,7 @@ final class FlashModel {
                 let connected = try await engine.devices()
                 guard connected.count <= 1 else { throw ADBError.multipleDevices }
                 guard let source = connected.first else { throw ADBError.noDevice }
-                try await adb.rebootToDownload(from: source, using: engine, onLine: logHandler())
+                let model = try await adb.rebootToDownload(from: source, using: engine, onLine: logHandler())
                 stage = String(localized: "Reinício solicitado. Aguardando o modo Download…")
                 append(stage)
                 let deadline = ContinuousClock.now + .seconds(45)
@@ -107,6 +111,7 @@ final class FlashModel {
                     }) {
                         selectedDeviceID = target.id
                         deviceError = nil
+                        if let model { reportedModel = (target, model) }
                         stage = String(localized: "Modo Download detectado. Clique em Testar conexão para continuar.")
                         append(stage)
                         return
@@ -173,7 +178,7 @@ final class FlashModel {
     func review() -> FlashPlan? {
         do {
             guard let device = selectedDevice, device == probedDevice else { throw FlashError.probeRequired }
-            return try FlashPlan(model: Format.cleanModel(modelText), packages: packages, device: device, reboot: reboot)
+            return try FlashPlan(model: model, packages: packages, device: device, reboot: reboot)
         } catch {
             fail(error)
             return nil

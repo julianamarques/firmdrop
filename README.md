@@ -114,10 +114,12 @@ a causa de um aparelho não reconhecido.
 2. Importe o ZIP, abra a pasta já extraída ou selecione BL, AP, CP e CSC individualmente.
    Use os quatro pacotes do mesmo download oficial. O app prioriza **HOME_CSC**, que
    tenta preservar dados. O pacote **CSC** pode apagar o aparelho. Tenha backup em ambos os casos.
-3. Informe o modelo exato exibido como `PRODUCT NAME` no aparelho. O app verifica os
-   nomes dos pacotes e se BL/AP pertencem à mesma versão. Isso não identifica o
-   hardware nem verifica automaticamente CSC, anti-rollback, FRP, Knox ou bloqueios
-   do bootloader; essas restrições continuam sendo aplicadas pelo aparelho.
+3. Ao reiniciar pelo ADB (passo 4), o app lê o modelo do aparelho (`ro.product.model`)
+   e o usa no lugar do campo. Sem ADB, informe o modelo exato exibido como
+   `PRODUCT NAME` na tela de Download. O app verifica se os nomes dos pacotes
+   correspondem a esse modelo e se BL/AP pertencem à mesma versão. Isso não verifica
+   automaticamente CSC, anti-rollback, FRP, Knox ou bloqueios do bootloader; essas
+   restrições continuam sendo aplicadas pelo aparelho.
 4. Na One UI 9, ative o **Modo de manutenção** no Samsung, aguarde o reinício e
    mantenha o telefone ligado nesse modo. Conecte ao Mac, autorize a depuração USB
    na tela do aparelho e clique em **Reiniciar em Download (ADB)**. O app verifica

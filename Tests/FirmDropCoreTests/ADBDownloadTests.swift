@@ -21,6 +21,7 @@ import Testing
         try write(listing, to: "devices", in: directory)
         try write("samsung\n", to: "manufacturer", in: directory)
         try write("true\n", to: "maintenance", in: directory)
+        try write("SM-S931B\n", to: "model", in: directory)
         try write("@firmdrop\tDEVICE\t0x00100000\t42\t26720\tother\n", to: "usb", in: directory)
         if startsServer { try write("", to: "no-server", in: directory) }
         let adb = try executable("fake-adb", body: #"""
@@ -36,6 +37,7 @@ import Testing
             cat maintenance
             if [ -f next-usb ]; then mv next-usb usb; fi
             ;;
+          '-t 7 shell getprop ro.product.model') cat model ;;
           '-t 7 reboot download') touch rebooted ;;
           'start-server')
             if [ -f no-server ]; then rm no-server; echo '* daemon started successfully' >&2; fi
@@ -90,7 +92,7 @@ import Testing
             let directory = root.appending(path: "ADB with spaces")
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: false)
             let (adb, engine) = try fixture(in: directory)
-            try await adb.rebootToDownload(from: source, using: engine)
+            #expect(try await adb.rebootToDownload(from: source, using: engine) == "SM-S931B")
             #expect(wasRebooted(directory))
             let calls = try String(contentsOf: directory.appending(path: "calls"), encoding: .utf8)
             #expect(calls.contains("-t 7 shell getprop persist.sys.is_in_maintenance_mode\n"))
@@ -116,6 +118,16 @@ import Testing
                 try await adb.rebootToDownload(from: source, using: engine)
             }
             #expect(wasKilled(directory))
+        }
+    }
+
+    @Test(arguments: ["\n", "Galaxy S25\n", "SM-S931B; reboot\n"])
+    func rebootsWithoutReportingAnInvalidModel(value: String) async throws {
+        try await withTemporaryDirectory { directory in
+            let (adb, engine) = try fixture(in: directory)
+            try write(value, to: "model", in: directory)
+            #expect(try await adb.rebootToDownload(from: source, using: engine) == nil)
+            #expect(wasRebooted(directory))
         }
     }
 

@@ -5,6 +5,10 @@ enum Identifiers {
         model.wholeMatch(of: /[A-Z0-9][A-Z0-9-]{0,31}/) != nil
     }
 
+    public static func isDeviceModel(_ model: String) -> Bool {
+        model.wholeMatch(of: /SM-[A-Z0-9]{5,12}/) != nil
+    }
+
     static func isValidRegion(_ region: String) -> Bool {
         region.wholeMatch(of: /[A-Z0-9]{2,5}/) != nil
     }
