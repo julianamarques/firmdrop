@@ -72,7 +72,6 @@ import Testing
             let link = directory.appending(path: "adb-link")
             try FileManager.default.createSymbolicLink(at: link, withDestinationURL: actual)
             #expect(try ADBDownload.locate([directory, file, link]).executable == link)
-            #expect(try ADBDownload.installed(preferred: actual).executable == actual)
         }
     }
 

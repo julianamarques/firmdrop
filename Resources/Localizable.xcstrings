@@ -129,26 +129,6 @@
         }
       }
     },
-    "ADB não encontrado. Instale o Android SDK Platform-Tools ou use Selecionar ADB para localizar o executável adb.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ADB not found. Install Android SDK Platform-Tools or use Select ADB to locate the adb executable."
-          }
-        }
-      }
-    },
-    "ADB selecionado. Ative o Modo de manutenção antes de reiniciar em Download.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ADB selected. Enable Maintenance Mode before rebooting to Download Mode."
-          }
-        }
-      }
-    },
     "Abrir pasta…": {
       "localizations": {
         "en": {
@@ -1229,6 +1209,16 @@
         }
       }
     },
+    "O ADB incluído no FirmDrop não foi encontrado. Reinstale o app.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The ADB bundled with FirmDrop was not found. Reinstall the app."
+          }
+        }
+      }
+    },
     "O CRC32 não confere (esperado %@, obtido %@). Apague o arquivo e baixe novamente.": {
       "localizations": {
         "en": {
@@ -1457,16 +1447,6 @@
         }
       }
     },
-    "Obter Platform-Tools": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Get Platform-Tools"
-          }
-        }
-      }
-    },
     "One UI 9 · entrar em Download por ADB": {
       "localizations": {
         "en": {
@@ -1677,16 +1657,6 @@
         }
       }
     },
-    "Requer o Android SDK Platform-Tools. O FirmDrop procura o ADB instalado no Mac; use Selecionar ADB se ele estiver em outra pasta.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Requires Android SDK Platform-Tools. FirmDrop looks for ADB installed on your Mac; use Select ADB if it is in another folder."
-          }
-        }
-      }
-    },
     "Resposta inesperada do servidor: %@.": {
       "localizations": {
         "en": {
@@ -1757,26 +1727,6 @@
         }
       }
     },
-    "Selecionar ADB": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Select ADB"
-          }
-        }
-      }
-    },
-    "Selecionar ADB…": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Select ADB…"
-          }
-        }
-      }
-    },
     "Selecionar…": {
       "localizations": {
         "en": {
@@ -1793,16 +1743,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Select a device"
-          }
-        }
-      }
-    },
-    "Selecione o executável adb da pasta platform-tools do Android SDK.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Select the adb executable from the Android SDK platform-tools folder."
           }
         }
       }

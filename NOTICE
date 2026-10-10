@@ -33,3 +33,12 @@ corresponding sources, including the adapter, the partition-mapping patch,
 build instructions, dependencies and their licenses. Brokkr-NOTICES.txt
 contains the upstream dependency notices. Dependencies include spdlog, fmt,
 function2, LZ4, xxHash and MD5; their license files remain in the source bundle.
+
+The app bundles the adb executable from the Android SDK Platform-Tools:
+
+Android Debug Bridge (https://developer.android.com/tools/releases/platform-tools)
+Copyright The Android Open Source Project
+Version 37.0.1, downloaded from dl.google.com at build time and verified
+by its SHA-256 checksum. It is used only to request a reboot to Download
+mode and is invoked as a separate process.
+adb-NOTICE.txt contains the Platform-Tools license notices.

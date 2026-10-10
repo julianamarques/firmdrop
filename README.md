@@ -47,6 +47,8 @@ scripts/make-dmg.sh              # gera build/FirmDrop.dmg
 Opção para os dois scripts: `--universal` gera um binário para Apple Silicon e Intel.
 
 O build baixa o `auth_param.dat` uma vez (ver [abaixo](#auth_paramdat)) e o embute no app.
+Também baixa o `adb` do Android SDK Platform-Tools (versão fixa, conferida por SHA-256)
+e o embute com seu NOTICE.
 Também compila o motor de instalação como um executável separado, usando revisões fixas
 do Brokkr e de suas dependências. A primeira compilação precisa de internet e Git;
 não precisa de Qt, Homebrew, Heimdall ou OdinMac. O motor e seus fontes completos
@@ -56,7 +58,7 @@ Para desenvolver no Xcode, abra o `Package.swift` (`xed .`) e rode o esquema **F
 Rodando fora do `.app`, o app usa o `Resources/auth_param.dat`: baixe-o antes com
 `scripts/fetch-auth-params.sh`.
 Para testar a instalação ao executar `swift run`, compile também o motor uma vez com
-`bash scripts/build-flash-engine.sh`.
+`bash scripts/build-flash-engine.sh`; para o botão ADB, rode `scripts/fetch-adb.sh`.
 
 ## Traduções
 
@@ -132,12 +134,10 @@ a causa de um aparelho não reconhecido.
    desconecte o cabo; o app impede o repouso por inatividade e bloqueia a saída
    normal enquanto a operação estiver em andamento.
 
-O botão ADB usa uma instalação local do
-[Android SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools),
-que não é incluída no app. O FirmDrop procura `adb` nas instalações padrão do
-Homebrew, em `~/Library/Android/sdk/platform-tools`, em `ANDROID_HOME`,
-`ANDROID_SDK_ROOT` e no `PATH` do processo. **Selecionar ADB…** permite escolher
-outro executável e salva essa preferência. Para esse reinício, conecte apenas um
+O botão ADB usa o `adb` do
+[Android SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools)
+incluído no app (versão fixa, baixada da Google no build e conferida por SHA-256).
+Não é preciso instalar nada. Para esse reinício, conecte apenas um
 Samsung por USB e apenas um aparelho USB ao ADB; conexões ADB por Wi-Fi são ignoradas.
 O comando é direcionado à conexão ADB verificada, com nova checagem do aparelho
 antes do reinício. A instalação de firmware continua sendo uma operação separada.
@@ -217,7 +217,7 @@ Bifrost, e publicar uma nova versão.
 | `Engine/` | Adaptador GPL do Brokkr, patch de validação de partições e build reproduzível |
 | `Tests/FirmDropCoreTests/` | Testes (`swift test`) |
 | `Resources/` | `Info.plist`, ícone do app e traduções (`Localizable.xcstrings`) |
-| `scripts/` | `build-app.sh` (monta o .app), `fetch-auth-params.sh`, `sync-strings.sh`, `make-source-strings.swift`, `make-dmg.sh`, `release.sh` e `make-icon.sh` (gera o ícone) |
+| `scripts/` | `build-app.sh` (monta o .app), `fetch-auth-params.sh`, `fetch-adb.sh`, `sync-strings.sh`, `make-source-strings.swift`, `make-dmg.sh`, `release.sh` e `make-icon.sh` (gera o ícone) |
 
 ## Testes
 

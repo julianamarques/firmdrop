@@ -22,10 +22,14 @@ public struct ADBDownload: Sendable {
 
     public init(executable: URL) { self.executable = executable }
 
-    public static func installed(preferred: URL? = nil) throws -> ADBDownload {
+    public static func bundled() throws -> ADBDownload {
         let environment = ProcessInfo.processInfo.environment
         let homeDirectory = FileManager.default.homeDirectoryForCurrentUser
-        var candidates = [
+        var candidates = [Bundle.main.bundleURL.appending(path: "Contents/MacOS/adb")]
+        if Bundle.main.bundleURL.pathExtension != "app" {
+            candidates.append(URL(filePath: FileManager.default.currentDirectoryPath).appending(path: "build/adb/adb"))
+        }
+        candidates += [
             URL(filePath: "/opt/homebrew/bin/adb"),
             URL(filePath: "/usr/local/bin/adb"),
             homeDirectory.appending(path: "Library/Android/sdk/platform-tools/adb"),
@@ -37,7 +41,7 @@ public struct ADBDownload: Sendable {
         }
         candidates += (environment["PATH"] ?? "").split(separator: ":").filter { $0.hasPrefix("/") }
             .map { URL(filePath: String($0)).appending(path: "adb") }
-        return try locate(preferred.map { [$0] } ?? candidates)
+        return try locate(candidates)
     }
 
     static func locate(_ candidates: [URL]) throws -> ADBDownload {
@@ -96,7 +100,7 @@ public enum ADBError: LocalizedError, Equatable, Sendable {
     public var errorDescription: String? {
         switch self {
         case .notInstalled:
-            String(localized: "ADB não encontrado. Instale o Android SDK Platform-Tools ou use Selecionar ADB para localizar o executável adb.")
+            String(localized: "O ADB incluído no FirmDrop não foi encontrado. Reinstale o app.")
         case .noDevice:
             String(localized: "Nenhum aparelho USB disponível no ADB. Mantenha o Samsung ligado, ative a depuração USB e autorize este Mac na tela do aparelho.")
         case .multipleDevices:

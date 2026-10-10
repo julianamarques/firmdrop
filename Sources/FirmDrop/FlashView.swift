@@ -96,19 +96,12 @@ struct FlashView: View {
                 .font(.subheadline.bold())
             Text("Ative o Modo de manutenção no Samsung e aguarde o reinício. Mantenha o telefone ligado nesse modo, conectado ao Mac, com a depuração USB autorizada. O botão abaixo reinicia diretamente em Download.")
                 .font(.callout).foregroundStyle(.secondary)
-            HStack {
-                Button("Reiniciar em Download (ADB)", systemImage: "arrow.clockwise") {
-                    flash.rebootToDownload()
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.indigo)
-                .disabled(flash.isBusy || flash.selectedDevice?.isDownloadMode == true)
-                Button("Selecionar ADB…") { flash.chooseADB() }
-                    .disabled(flash.isBusy)
-                Link("Obter Platform-Tools", destination: URL(string: "https://developer.android.com/tools/releases/platform-tools")!)
+            Button("Reiniciar em Download (ADB)", systemImage: "arrow.clockwise") {
+                flash.rebootToDownload()
             }
-            Text("Requer o Android SDK Platform-Tools. O FirmDrop procura o ADB instalado no Mac; use Selecionar ADB se ele estiver em outra pasta.")
-                .font(.caption).foregroundStyle(.secondary)
+            .buttonStyle(.borderedProminent)
+            .tint(.indigo)
+            .disabled(flash.isBusy || flash.selectedDevice?.isDownloadMode == true)
         }
     }
 

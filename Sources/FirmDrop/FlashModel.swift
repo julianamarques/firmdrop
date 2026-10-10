@@ -76,8 +76,7 @@ final class FlashModel {
         Task {
             defer { finish() }
             do {
-                let preferred = UserDefaults.standard.string(forKey: "adbExecutablePath").map { URL(filePath: $0) }
-                let adb = try ADBDownload.installed(preferred: preferred)
+                let adb = try ADBDownload.bundled()
                 let engine = try FlashEngine.bundled()
                 let connected = try await engine.devices()
                 guard connected.count <= 1 else { throw ADBError.multipleDevices }
@@ -102,25 +101,6 @@ final class FlashModel {
                     try await Task.sleep(for: .seconds(1))
                 }
                 throw ADBError.downloadNotDetected
-            } catch { fail(error) }
-        }
-    }
-
-    func chooseADB() {
-        guard !isBusy else { return }
-        let panel = NSOpenPanel()
-        panel.message = String(localized: "Selecione o executável adb da pasta platform-tools do Android SDK.")
-        panel.prompt = String(localized: "Selecionar ADB")
-        if panel.runModal() == .OK, let url = panel.url {
-            isADBOperation = true
-            do {
-                _ = try ADBDownload.installed(preferred: url)
-                UserDefaults.standard.set(url.path, forKey: "adbExecutablePath")
-                error = nil
-                success = false
-                progress = nil
-                stage = String(localized: "ADB selecionado. Ative o Modo de manutenção antes de reiniciar em Download.")
-                append(stage)
             } catch { fail(error) }
         }
     }

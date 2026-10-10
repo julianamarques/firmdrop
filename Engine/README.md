@@ -24,7 +24,7 @@ SM-S931B running One UI 9 (`S931BXXUCDZIF`). The phone entered Download Mode thr
 `adb reboot download` with Maintenance Mode active. No firmware was flashed:
 successful discovery and a protocol probe do not establish flashing compatibility.
 Firmware filename checks in the app are not device identification or anti-rollback
-verification. ADB is an optional, separate local dependency managed by the Swift app.
+verification. ADB is a separate executable bundled and invoked by the Swift app.
 
 ## Rebuild the bundled binary
 
