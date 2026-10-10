@@ -260,16 +260,17 @@ struct ResultView: View {
     }
 }
 
-private struct GlassCard<Content: View>: View {
+struct GlassCard<Content: View>: View {
     let title: LocalizedStringKey
     let symbol: String
+    var prominentTitle = false
     @ViewBuilder var content: Content
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Label(title, systemImage: symbol)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.secondary)
+                .font(prominentTitle ? .headline : .subheadline.weight(.semibold))
+                .foregroundStyle(prominentTitle ? .primary : .secondary)
             content
         }
         .padding(20)

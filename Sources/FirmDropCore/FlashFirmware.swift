@@ -111,11 +111,7 @@ public struct FlashPlan: Equatable, Sendable {
             }
             ordered.append(package)
         }
-        if let model {
-            guard packages[.bl]?.build(for: model) == packages[.ap]?.build(for: model) else { throw FlashError.mixedBuilds }
-        } else {
-            guard let build = packages[.bl]?.releaseBuild, build == packages[.ap]?.releaseBuild else { throw FlashError.mixedBuilds }
-        }
+        guard let build = packages[.bl]?.releaseBuild, build == packages[.ap]?.releaseBuild else { throw FlashError.mixedBuilds }
         self.model = model
         self.packages = ordered
         self.device = device

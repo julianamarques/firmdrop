@@ -59,19 +59,23 @@ final class FlashModel {
         do {
             let found = try await FlashEngine.bundled().devices()
             guard !isBusy else { return }
-            devices = found
-            deviceError = nil
-            if !found.contains(where: { $0.id == selectedDeviceID }) {
-                selectedDeviceID = found.count == 1 ? found[0].id : ""
-            }
-            if let probedDevice, !found.contains(probedDevice) { self.probedDevice = nil }
-            if let closedSession, !found.contains(closedSession) { self.closedSession = nil }
-            if let reportedModel, !found.contains(reportedModel.device) { self.reportedModel = nil }
+            update(found)
         } catch {
             deviceError = error.localizedDescription
             devices = []
             probedDevice = nil
         }
+    }
+
+    private func update(_ found: [FlashDevice]) {
+        devices = found
+        deviceError = nil
+        if !found.contains(where: { $0.id == selectedDeviceID }) {
+            selectedDeviceID = found.count == 1 ? found[0].id : ""
+        }
+        if let probedDevice, !found.contains(probedDevice) { self.probedDevice = nil }
+        if let closedSession, !found.contains(closedSession) { self.closedSession = nil }
+        if let reportedModel, !found.contains(reportedModel.device) { self.reportedModel = nil }
     }
 
     func probe() {
@@ -83,7 +87,7 @@ final class FlashModel {
             do {
                 let version = try await FlashEngine.bundled().probe(device, resume: closedSession == device, onLine: logHandler())
                 closedSession = device
-                guard devices.contains(device), selectedDevice == device else { throw FlashError.deviceChanged }
+                guard selectedDevice == device else { throw FlashError.deviceChanged }
                 probedDevice = device
                 stage = String(localized: "Conexão testada · protocolo \(version)")
                 append(stage)
@@ -109,13 +113,11 @@ final class FlashModel {
                 let deadline = ContinuousClock.now + .seconds(45)
                 while ContinuousClock.now < deadline {
                     let found = try await engine.devices()
-                    devices = found
-                    if !found.contains(where: { $0.id == selectedDeviceID }) { selectedDeviceID = "" }
+                    update(found)
                     if let target = found.first(where: {
                         $0.target == source.target && $0.connection != source.connection && $0.isDownloadMode
                     }) {
                         selectedDeviceID = target.id
-                        deviceError = nil
                         if let model { reportedModel = (target, model) }
                         stage = String(localized: "Modo Download detectado. Clique em Testar Conexão para continuar.")
                         append(stage)
@@ -155,9 +157,7 @@ final class FlashModel {
                 let selection = try FlashImport.folder(url)
                 guard !selection.isEmpty else { throw FlashError.invalidZIP }
                 apply(selection)
-                if let ownedDirectory, !(Array(packages.values) + cscOptions).contains(where: { $0.url.deletingLastPathComponent() == ownedDirectory }) {
-                    cleanup()
-                }
+                if url.standardizedFileURL.path != ownedDirectory?.standardizedFileURL.path { cleanup() }
                 error = nil
                 success = false
             } catch { fail(error) }
@@ -193,7 +193,7 @@ final class FlashModel {
 
     func review() -> FlashPlan? {
         do {
-            guard let device = selectedDevice, device == probedDevice else { throw FlashError.probeRequired }
+            guard connectionTested, let device = selectedDevice else { throw FlashError.probeRequired }
             return try FlashPlan(model: model, packages: packages, device: device, reboot: reboot)
         } catch {
             fail(error)
@@ -203,7 +203,7 @@ final class FlashModel {
 
     func start(_ plan: FlashPlan) {
         guard !isBusy else { return }
-        guard plan.device == selectedDevice, plan.device == probedDevice else { fail(FlashError.deviceChanged); return }
+        guard connectionTested, plan.device == selectedDevice else { fail(FlashError.deviceChanged); return }
         begin(String(localized: "Conferindo os pacotes antes de instalar…"))
         isFlashing = true
         append(String(localized: "Instalação de \(plan.model ?? String(localized: "modelo não informado")) · USB \(plan.device.target)"))

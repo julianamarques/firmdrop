@@ -10,19 +10,8 @@ import Testing
     ]
 
     private func packages(in directory: URL) throws -> [FlashSlot: FlashPackage] {
-        let urls = try names.map { name in
-            let url = directory.appending(path: name)
-            try Data(repeating: 0, count: 512).write(to: url)
-            return url
-        }
+        let urls = try names.map { try writePackage($0, in: directory) }
         return try FlashPackage.select(urls).packages
-    }
-
-    private func executable(in directory: URL, body: String) throws -> URL {
-        let url = directory.appending(path: "fake-engine")
-        try ("#!/bin/sh\n" + body).write(to: url, atomically: true, encoding: .utf8)
-        try FileManager.default.setAttributes([.posixPermissions: 0o700], ofItemAtPath: url.path)
-        return url
     }
 
     @Test func recognizesOnlyFirmwareSlots() {
@@ -37,8 +26,7 @@ import Testing
         try await withTemporaryDirectory { directory in
             let initial = try packages(in: directory)
             #expect(try FlashPackage.select(initial.values.map(\.url)).packages[.csc]?.preservesData == true)
-            let reset = directory.appending(path: "CSC_OXM_S931BOXM1AYB4_test.tar.md5")
-            try Data(repeating: 0, count: 512).write(to: reset)
+            let reset = try writePackage("CSC_OXM_S931BOXM1AYB4_test.tar.md5", in: directory)
             let urls = initial.values.map(\.url) + [reset]
             for order in [urls, urls.reversed()] {
                 let selection = try FlashPackage.select(order)
@@ -46,8 +34,7 @@ import Testing
                 #expect(selection.packages.count == 3)
                 #expect(selection.cscOptions.map(\.preservesData) == [true, false])
             }
-            let duplicate = directory.appending(path: "AP_S931BXXU2AYC1_test.tar")
-            try Data(repeating: 0, count: 512).write(to: duplicate)
+            let duplicate = try writePackage("AP_S931BXXU2AYC1_test.tar", in: directory)
             #expect(throws: FlashError.ambiguousSlot("AP")) { try FlashPackage.select(urls + [duplicate]) }
         }
     }
@@ -78,8 +65,7 @@ import Testing
             #expect(throws: (any Error).self) { try FlashPlan(model: "SM-S931B;cmd", packages: selected, device: device, reboot: true) }
             let missing = selected.filter { $0.key != .cp }
             #expect(throws: FlashError.missingSlot("CP")) { try FlashPlan(model: "SM-S931B", packages: missing, device: device, reboot: true) }
-            let different = directory.appending(path: "BL_S931BXXU2AYC1_test.tar.md5")
-            try Data(repeating: 0, count: 512).write(to: different)
+            let different = try writePackage("BL_S931BXXU2AYC1_test.tar.md5", in: directory)
             selected[.bl] = try FlashPackage(url: different)
             #expect(throws: FlashError.mixedBuilds) { try FlashPlan(model: "SM-S931B", packages: selected, device: device, reboot: true) }
         }
@@ -94,12 +80,10 @@ import Testing
                 #expect(plan.packages.map(\.slot) == [.bl, .ap, .cp, .csc])
             }
             #expect(selected[.ap]?.releaseBuild == "S931BXXU1AYB4")
-            let different = directory.appending(path: "BL_S931BXXU2AYC1_test.tar.md5")
-            try Data(repeating: 0, count: 512).write(to: different)
+            let different = try writePackage("BL_S931BXXU2AYC1_test.tar.md5", in: directory)
             selected[.bl] = try FlashPackage(url: different)
             #expect(throws: FlashError.mixedBuilds) { try FlashPlan(model: nil, packages: selected, device: device, reboot: true) }
-            let unnamed = directory.appending(path: "BL_test.tar.md5")
-            try Data(repeating: 0, count: 512).write(to: unnamed)
+            let unnamed = try writePackage("BL_test.tar.md5", in: directory)
             selected[.bl] = try FlashPackage(url: unnamed)
             #expect(throws: FlashError.mixedBuilds) { try FlashPlan(model: nil, packages: selected, device: device, reboot: true) }
         }
@@ -119,8 +103,7 @@ import Testing
     @Test func cleanCSCDoesNotSetPreserve() async throws {
         try await withTemporaryDirectory { directory in
             var selected = try packages(in: directory)
-            let reset = directory.appending(path: "CSC_OXM_S931BOXM1AYB4.tar.md5")
-            try Data(repeating: 0, count: 512).write(to: reset)
+            let reset = try writePackage("CSC_OXM_S931BOXM1AYB4.tar.md5", in: directory)
             selected[.csc] = try FlashPackage(url: reset)
             let plan = try FlashPlan(model: "SM-S931B", packages: selected, device: device, reboot: true)
             #expect(!plan.preservesData)
@@ -159,14 +142,14 @@ import Testing
 
     @Test func probeResumesOnlyWhenAskedAndErrorsHideEngineEvents() async throws {
         try await withTemporaryDirectory { directory in
-            let url = try executable(in: directory, body: "printf '%s\\n' \"$*\" >> \"$(dirname \"$0\")/calls\"\nprintf '@firmdrop\\tPROBE\\t4\\n'\n")
+            let url = try makeScript("fake-engine", body: "printf '%s\\n' \"$*\" >> \"$(dirname \"$0\")/calls\"\nprintf '@firmdrop\\tPROBE\\t4\\n'\n", in: directory)
             let engine = FlashEngine(executable: url)
             #expect(try await engine.probe(device) == 4)
             #expect(try await engine.probe(device, resume: true) == 4)
             let calls = try String(contentsOf: directory.appending(path: "calls"), encoding: .utf8)
             #expect(calls == "--probe --target 0x00100000 --connection 42\n--probe --target 0x00100000 --connection 42 --resume\n")
 
-            let failing = try executable(in: directory, body: "printf '@firmdrop\\tPROGRESS\\t1\\t2\\n'; echo 'Handshake receive failed' >&2; exit 1\n")
+            let failing = try makeScript("fake-engine", body: "printf '@firmdrop\\tPROGRESS\\t1\\t2\\n'; echo 'Handshake receive failed' >&2; exit 1\n", in: directory)
             await #expect(throws: FlashError.commandFailed(1, "Handshake receive failed")) {
                 try await FlashEngine(executable: failing).probe(device)
             }
@@ -196,11 +179,11 @@ import Testing
             let selected = try packages(in: directory)
             let plan = try FlashPlan(model: "SM-S931B", packages: selected, device: device, reboot: true)
             let list = "if [ \"$1\" = --list ]; then printf '@firmdrop\\tDEVICE\\t0x00100000\\t42\\t26717\\tdownload\\n'; exit 0; fi\n"
-            var url = try executable(in: directory, body: list + "printf '@firmdrop\\tDONE\\n'; exit 1\n")
+            var url = try makeScript("fake-engine", body: list + "printf '@firmdrop\\tDONE\\n'; exit 1\n", in: directory)
             await #expect(throws: (any Error).self) { try await FlashEngine(executable: url).flash(plan, onLine: { _ in }) }
-            url = try executable(in: directory, body: list + "echo '100%'; exit 0\n")
+            url = try makeScript("fake-engine", body: list + "echo '100%'; exit 0\n", in: directory)
             await #expect(throws: FlashError.incompleteFlash) { try await FlashEngine(executable: url).flash(plan, onLine: { _ in }) }
-            url = try executable(in: directory, body: list + "printf '@firmdrop\\tDONE\\n'; exit 0\n")
+            url = try makeScript("fake-engine", body: list + "printf '@firmdrop\\tDONE\\n'; exit 0\n", in: directory)
             try await FlashEngine(executable: url).flash(plan, onLine: { _ in })
         }
     }
@@ -209,7 +192,7 @@ import Testing
         try await withTemporaryDirectory { directory in
             let selected = try packages(in: directory)
             let plan = try FlashPlan(model: "SM-S931B", packages: selected, device: device, reboot: true)
-            let url = try executable(in: directory, body: "if [ \"$1\" = --list ]; then printf '@firmdrop\\tDEVICE\\t0x00100000\\t43\\t26717\\tdownload\\n'; exit 0; fi\nexit 99\n")
+            let url = try makeScript("fake-engine", body: "if [ \"$1\" = --list ]; then printf '@firmdrop\\tDEVICE\\t0x00100000\\t43\\t26717\\tdownload\\n'; exit 0; fi\nexit 99\n", in: directory)
             await #expect(throws: FlashError.deviceChanged) { try await FlashEngine(executable: url).flash(plan, onLine: { _ in }) }
         }
     }
@@ -241,8 +224,7 @@ import Testing
     @Test func zipWithBothCSCPackagesWaitsForAChoice() async throws {
         try await withTemporaryDirectory { directory in
             let selected = try packages(in: directory)
-            let reset = directory.appending(path: "CSC_OXM_S931BOXM1AYB4_test.tar.md5")
-            try Data(repeating: 0, count: 512).write(to: reset)
+            let reset = try writePackage("CSC_OXM_S931BOXM1AYB4_test.tar.md5", in: directory)
             let zip = directory.appending(path: "firmware.zip")
             let result = try await CommandRunner.run(URL(filePath: "/usr/bin/zip"), arguments: ["-j", zip.path] + selected.values.map(\.url.path) + [reset.path])
             try result.requireSuccess()

@@ -10,13 +10,6 @@ import Testing
         try value.write(to: directory.appending(path: name), atomically: true, encoding: .utf8)
     }
 
-    private func executable(_ name: String, body: String, in directory: URL) throws -> URL {
-        let url = directory.appending(path: name)
-        try ("#!/bin/sh\ncd -- \"$(dirname -- \"$0\")\"\n" + body).write(to: url, atomically: true, encoding: .utf8)
-        try FileManager.default.setAttributes([.posixPermissions: 0o700], ofItemAtPath: url.path)
-        return url
-    }
-
     private func fixture(in directory: URL, startsServer: Bool = false) throws -> (ADBDownload, FlashEngine) {
         try write(listing, to: "devices", in: directory)
         try write("samsung\n", to: "manufacturer", in: directory)
@@ -24,7 +17,7 @@ import Testing
         try write("SM-S931B\n", to: "model", in: directory)
         try write("@firmdrop\tDEVICE\t0x00100000\t42\t26720\tother\n", to: "usb", in: directory)
         if startsServer { try write("", to: "no-server", in: directory) }
-        let adb = try executable("fake-adb", body: #"""
+        let adb = try makeScript("fake-adb", body: #"""
         printf '%s\n' "$*" >> calls
         printf '%s\n' "$ADB_MDNS" >> mdns
         case "$*" in
@@ -46,16 +39,8 @@ import Testing
           *) exit 99 ;;
         esac
         """#, in: directory)
-        let engine = try executable("fake-engine", body: "cat usb\n", in: directory)
+        let engine = try makeScript("fake-engine", body: "cat usb\n", in: directory)
         return (ADBDownload(executable: adb), FlashEngine(executable: engine))
-    }
-
-    private func wasRebooted(_ directory: URL) -> Bool {
-        FileManager.default.fileExists(atPath: directory.appending(path: "rebooted").path)
-    }
-
-    private func wasKilled(_ directory: URL) -> Bool {
-        FileManager.default.fileExists(atPath: directory.appending(path: "killed").path)
     }
 
     @Test func parsesOnlyPhysicalADBTransports() {
@@ -80,7 +65,7 @@ import Testing
             let file = directory.appending(path: "adb")
             try write("not executable", to: "adb", in: directory)
             #expect(FileManager.default.firstExecutable(in: [directory, file]) == nil)
-            let actual = try executable("real-adb", body: "exit 0\n", in: directory)
+            let actual = try makeScript("real-adb", body: "exit 0\n", in: directory)
             let link = directory.appending(path: "adb-link")
             try FileManager.default.createSymbolicLink(at: link, withDestinationURL: actual)
             #expect(FileManager.default.firstExecutable(in: [directory, file, link]) == link)
@@ -93,12 +78,12 @@ import Testing
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: false)
             let (adb, engine) = try fixture(in: directory)
             #expect(try await adb.rebootToDownload(from: source, using: engine) == "SM-S931B")
-            #expect(wasRebooted(directory))
+            #expect(fileExists("rebooted", in: directory))
             let calls = try String(contentsOf: directory.appending(path: "calls"), encoding: .utf8)
             #expect(calls.contains("-t 7 shell getprop persist.sys.is_in_maintenance_mode\n"))
             #expect(calls.hasSuffix("-t 7 reboot download\n"))
             #expect(!calls.contains("-s "))
-            #expect(!wasKilled(directory))
+            #expect(!fileExists("killed", in: directory))
         }
     }
 
@@ -117,7 +102,7 @@ import Testing
             await #expect(throws: ADBError.maintenanceRequired) {
                 try await adb.rebootToDownload(from: source, using: engine)
             }
-            #expect(wasKilled(directory))
+            #expect(fileExists("killed", in: directory))
         }
     }
 
@@ -127,7 +112,7 @@ import Testing
             let (adb, engine) = try fixture(in: directory)
             try write(value, to: "model", in: directory)
             #expect(try await adb.rebootToDownload(from: source, using: engine) == nil)
-            #expect(wasRebooted(directory))
+            #expect(fileExists("rebooted", in: directory))
         }
     }
 
@@ -139,7 +124,7 @@ import Testing
             await #expect(throws: ADBError.maintenanceRequired) {
                 try await adb.rebootToDownload(from: source, using: engine)
             }
-            #expect(!wasRebooted(directory))
+            #expect(!fileExists("rebooted", in: directory))
         }
     }
 
@@ -150,7 +135,7 @@ import Testing
             try write("TEST_SAMSUNG \(state) usb:1048576X transport_id:7\n", to: "devices", in: directory)
             let expected: ADBError = state == "unauthorized" ? .unauthorized : .offline
             await #expect(throws: expected) { try await adb.rebootToDownload(from: source, using: engine) }
-            #expect(!wasRebooted(directory))
+            #expect(!fileExists("rebooted", in: directory))
         }
     }
 
@@ -161,7 +146,7 @@ import Testing
             await #expect(throws: ADBError.notSamsung) { try await adb.rebootToDownload(from: source, using: engine) }
             try write("192.0.2.1:5555 device model:SM_S931B transport_id:7\n", to: "devices", in: directory)
             await #expect(throws: ADBError.noDevice) { try await adb.rebootToDownload(from: source, using: engine) }
-            #expect(!wasRebooted(directory))
+            #expect(!fileExists("rebooted", in: directory))
         }
     }
 
@@ -173,7 +158,7 @@ import Testing
             try write(listing, to: "devices", in: directory)
             try write("@firmdrop\tDEVICE\t0x00100000\t42\t26720\tother\n@firmdrop\tDEVICE\t0x00200000\t43\t26720\tother\n", to: "usb", in: directory)
             await #expect(throws: ADBError.multipleDevices) { try await adb.rebootToDownload(from: source, using: engine) }
-            #expect(!wasRebooted(directory))
+            #expect(!fileExists("rebooted", in: directory))
         }
     }
 
@@ -182,7 +167,7 @@ import Testing
             let (adb, engine) = try fixture(in: directory)
             try write("SECOND device usb:1048576X transport_id:8\n", to: "next-devices", in: directory)
             await #expect(throws: ADBError.deviceChanged) { try await adb.rebootToDownload(from: source, using: engine) }
-            #expect(!wasRebooted(directory))
+            #expect(!fileExists("rebooted", in: directory))
         }
     }
 
@@ -191,18 +176,18 @@ import Testing
             let (adb, engine) = try fixture(in: directory)
             try write("@firmdrop\tDEVICE\t0x00100000\t99\t26720\tother\n", to: "next-usb", in: directory)
             await #expect(throws: ADBError.deviceChanged) { try await adb.rebootToDownload(from: source, using: engine) }
-            #expect(!wasRebooted(directory))
+            #expect(!fileExists("rebooted", in: directory))
         }
     }
 
     @Test func propagatesADBFailuresWithoutSendingReboot() async throws {
         try await withTemporaryDirectory { directory in
             let (_, engine) = try fixture(in: directory)
-            let url = try executable("broken-adb", body: "echo 'ADB failed'; exit 7\n", in: directory)
+            let url = try makeScript("broken-adb", body: "echo 'ADB failed'; exit 7\n", in: directory)
             await #expect(throws: FlashError.commandFailed(7, "ADB failed")) {
                 try await ADBDownload(executable: url).rebootToDownload(from: source, using: engine)
             }
-            #expect(!wasRebooted(directory))
+            #expect(!fileExists("rebooted", in: directory))
         }
     }
 }

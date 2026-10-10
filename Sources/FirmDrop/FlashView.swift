@@ -26,11 +26,12 @@ struct FlashView: View {
                     }
                     deviceCard
                     firmwareCard
-                    if !flash.stage.isEmpty || flash.error != nil {
+                    if !flash.stage.isEmpty {
                         statusCard.id("status")
                     }
                     if !flash.logs.isEmpty { logCard }
                 }
+                .buttonStyle(.glass)
                 .padding(20)
                 .frame(maxWidth: 1000)
                 .frame(maxWidth: .infinity)
@@ -82,7 +83,7 @@ struct FlashView: View {
 
     private var deviceCard: some View {
         @Bindable var flash = flash
-        return FlashCard(title: "Aparelho", symbol: "cable.connector") {
+        return GlassCard(title: "Aparelho", symbol: "cable.connector", prominentTitle: true) {
             HStack {
                 if flash.devices.isEmpty {
                     Label("Nenhum Samsung detectado no USB", systemImage: "cable.connector.slash")
@@ -137,7 +138,7 @@ struct FlashView: View {
 
     private var firmwareCard: some View {
         @Bindable var flash = flash
-        return FlashCard(title: "Pacotes do Firmware", symbol: "shippingbox") {
+        return GlassCard(title: "Pacotes do Firmware", symbol: "shippingbox", prominentTitle: true) {
             HStack {
                 if let model = flash.deviceModel {
                     Text(model).font(.system(.body, design: .monospaced).weight(.semibold))
@@ -155,18 +156,18 @@ struct FlashView: View {
                 Button("Importar ZIP…") { flash.chooseZIP() }
                 Button("Abrir Pasta…") { flash.chooseFolder() }
             }
-            .disabled(flash.isBusy)
             Text(flash.deviceModel == nil
                  ? "O modelo é lido do aparelho ao reiniciar pelo ADB. Sem ADB, é opcional: se informar o PRODUCT NAME exibido na tela de Download, o FirmDrop confere os arquivos com ele. A revisão mínima do bootloader não é verificada."
                  : "A revisão mínima do bootloader não é verificada; confira-a na tela de Download.")
                 .font(.caption).foregroundStyle(.secondary)
             ForEach(FlashSlot.allCases) { slot in
+                let showsCSCPicker = slot == .csc && flash.cscOptions.count > 1
                 HStack(spacing: 12) {
                     Text(slot.rawValue)
                         .font(.system(.headline, design: .monospaced))
                         .frame(width: 44, alignment: .leading)
                     VStack(alignment: .leading, spacing: 3) {
-                        if slot == .csc, flash.cscOptions.count > 1 {
+                        if showsCSCPicker {
                             Picker("CSC", selection: Binding(get: { flash.packages[.csc] },
                                                              set: { $0.map(flash.chooseCSC) })) {
                                 ForEach(flash.cscOptions, id: \.url) { option in
@@ -177,7 +178,6 @@ struct FlashView: View {
                             .pickerStyle(.segmented)
                             .labelsHidden()
                             .fixedSize()
-                            .disabled(flash.isBusy)
                         }
                         if let package = flash.packages[slot] {
                             Text(package.url.lastPathComponent)
@@ -185,13 +185,12 @@ struct FlashView: View {
                                 .lineLimit(1).truncationMode(.middle)
                                 .help(package.url.path)
                             Text(Format.bytes(package.size)).font(.caption).foregroundStyle(.secondary)
-                        } else if slot != .csc || flash.cscOptions.count < 2 {
+                        } else if !showsCSCPicker {
                             Text("Nenhum arquivo selecionado").foregroundStyle(.secondary)
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     Button("Selecionar…") { flash.choosePackage(slot) }
-                        .disabled(flash.isBusy)
                         .accessibilityLabel(Text("Selecionar \(slot.rawValue)"))
                 }
                 .padding(.horizontal, 14)
@@ -211,10 +210,11 @@ struct FlashView: View {
                     .font(.callout).foregroundStyle(.secondary)
             }
         }
+        .disabled(flash.isBusy)
     }
 
     private var statusCard: some View {
-        FlashCard(title: "Andamento", symbol: flash.success ? "checkmark.circle" : "arrow.triangle.2.circlepath") {
+        GlassCard(title: "Andamento", symbol: flash.success ? "checkmark.circle" : "arrow.triangle.2.circlepath", prominentTitle: true) {
             Text(flash.stage).font(.headline).foregroundStyle(flash.success ? Color.green : .primary)
             if flash.isBusy {
                 if let progress = flash.progress {
@@ -234,7 +234,7 @@ struct FlashView: View {
     }
 
     private var logCard: some View {
-        FlashCard(title: "Registro da operação", symbol: "text.alignleft") {
+        GlassCard(title: "Registro da operação", symbol: "text.alignleft", prominentTitle: true) {
             HStack {
                 Text("Mensagens de conexão e instalação")
                     .font(.caption).foregroundStyle(.secondary)
@@ -250,23 +250,6 @@ struct FlashView: View {
             .defaultScrollAnchor(.bottom)
             .frame(height: 160)
         }
-    }
-}
-
-private struct FlashCard<Content: View>: View {
-    let title: LocalizedStringKey
-    let symbol: String
-    @ViewBuilder var content: Content
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            Label(title, systemImage: symbol).font(.headline)
-            content
-        }
-        .buttonStyle(.glass)
-        .padding(20)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .glassEffect(.regular, in: .rect(cornerRadius: 28))
     }
 }
 
