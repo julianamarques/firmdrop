@@ -699,12 +699,12 @@
         }
       }
     },
-    "Em versões que permitem entrar por botões: desligue, segure os dois botões de volume e conecte o cabo ao Mac. Confirme com Volume +. Feche OdinMac, Smart Switch e outros programas que usam o aparelho.": {
+    "Em versões que permitem entrar por botões: desligue, segure os dois botões de volume e conecte o cabo ao Mac. Confirme com Volume +. Feche todos os programas que utilizam o aparelho.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "On versions that support the button combination: power off, hold both volume buttons and connect the cable to your Mac. Confirm with Volume Up. Close OdinMac, Smart Switch and other apps using the device."
+            "value": "On versions that support the button combination: power off, hold both volume buttons and connect the cable to your Mac. Confirm with Volume Up. Close all apps that use the device."
           }
         }
       }
@@ -1943,12 +1943,12 @@
         }
       }
     },
-    "Testar Conexão confirma a comunicação USB, mas não confirma a compatibilidade do firmware. A instalação no S25 continua experimental.": {
+    "Testar Conexão confirma a comunicação USB, mas não confirma a compatibilidade do firmware.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Test Connection confirms USB communication, but does not confirm firmware compatibility. Firmware installation on S25 remains experimental."
+            "value": "Test Connection confirms USB communication, but does not confirm firmware compatibility."
           }
         }
       }

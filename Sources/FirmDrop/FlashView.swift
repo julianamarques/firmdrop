@@ -107,9 +107,9 @@ struct FlashView: View {
                 }
                 .font(.callout)
             }
-            Text("Em versões que permitem entrar por botões: desligue, segure os dois botões de volume e conecte o cabo ao Mac. Confirme com Volume +. Feche OdinMac, Smart Switch e outros programas que usam o aparelho.")
+            Text("Em versões que permitem entrar por botões: desligue, segure os dois botões de volume e conecte o cabo ao Mac. Confirme com Volume +. Feche todos os programas que utilizam o aparelho.")
                 .font(.callout).foregroundStyle(.secondary)
-            Text("Testar Conexão confirma a comunicação USB, mas não confirma a compatibilidade do firmware. A instalação no S25 continua experimental.")
+            Text("Testar Conexão confirma a comunicação USB, mas não confirma a compatibilidade do firmware.")
                 .font(.caption).foregroundStyle(.secondary)
             if let error = flash.deviceError { Text(error).foregroundStyle(.red).textSelection(.enabled) }
             Divider()
@@ -134,7 +134,10 @@ struct FlashView: View {
                         .font(.callout).foregroundStyle(.green)
                 } else {
                     TextField("Modelo do aparelho, ex.: SM-S931B", text: $flash.modelText)
-                        .textFieldStyle(.roundedBorder)
+                        .textFieldStyle(.plain)
+                        .padding(.horizontal, 14)
+                        .frame(height: 30)
+                        .glassEffect(.regular.interactive(), in: .capsule)
                         .frame(maxWidth: 340)
                 }
                 Spacer()
@@ -180,8 +183,9 @@ struct FlashView: View {
                         .disabled(flash.isBusy)
                         .accessibilityLabel(Text("Selecionar \(slot.rawValue)"))
                 }
-                .padding(10)
-                .background(.fill.quaternary, in: .rect(cornerRadius: 12))
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                .background(.fill.quaternary, in: .rect(cornerRadius: 20))
             }
             if let csc = flash.packages[.csc] {
                 if csc.preservesData {
@@ -248,9 +252,10 @@ private struct FlashCard<Content: View>: View {
             Label(title, systemImage: symbol).font(.headline)
             content
         }
+        .buttonStyle(.glass)
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .glassEffect(.regular, in: .rect(cornerRadius: 24))
+        .glassEffect(.regular, in: .rect(cornerRadius: 28))
     }
 }
 
@@ -289,8 +294,10 @@ private struct FlashConfirmation: View {
             HStack {
                 Spacer()
                 Button("Cancelar", role: .cancel) { dismiss() }
+                    .buttonStyle(.glass)
                 Button("Iniciar Instalação", role: .destructive) { dismiss(); start() }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.glassProminent)
+                    .tint(.red)
                     .disabled(!confirmed || (!plan.preservesData && !confirmedErase))
             }
         }

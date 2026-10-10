@@ -132,7 +132,7 @@ a causa de um aparelho não reconhecido.
    pelo modo Download na mesma porta USB. Não é preciso desligar pelo menu nem
    desativar a manutenção. Em versões que permitem a combinação de botões, desligue
    o telefone e segure os dois botões de volume ao conectar o cabo; confirme com
-   Volume +. Feche OdinMac, Smart Switch e outros programas que usam a conexão USB.
+   Volume +. Feche todos os programas que utilizam o aparelho.
 5. Clique em **Detectar** e **Testar Conexão**. Detectar apenas enumera o USB;
    testar abre uma sessão do protocolo, consulta sua versão e encerra sem reiniciar
    ou gravar partições. A instalação retoma essa sessão sem repetir o handshake,
