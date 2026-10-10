@@ -162,10 +162,25 @@ import Testing
     @Test func validatesZIPMemberPathsAndDuplicates() throws {
         let valid = names.map { "firmware/" + $0 }
         #expect(try FlashImport.zipMembers(valid + ["README.txt"]) == valid)
-        for bad in ["../" + names[0], "/" + names[0], "folder/*/" + names[0]] {
+        for bad in ["../" + names[0], "/" + names[0], "folder/*/" + names[0], "-d/" + names[0], "-x/" + names[0]] {
             #expect(throws: FlashError.invalidZIP) { try FlashImport.zipMembers([bad]) }
         }
         #expect(throws: FlashError.invalidZIP) { try FlashImport.zipMembers([names[0], "folder/" + names[0]]) }
+    }
+
+    @Test func readsDeclaredSizesOfTheSelectedMembers() throws {
+        let lines = [
+            "Archive:  firmware.zip",
+            "  Length      Date    Time    Name",
+            "---------  ---------- -----   ----",
+            "30380810363  09-22-2026 07:49   firmware/\(names[0])",
+            "        6  09-22-2026 07:49   firmware/x \(names[0])",
+            "      512  09-22-2026 07:49   README.txt",
+            "---------                     -------",
+            "30380810881                     3 files",
+        ]
+        #expect(try FlashImport.declaredSizes(lines, of: ["firmware/" + names[0]]) == ["firmware/" + names[0]: 30380810363])
+        #expect(throws: FlashError.invalidZIP) { try FlashImport.declaredSizes(lines, of: [names[1]]) }
     }
 
     @Test func importsOnlyFirmwareMembersFromZIP() async throws {

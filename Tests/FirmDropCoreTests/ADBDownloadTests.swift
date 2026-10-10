@@ -17,13 +17,14 @@ import Testing
         return url
     }
 
-    private func fixture(in directory: URL) throws -> (ADBDownload, FlashEngine) {
+    private func fixture(in directory: URL, serverRunning: Bool = true) throws -> (ADBDownload, FlashEngine) {
         try write(listing, to: "devices", in: directory)
         try write("samsung\n", to: "manufacturer", in: directory)
         try write("true\n", to: "maintenance", in: directory)
         try write("@firmdrop\tDEVICE\t0x00100000\t42\t26720\tother\n", to: "usb", in: directory)
         let adb = try executable("fake-adb", body: #"""
         printf '%s\n' "$*" >> calls
+        printf '%s\n' "$ADB_MDNS" >> mdns
         case "$*" in
           'devices -l')
             cat devices
@@ -35,15 +36,20 @@ import Testing
             if [ -f next-usb ]; then mv next-usb usb; fi
             ;;
           '-t 7 reboot download') touch rebooted ;;
+          'kill-server') touch killed ;;
           *) exit 99 ;;
         esac
         """#, in: directory)
         let engine = try executable("fake-engine", body: "cat usb\n", in: directory)
-        return (ADBDownload(executable: adb), FlashEngine(executable: engine))
+        return (ADBDownload(executable: adb, serverRunning: { serverRunning }), FlashEngine(executable: engine))
     }
 
     private func wasRebooted(_ directory: URL) -> Bool {
         FileManager.default.fileExists(atPath: directory.appending(path: "rebooted").path)
+    }
+
+    private func wasKilled(_ directory: URL) -> Bool {
+        FileManager.default.fileExists(atPath: directory.appending(path: "killed").path)
     }
 
     @Test func parsesOnlyPhysicalADBTransports() {
@@ -86,6 +92,25 @@ import Testing
             #expect(calls.contains("-t 7 shell getprop persist.sys.is_in_maintenance_mode\n"))
             #expect(calls.hasSuffix("-t 7 reboot download\n"))
             #expect(!calls.contains("-s "))
+            #expect(!wasKilled(directory))
+        }
+    }
+
+    @Test func stopsOnlyTheServerItStartedWithMDNSDisabled() async throws {
+        try await withTemporaryDirectory { directory in
+            let (adb, engine) = try fixture(in: directory, serverRunning: false)
+            try await adb.rebootToDownload(from: source, using: engine)
+            let calls = try String(contentsOf: directory.appending(path: "calls"), encoding: .utf8)
+            #expect(calls.hasSuffix("-t 7 reboot download\nkill-server\n"))
+            let mdns = try String(contentsOf: directory.appending(path: "mdns"), encoding: .utf8)
+            #expect(Set(mdns.split(separator: "\n")) == ["0"])
+
+            try FileManager.default.removeItem(at: directory.appending(path: "killed"))
+            try write("false\n", to: "maintenance", in: directory)
+            await #expect(throws: ADBError.maintenanceRequired) {
+                try await adb.rebootToDownload(from: source, using: engine)
+            }
+            #expect(wasKilled(directory))
         }
     }
 

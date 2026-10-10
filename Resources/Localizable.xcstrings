@@ -669,6 +669,16 @@
         }
       }
     },
+    "Espaço insuficiente para extrair os pacotes. São necessários %@ livres no disco.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not enough space to extract the packages. %@ of free disk space is required."
+          }
+        }
+      }
+    },
     "Extraindo %@…": {
       "localizations": {
         "en": {

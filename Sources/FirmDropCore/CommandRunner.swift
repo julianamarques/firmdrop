@@ -33,12 +33,13 @@ struct CommandLines {
 }
 
 enum CommandRunner {
-    static func run(_ executable: URL, arguments: [String], timeout: TimeInterval? = nil,
-                    outputFile: URL? = nil, onLine: @escaping @Sendable (String) -> Void = { _ in }) async throws -> CommandResult {
+    static func run(_ executable: URL, arguments: [String], environment: [String: String]? = nil,
+                    timeout: TimeInterval? = nil, outputFile: URL? = nil, onLine: @escaping @Sendable (String) -> Void = { _ in }) async throws -> CommandResult {
         try await Task.detached(priority: .userInitiated) {
             let process = Process()
             process.executableURL = executable
             process.arguments = arguments
+            if let environment { process.environment = environment }
             process.standardInput = FileHandle.nullDevice
             let pipe = Pipe()
             let file: FileHandle?

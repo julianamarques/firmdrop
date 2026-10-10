@@ -137,7 +137,9 @@ a causa de um aparelho não reconhecido.
 O botão ADB usa o `adb` do
 [Android SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools)
 incluído no app (versão fixa, baixada da Google no build e conferida por SHA-256).
-Não é preciso instalar nada. Para esse reinício, conecte apenas um
+Não é preciso instalar nada. O servidor ADB iniciado pelo FirmDrop não usa a descoberta
+mDNS na rede local e é encerrado depois do reinício; um servidor que já estava em
+execução é mantido. Para esse reinício, conecte apenas um
 Samsung por USB e apenas um aparelho USB ao ADB; conexões ADB por Wi-Fi são ignoradas.
 O comando é direcionado à conexão ADB verificada, com nova checagem do aparelho
 antes do reinício. A instalação de firmware continua sendo uma operação separada.

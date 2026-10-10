@@ -19,17 +19,25 @@ struct ADBDevice: Equatable, Sendable {
 
 public struct ADBDownload: Sendable {
     public let executable: URL
+    private let serverRunning: @Sendable () -> Bool
 
-    public init(executable: URL) { self.executable = executable }
+    public init(executable: URL) {
+        self.init(executable: executable, serverRunning: { Self.isServerRunning() })
+    }
+
+    init(executable: URL, serverRunning: @escaping @Sendable () -> Bool) {
+        self.executable = executable
+        self.serverRunning = serverRunning
+    }
 
     public static func bundled() throws -> ADBDownload {
+        guard Bundle.main.bundleURL.pathExtension != "app" else {
+            return try locate([Bundle.main.bundleURL.appending(path: "Contents/MacOS/adb")])
+        }
         let environment = ProcessInfo.processInfo.environment
         let homeDirectory = FileManager.default.homeDirectoryForCurrentUser
-        var candidates = [Bundle.main.bundleURL.appending(path: "Contents/MacOS/adb")]
-        if Bundle.main.bundleURL.pathExtension != "app" {
-            candidates.append(URL(filePath: FileManager.default.currentDirectoryPath).appending(path: "build/adb/adb"))
-        }
-        candidates += [
+        var candidates = [
+            URL(filePath: FileManager.default.currentDirectoryPath).appending(path: "build/adb/adb"),
             URL(filePath: "/opt/homebrew/bin/adb"),
             URL(filePath: "/usr/local/bin/adb"),
             homeDirectory.appending(path: "Library/Android/sdk/platform-tools/adb"),
@@ -53,9 +61,44 @@ public struct ADBDownload: Sendable {
         return ADBDownload(executable: url)
     }
 
+    static let environment: [String: String] = {
+        var environment = ProcessInfo.processInfo.environment
+        for key in ["ANDROID_ADB_SERVER_PORT", "ADB_SERVER_SOCKET", "ANDROID_SERIAL"] { environment[key] = nil }
+        environment["ADB_MDNS"] = "0"
+        return environment
+    }()
+
+    static func isServerRunning() -> Bool {
+        let socket = Darwin.socket(AF_INET, SOCK_STREAM, 0)
+        guard socket >= 0 else { return false }
+        defer { close(socket) }
+        var address = sockaddr_in()
+        address.sin_len = UInt8(MemoryLayout<sockaddr_in>.size)
+        address.sin_family = sa_family_t(AF_INET)
+        address.sin_port = UInt16(5037).bigEndian
+        address.sin_addr.s_addr = inet_addr("127.0.0.1")
+        return withUnsafePointer(to: &address) {
+            $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
+                connect(socket, $0, socklen_t(MemoryLayout<sockaddr_in>.size)) == 0
+            }
+        }
+    }
+
     public func rebootToDownload(from device: FlashDevice, using engine: FlashEngine,
                                  onLine: @escaping @Sendable (String) -> Void = { _ in }) async throws {
         guard !device.isDownloadMode else { throw ADBError.alreadyInDownloadMode }
+        let startsServer = !serverRunning()
+        do {
+            try await reboot(device, using: engine, onLine: onLine)
+        } catch {
+            if startsServer { _ = try? await command(["kill-server"]) }
+            throw error
+        }
+        if startsServer { _ = try? await command(["kill-server"]) }
+    }
+
+    private func reboot(_ device: FlashDevice, using engine: FlashEngine,
+                        onLine: @escaping @Sendable (String) -> Void) async throws {
         try await checkUSB(device, using: engine)
         let target = try await singleDevice()
         let prefix = ["-t", String(target.transport)]
@@ -86,7 +129,8 @@ public struct ADBDownload: Sendable {
     }
 
     private func command(_ arguments: [String], onLine: @escaping @Sendable (String) -> Void = { _ in }) async throws -> String {
-        let result = try await CommandRunner.run(executable, arguments: arguments, timeout: 15, onLine: onLine)
+        let result = try await CommandRunner.run(executable, arguments: arguments, environment: Self.environment,
+                                                 timeout: 15, onLine: onLine)
         try result.requireSuccess()
         guard !result.truncated else { throw FlashError.outputTooLarge }
         return result.lines.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)

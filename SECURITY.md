@@ -47,6 +47,7 @@ Estão no escopo:
 - A verificação de atualizações e os links que ela abre.
 - A integração de instalação USB, seleção e validação de pacotes, importação de
   ZIP e o adaptador do motor de instalação.
+- O uso do `adb` embutido para reiniciar o aparelho em modo Download.
 - Os scripts de build, empacotamento e publicação.
 
 Fora do escopo (reporte diretamente aos projetos de origem):
@@ -73,9 +74,18 @@ Fora do escopo (reporte diretamente aos projetos de origem):
 - O `auth_param.dat` vem embutido no app, baixado de um commit fixo do Bifrost no
   build. Ele só é usado se o SHA-256 conferir com o valor definido no código; caso
   contrário, a busca falha.
-- O firmware é baixado direto dos servidores da Samsung e conferido com o CRC32
-  informado por eles antes de ser decifrado. Os `.tar.md5` dentro do `.zip`
-  trazem o MD5 da própria Samsung, que o motor de instalação confere antes de gravar.
+- O firmware é baixado direto dos servidores da Samsung, por HTTPS, e conferido com o
+  CRC32 informado por eles antes de ser decifrado. Os `.tar.md5` dentro do `.zip`
+  terminam com um MD5, que o motor de instalação confere antes de gravar. Esse MD5
+  detecta arquivos corrompidos, mas não comprova a origem: quem altera o pacote pode
+  recalcular o MD5. A autenticidade do firmware é verificada pelo próprio aparelho:
+  com o bootloader bloqueado, ele recusa imagens sem a assinatura da Samsung.
+- Um ZIP ou pacote importado de fora do FirmDrop não tem a origem verificada pelo app.
+  Use apenas firmwares baixados pelo FirmDrop ou de fontes em que você confia.
+- O `adb` embutido conversa só com o aparelho conectado por USB. Ele é iniciado com a
+  descoberta mDNS desligada, então não procura aparelhos na rede local. Se o FirmDrop
+  iniciou o servidor ADB, ele o encerra depois do reinício; um servidor que já estava
+  em execução, de outro app ou do usuário, é mantido.
 - A instalação USB é experimental. O modelo informado e os nomes dos arquivos não
   comprovam compatibilidade com o hardware ou com a revisão de bootloader. O app
   exige revisão explícita antes de iniciar, usa uma única conexão USB e não envia PIT.

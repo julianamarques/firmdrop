@@ -155,6 +155,9 @@ import Testing
         "https://github.com.evil.example/julianamarques/firmdrop/releases/FirmDrop.dmg",
         "https://user@github.com/julianamarques/firmdrop/releases/FirmDrop.dmg",
         "x-apple.systempreferences:com.apple.preference.security",
+        "https://github.com/julianamarques/firmdrop/releases/../../../outra-pessoa/repo/releases/download/v9.0.0/FirmDrop.dmg",
+        "https://github.com/julianamarques/firmdrop/releases/%2e%2e/%2e%2e/%2e%2e/outra-pessoa/repo/releases/download/v9.0.0/FirmDrop.dmg",
+        "https://github.com/julianamarques/firmdrop/releases/./download/v9.0.0/FirmDrop.dmg",
     ])
     func neverOpensUntrustedLinks(link: String) throws {
         #expect(try release(asset: link, html: link).downloadURL == UpdateChecker.releasesPage)

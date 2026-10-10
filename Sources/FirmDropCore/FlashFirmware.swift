@@ -117,7 +117,7 @@ public enum FlashError: LocalizedError, Equatable, Sendable {
     case invalidPackage(String), changedPackage(String), ambiguousSlot(String), missingSlot(String)
     case modelMismatch(String, String), mixedBuilds, notInDownloadMode, engineMissing
     case commandFailed(Int32, String), timedOut, outputTooLarge, invalidZIP
-    case deviceChanged, probeRequired, incompleteFlash
+    case deviceChanged, probeRequired, incompleteFlash, notEnoughSpace(Int64)
 
     public var errorDescription: String? {
         switch self {
@@ -135,6 +135,8 @@ public enum FlashError: LocalizedError, Equatable, Sendable {
         case .invalidZIP: String(localized: "O ZIP não contém um conjunto válido de pacotes Samsung ou contém nomes ambíguos.")
         case .deviceChanged: String(localized: "A conexão USB mudou. Detecte e teste o aparelho novamente.")
         case .probeRequired: String(localized: "Teste a conexão com o aparelho antes de instalar.")
+        case let .notEnoughSpace(bytes):
+            String(localized: "Espaço insuficiente para extrair os pacotes. São necessários \(ByteCountFormatter.string(fromByteCount: bytes, countStyle: .file)) livres no disco.")
         case .incompleteFlash: String(localized: "O motor encerrou sem confirmar a conclusão da instalação. Consulte o registro antes de tentar novamente.")
         }
     }
