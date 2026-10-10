@@ -4,6 +4,7 @@ import SwiftUI
 struct FlashView: View {
     @Environment(FlashModel.self) private var flash
     @State private var review: FlashReview?
+    @State private var copiedLog = false
 
     var body: some View {
         @Bindable var flash = flash
@@ -241,7 +242,21 @@ struct FlashView: View {
                 Text("Mensagens de conexão e instalação")
                     .font(.caption).foregroundStyle(.secondary)
                 Spacer()
-                Button("Copiar Registro") { flash.copyLog() }
+                Button {
+                    flash.copyLog()
+                    copiedLog = true
+                } label: {
+                    if copiedLog {
+                        Label("Copiado", systemImage: "checkmark").foregroundStyle(.green)
+                    } else {
+                        Text("Copiar Registro")
+                    }
+                }
+                .task(id: copiedLog) {
+                    guard copiedLog else { return }
+                    try? await Task.sleep(for: .seconds(2))
+                    copiedLog = false
+                }
             }
             ScrollView {
                 Text(flash.logs.joined(separator: "\n"))

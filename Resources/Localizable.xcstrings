@@ -609,6 +609,16 @@
         }
       }
     },
+    "Copiado": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copied"
+          }
+        }
+      }
+    },
     "Copiar Chave de Decifragem": {
       "localizations": {
         "en": {
