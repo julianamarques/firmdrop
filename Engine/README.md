@@ -11,6 +11,12 @@ emits progress, and never uploads a PIT or requests a repartition. The patch rej
 incomplete partition mappings before any partition write. `--probe` only opens a
 protocol session, reads its version, and ends the session without rebooting or
 writing partitions. It does not establish firmware/model compatibility.
+After a session ends without a reboot, the bootloader no longer answers the
+`ODIN`/`LOKE` handshake while it stays in Download Mode. Like Heimdall's
+`--resume`, the resume-session patch lets `--probe --resume` and
+`--flash --resume` skip only that handshake and continue with the same session
+requests. The app passes `--resume` only after a successful probe on the same
+USB connection.
 The macOS SDK patch removes a legacy pre-macOS 12 port-constant fallback; this
 build requires macOS 26 and uses `kIOMainPortDefault` directly.
 

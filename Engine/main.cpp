@@ -17,6 +17,10 @@
 #include <string>
 #include <vector>
 
+namespace brokkr::odin {
+extern bool firmdrop_resume_session;
+}
+
 namespace {
 constexpr auto version = "firmdrop-flash/1 brokkr/f7ae23067b4ee6c2e0211a1dee563f4be991cb4d";
 std::mutex output_mutex;
@@ -30,7 +34,7 @@ struct Arguments {
   std::string operation, target;
   std::uint64_t connection = 0;
   std::vector<std::filesystem::path> inputs;
-  bool preserve = false, reboot = true;
+  bool preserve = false, reboot = true, resume = false;
 };
 
 brokkr::core::Result<Arguments> parse(int argc, char** argv) {
@@ -44,6 +48,7 @@ brokkr::core::Result<Arguments> parse(int argc, char** argv) {
     const std::string flag = argv[i];
     if (flag == "--preserve") { out.preserve = true; continue; }
     if (flag == "--no-reboot") { out.reboot = false; continue; }
+    if (flag == "--resume") { out.resume = true; continue; }
     if (flag != "--target" && flag != "--connection" && flag != "--file")
       return brokkr::core::fail("Unknown option: " + flag);
     if (++i >= argc) return brokkr::core::fail("Missing value for " + flag);
@@ -59,6 +64,8 @@ brokkr::core::Result<Arguments> parse(int argc, char** argv) {
   if ((out.operation == "--flash" || out.operation == "--probe") &&
       (out.target.empty() || out.connection == 0))
     return brokkr::core::fail("An explicit USB target and connection identifier are required.");
+  if (out.resume && out.operation != "--flash" && out.operation != "--probe")
+    return brokkr::core::fail("--resume is only valid with --probe or --flash.");
   if ((out.operation == "--flash" || out.operation == "--verify") && out.inputs.size() != 4)
     return brokkr::core::fail("Select exactly four packages: BL, AP, CP and CSC/HOME_CSC.");
   return out;
@@ -133,7 +140,7 @@ brokkr::core::Status execute(const Arguments& args) {
     BRK_TRY(usb.open_and_connect(2000));
     BRK_TRY(check_connection(args));
     brokkr::odin::OdinCommands odin(usb.conn);
-    BRK_TRY(odin.handshake(2));
+    if (!args.resume) BRK_TRY(odin.handshake(2));
     BRK_TRYV(info, odin.get_version(2));
     BRK_TRY(odin.shutdown(brokkr::odin::OdinCommands::ShutdownMode::NoReboot, 2));
     event("PROBE\t" + std::to_string(static_cast<int>(info.protocol())));
@@ -145,6 +152,7 @@ brokkr::core::Status execute(const Arguments& args) {
   brokkr::odin::UsbTarget usb(args.target);
   brokkr::odin::Cfg cfg;
   cfg.reboot_after = args.reboot;
+  brokkr::odin::firmdrop_resume_session = args.resume;
   BRK_TRY(usb.open_and_connect(cfg.preflash_timeout_ms));
   BRK_TRY(check_connection(args));
   brokkr::odin::Target device{.id = args.target, .link = &usb.conn};

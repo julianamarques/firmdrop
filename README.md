@@ -128,7 +128,9 @@ a causa de um aparelho não reconhecido.
    Volume +. Feche OdinMac, Smart Switch e outros programas que usam a conexão USB.
 5. Clique em **Detectar** e **Testar conexão**. Detectar apenas enumera o USB;
    testar abre uma sessão do protocolo, consulta sua versão e encerra sem reiniciar
-   ou gravar partições. Se precisar reconectar o cabo, teste novamente.
+   ou gravar partições. A instalação retoma essa sessão sem repetir o handshake,
+   como o `--resume` do Heimdall. Se precisar reconectar o cabo, teste novamente;
+   se a instalação falhar, saia do modo Download e entre de novo antes de repetir.
 6. Clique em **Instalar firmware…**, no rodapé da janela. Na revisão, confira os
    arquivos, o modelo e a revisão do bootloader e confirme. A gravação só começa
    depois dessa confirmação. Não desconecte o cabo; o app impede o repouso por

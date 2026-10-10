@@ -22,9 +22,9 @@ Brokkr (https://github.com/Gabriel2392/brokkr-flash)
 Copyright (c) 2026 Gabriel2392
 Licensed under GPL-3.0-or-later (see Brokkr-LICENSE.txt).
 Pinned commit: f7ae23067b4ee6c2e0211a1dee563f4be991cb4d.
-Engine/main.cpp, Engine/compat.hpp, Engine/build.sh and
-Engine/strict-mapping.patch and Engine/macos-sdk.patch are the FirmDrop
-GPL-3.0-or-later adapter.
+Engine/main.cpp, Engine/compat.hpp, Engine/build.sh,
+Engine/strict-mapping.patch, Engine/resume-session.patch and
+Engine/macos-sdk.patch are the FirmDrop GPL-3.0-or-later adapter.
 The Swift app communicates with this executable through process arguments
 and stdout/stderr. It does not link to Brokkr.
 

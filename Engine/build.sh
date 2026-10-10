@@ -13,6 +13,7 @@ if [ "${3:-}" = --universal ]; then ARCHES=(arm64 x86_64); fi
 mkdir -p "$OUTPUT/patched"
 cp "$SOURCES/brokkr/src/protocol/odin/group_flasher.cpp" "$OUTPUT/patched/group_flasher.cpp"
 patch -s "$OUTPUT/patched/group_flasher.cpp" "$ADAPTER/strict-mapping.patch"
+patch -s "$OUTPUT/patched/group_flasher.cpp" "$ADAPTER/resume-session.patch"
 cp "$SOURCES/brokkr/src/platform/macos/sysfs_usb.cpp" "$OUTPUT/patched/sysfs_usb.cpp"
 patch -s "$OUTPUT/patched/sysfs_usb.cpp" "$ADAPTER/macos-sdk.patch"
 FILES=(

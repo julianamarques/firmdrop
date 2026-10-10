@@ -27,6 +27,7 @@ final class FlashModel {
     private(set) var deviceError: String?
     private(set) var success = false
     private var ownedDirectory: URL?
+    private var closedSession: FlashDevice?
     private var activity: NSObjectProtocol?
 
     var selectedDevice: FlashDevice? { devices.first { $0.id == selectedDeviceID } }
@@ -58,6 +59,7 @@ final class FlashModel {
                 selectedDeviceID = found.count == 1 ? found[0].id : ""
             }
             if let probedDevice, !found.contains(probedDevice) { self.probedDevice = nil }
+            if let closedSession, !found.contains(closedSession) { self.closedSession = nil }
         } catch {
             deviceError = error.localizedDescription
             devices = []
@@ -72,7 +74,8 @@ final class FlashModel {
         Task {
             defer { finish() }
             do {
-                let version = try await FlashEngine.bundled().probe(device, onLine: logHandler())
+                let version = try await FlashEngine.bundled().probe(device, resume: closedSession == device, onLine: logHandler())
+                closedSession = device
                 guard devices.contains(device), selectedDevice == device else { throw FlashError.deviceChanged }
                 probedDevice = device
                 stage = String(localized: "Conexão testada · protocolo \(version)")
@@ -193,7 +196,8 @@ final class FlashModel {
                 finish()
             }
             do {
-                try await FlashEngine.bundled().flash(plan, onLine: logHandler())
+                try await FlashEngine.bundled().flash(plan, resume: closedSession == plan.device, onLine: logHandler())
+                closedSession = plan.reboot ? nil : plan.device
                 success = true
                 progress = 1
                 stage = String(localized: "Instalação concluída")

@@ -103,11 +103,12 @@ public struct FlashPlan: Equatable, Sendable {
         self.reboot = reboot
     }
 
-    public func arguments() throws -> [String] {
+    public func arguments(resume: Bool = false) throws -> [String] {
         for package in packages { try package.checkUnchanged() }
         var arguments = ["--flash", "--target", device.target, "--connection", String(device.connection)]
         if preservesData { arguments.append("--preserve") }
         if !reboot { arguments.append("--no-reboot") }
+        if resume { arguments.append("--resume") }
         for package in packages { arguments += ["--file", package.url.path] }
         return arguments
     }

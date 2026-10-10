@@ -60,6 +60,8 @@ import Testing
             #expect(args.filter { $0 == "--file" }.count == 4)
             #expect(args.contains(selected[.ap]!.url.path))
             #expect(!args.contains("--use-pit"))
+            #expect(!args.contains("--resume"))
+            #expect(try plan.arguments(resume: true).contains("--resume"))
             #expect(plan.packages.map(\.slot) == [.bl, .ap, .cp, .csc])
         }
     }
@@ -128,6 +130,22 @@ import Testing
         #expect(result.truncated)
         #expect(!result.lines.isEmpty)
         #expect(throws: (any Error).self) { try result.requireSuccess() }
+    }
+
+    @Test func probeResumesOnlyWhenAskedAndErrorsHideEngineEvents() async throws {
+        try await withTemporaryDirectory { directory in
+            let url = try executable(in: directory, body: "printf '%s\\n' \"$*\" >> \"$(dirname \"$0\")/calls\"\nprintf '@firmdrop\\tPROBE\\t4\\n'\n")
+            let engine = FlashEngine(executable: url)
+            #expect(try await engine.probe(device) == 4)
+            #expect(try await engine.probe(device, resume: true) == 4)
+            let calls = try String(contentsOf: directory.appending(path: "calls"), encoding: .utf8)
+            #expect(calls == "--probe --target 0x00100000 --connection 42\n--probe --target 0x00100000 --connection 42 --resume\n")
+
+            let failing = try executable(in: directory, body: "printf '@firmdrop\\tPROGRESS\\t1\\t2\\n'; echo 'Handshake receive failed' >&2; exit 1\n")
+            await #expect(throws: FlashError.commandFailed(1, "Handshake receive failed")) {
+                try await FlashEngine(executable: failing).probe(device)
+            }
+        }
     }
 
     @Test func metadataCommandsHaveTimeouts() async throws {

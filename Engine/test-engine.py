@@ -35,6 +35,8 @@ with tempfile.TemporaryDirectory(prefix="firmdrop-engine-tests-") as temp:
     args = [part for path in files for part in ("--file", str(path))]
     assert "firmdrop-flash/1" in run("--version", success=True)
     run("--verify", "--preserve", *args, success=True)
+    assert "--resume" in run("--verify", "--resume", *args, success=False)
+    run("--list", "--resume", success=False)
     contents = files[1].read_bytes()
     files[1].write_bytes(contents[:512] + b"X" + contents[513:])
     assert "mismatch" in run("--verify", *args, success=False).lower()

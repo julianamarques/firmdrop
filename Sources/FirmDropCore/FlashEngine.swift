@@ -69,11 +69,12 @@ public struct FlashEngine: Sendable {
         }
     }
 
-    public func probe(_ device: FlashDevice, onLine: @escaping @Sendable (String) -> Void = { _ in }) async throws -> Int {
+    public func probe(_ device: FlashDevice, resume: Bool = false,
+                      onLine: @escaping @Sendable (String) -> Void = { _ in }) async throws -> Int {
         guard device.isDownloadMode else { throw FlashError.notInDownloadMode }
-        let result = try await CommandRunner.run(executable,
-            arguments: ["--probe", "--target", device.target, "--connection", String(device.connection)],
-            timeout: 30, onLine: onLine)
+        let arguments = ["--probe", "--target", device.target, "--connection", String(device.connection)]
+        let result = try await CommandRunner.run(executable, arguments: arguments + (resume ? ["--resume"] : []),
+                                                 timeout: 30, onLine: onLine)
         try result.requireSuccess()
         guard let version = result.lines.compactMap({ line -> Int? in
             if case let .probe(version) = FlashEvent(line: line) { version } else { nil }
@@ -81,9 +82,9 @@ public struct FlashEngine: Sendable {
         return version
     }
 
-    public func flash(_ plan: FlashPlan, onLine: @escaping @Sendable (String) -> Void) async throws {
+    public func flash(_ plan: FlashPlan, resume: Bool = false, onLine: @escaping @Sendable (String) -> Void) async throws {
         guard try await devices().contains(plan.device) else { throw FlashError.deviceChanged }
-        let arguments = try plan.arguments()
+        let arguments = try plan.arguments(resume: resume)
         let result = try await CommandRunner.run(executable, arguments: arguments, onLine: onLine)
         try result.requireSuccess()
         guard result.lines.contains("@firmdrop\tDONE") else { throw FlashError.incompleteFlash }

@@ -8,7 +8,8 @@ struct CommandResult: Sendable {
 
     func requireSuccess() throws {
         guard status == 0 else {
-            throw FlashError.commandFailed(status, lines.suffix(12).joined(separator: "\n"))
+            let messages = lines.filter { !$0.hasPrefix("@firmdrop\t") }
+            throw FlashError.commandFailed(status, messages.suffix(12).joined(separator: "\n"))
         }
     }
 }
