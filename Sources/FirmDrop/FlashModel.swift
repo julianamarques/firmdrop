@@ -39,14 +39,15 @@ final class FlashModel {
         let typed = Format.cleanModel(modelText)
         return typed.isEmpty ? nil : typed
     }
+    var hasAllPackages: Bool { FlashSlot.allCases.allSatisfy { packages[$0] != nil } }
     var connectionTested: Bool { selectedDevice != nil && selectedDevice == probedDevice }
     var reviewRequirement: String? {
         guard let device = selectedDevice else { return String(localized: "Conecte o aparelho e clique em Detectar.") }
         guard device.isDownloadMode else { return String(localized: "Coloque o aparelho em modo Download.") }
         guard connectionTested else { return String(localized: "Clique em Testar Conexão.") }
         if packages[.csc] == nil, cscOptions.count > 1 { return String(localized: "Escolha HOME_CSC ou CSC.") }
-        let missing = FlashSlot.allCases.filter { packages[$0] == nil }
-        guard missing.isEmpty else {
+        guard hasAllPackages else {
+            let missing = FlashSlot.allCases.filter { packages[$0] == nil }
             return String(localized: "Falta selecionar: \(missing.map(\.rawValue).formatted(.list(type: .and))).")
         }
         return nil

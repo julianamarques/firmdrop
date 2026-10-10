@@ -33,12 +33,14 @@ struct FlashView: View {
                 }
                 .buttonStyle(.glass)
                 .padding(20)
+                .id("content")
                 .frame(maxWidth: 1000)
                 .frame(maxWidth: .infinity)
             }
             .scrollEdgeEffectStyle(.soft, for: .all)
-            .onChange(of: flash.isBusy) { _, busy in if busy { revealStatus(proxy) } }
-            .onChange(of: flash.error) { _, error in if error != nil { revealStatus(proxy) } }
+            .onChange(of: flash.isBusy) { _, busy in if busy { reveal("status", with: proxy) } }
+            .onChange(of: flash.error) { _, error in if error != nil { reveal("status", with: proxy) } }
+            .onChange(of: flash.hasAllPackages) { _, complete in if complete { reveal("content", with: proxy) } }
             .safeAreaBar(edge: .bottom) {
                 let requirement = flash.reviewRequirement
                 HStack(spacing: 14) {
@@ -74,10 +76,10 @@ struct FlashView: View {
         }
     }
 
-    // The status card can appear in the same update, so scroll once it is laid out.
-    private func revealStatus(_ proxy: ScrollViewProxy) {
+    // The target can appear in the same update, so scroll once it is laid out.
+    private func reveal(_ id: String, with proxy: ScrollViewProxy) {
         Task { @MainActor in
-            withAnimation(.smooth) { proxy.scrollTo("status", anchor: .bottom) }
+            withAnimation(.smooth) { proxy.scrollTo(id, anchor: .bottom) }
         }
     }
 
