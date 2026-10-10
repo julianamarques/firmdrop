@@ -281,7 +281,7 @@ private struct FlashConfirmation: View {
             }
             Text(plan.preservesData ? String(localized: "HOME_CSC: preservar dados") : String(localized: "CSC: instalação limpa, com possível perda de dados"))
                 .font(.headline)
-            Text("A instalação pode causar perda de dados ou impedir a inicialização se o firmware for incompatível. O teste de USB não verifica modelo, bloqueios de segurança ou anti-rollback. A instalação no S25 foi testada uma vez, com CSC completo, e continua experimental.")
+            Text("A instalação pode causar perda de dados ou impedir a inicialização se o firmware for incompatível. O teste de USB não verifica modelo, bloqueios de segurança ou anti-rollback. Testada no S25 e no A05s, com CSC completo; continua experimental.")
                 .font(.callout)
             Toggle("Conferi o PRODUCT NAME e a revisão do bootloader na tela do aparelho e tenho backup.", isOn: $confirmed)
             if !plan.preservesData {

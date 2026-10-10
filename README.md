@@ -101,12 +101,16 @@ Também nos Ajustes: manter o `.enc4` depois de decifrar e escolher a região pa
 
 ### Instalar firmware pelo Mac (experimental)
 
-**Testado em um Galaxy S25 (SM-S931B):** em 10/10/2026, o FirmDrop instalou a
-One UI 9 (Android 17, `S931BXXUCDZIF`, CSC `OWO`) do começo ao fim. O aparelho entrou
-em Download pelo Modo de manutenção e pelo ADB, e a instalação usou o CSC completo
-(instalação limpa). Foi um único teste, com um aparelho e um firmware; outros modelos,
-versões e a instalação com HOME_CSC ainda não foram validados, e a função continua
-experimental.
+**Testado em dois aparelhos**, ambos em 10/10/2026, do começo ao fim e com o CSC completo
+(instalação limpa):
+
+- **Galaxy S25 (SM-S931B):** One UI 9 (Android 17, `S931BXXUCDZIF`, CSC `OWO`). O
+  aparelho entrou em Download pelo Modo de manutenção e pelo ADB.
+- **Galaxy A05s (SM-A057M):** One UI 7 (Android 15, `A057MUBUGDZH1`, CSC `OWO`). O
+  aparelho entrou em Download pelos botões, sem ADB e sem informar o modelo.
+
+Foram dois testes, cada um com um aparelho e um firmware; outros modelos, versões e a
+instalação com HOME_CSC ainda não foram validados, e a função continua experimental.
 
 O FirmDrop usa o transporte IOKit do Brokkr, diferente do Heimdall usado pelo OdinMac.
 Isso permite investigar a conexão por outra implementação, mas não garante resolver

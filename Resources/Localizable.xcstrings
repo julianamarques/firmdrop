@@ -77,12 +77,12 @@
         }
       }
     },
-    "A instalação pode causar perda de dados ou impedir a inicialização se o firmware for incompatível. O teste de USB não verifica modelo, bloqueios de segurança ou anti-rollback. A instalação no S25 foi testada uma vez, com CSC completo, e continua experimental.": {
+    "A instalação pode causar perda de dados ou impedir a inicialização se o firmware for incompatível. O teste de USB não verifica modelo, bloqueios de segurança ou anti-rollback. Testada no S25 e no A05s, com CSC completo; continua experimental.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Installing incompatible firmware may erase data or prevent the device from booting. The USB test does not check the model, security locks or anti-rollback. Firmware installation on S25 was tested once, with a full CSC, and remains experimental."
+            "value": "Installing incompatible firmware may erase data or prevent the device from booting. The USB test does not check the model, security locks or anti-rollback. Tested on the S25 and A05s with a full CSC; still experimental."
           }
         }
       }
