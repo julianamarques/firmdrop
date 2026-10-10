@@ -140,29 +140,11 @@ struct FlashView: View {
     }
 
     private var firmwareCard: some View {
-        @Bindable var flash = flash
-        return GlassCard(title: "Pacotes do Firmware", symbol: "shippingbox", prominentTitle: true) {
+        GlassCard(title: "Pacotes do Firmware", symbol: "shippingbox", prominentTitle: true) {
             HStack {
-                if let model = flash.deviceModel {
-                    Text(model).font(.system(.body, design: .monospaced).weight(.semibold))
-                    Label("Lido do aparelho pelo ADB", systemImage: "checkmark.seal.fill")
-                        .font(.callout).foregroundStyle(.green)
-                } else {
-                    TextField("Modelo do aparelho (opcional), ex.: SM-S931B", text: $flash.modelText)
-                        .textFieldStyle(.plain)
-                        .padding(.horizontal, 14)
-                        .frame(height: 30)
-                        .glassEffect(.regular.interactive(), in: .capsule)
-                        .frame(maxWidth: 340)
-                }
-                Spacer()
                 Button("Importar ZIP…") { flash.chooseZIP() }
                 Button("Abrir Pasta…") { flash.chooseFolder() }
             }
-            Text(flash.deviceModel == nil
-                 ? "O modelo é lido do aparelho ao reiniciar pelo ADB. Sem ADB, é opcional: se informar o PRODUCT NAME exibido na tela de Download, o FirmDrop confere os arquivos com ele. A revisão mínima do bootloader não é verificada."
-                 : "A revisão mínima do bootloader não é verificada; confira-a na tela de Download.")
-                .font(.caption).foregroundStyle(.secondary)
             ForEach(FlashSlot.allCases) { slot in
                 let showsCSCPicker = slot == .csc && flash.cscOptions.count > 1
                 HStack(spacing: 12) {
@@ -285,9 +267,9 @@ private struct FlashConfirmation: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Revisar instalação").font(.title2.bold())
-            Text(plan.model.map { String(localized: "Modelo informado: \($0)") }
-                 ?? String(localized: "Modelo não informado · os arquivos não foram conferidos com o aparelho"))
-                .font(.headline)
+            if let model = plan.model {
+                Text("Modelo lido pelo ADB: \(model)").font(.headline)
+            }
             Text("Aparelho USB: \(plan.device.target)").font(.system(.callout, design: .monospaced))
             ForEach(plan.packages) { package in
                 Text(package.slot.rawValue + ": " + package.url.lastPathComponent)

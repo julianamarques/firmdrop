@@ -10,7 +10,6 @@ enum FirmwareTab: Hashable {
 @MainActor @Observable
 final class FlashModel {
     var selectedTab: FirmwareTab = .download
-    var modelText = ""
     var selectedDeviceID = ""
     var reboot = true
     private(set) var devices: [FlashDevice] = []
@@ -33,12 +32,8 @@ final class FlashModel {
     private var activity: NSObjectProtocol?
 
     var selectedDevice: FlashDevice? { devices.first { $0.id == selectedDeviceID } }
+    /// Read over ADB before rebooting to Download; like Odin, installing does not ask for it.
     var deviceModel: String? { reportedModel.flatMap { $0.device == selectedDevice ? $0.model : nil } }
-    var model: String? {
-        if let deviceModel { return deviceModel }
-        let typed = Format.cleanModel(modelText)
-        return typed.isEmpty ? nil : typed
-    }
     var hasAllPackages: Bool { FlashSlot.allCases.allSatisfy { packages[$0] != nil } }
     var connectionTested: Bool { selectedDevice != nil && selectedDevice == probedDevice }
     var reviewRequirement: String? {
@@ -133,7 +128,6 @@ final class FlashModel {
 
     func importDownload(_ item: DownloadItem) {
         guard !isBusy, case let .completed(url) = item.state else { return }
-        modelText = item.model
         selectedTab = .install
         importZIP(url)
     }
@@ -195,7 +189,7 @@ final class FlashModel {
     func review() -> FlashPlan? {
         do {
             guard connectionTested, let device = selectedDevice else { throw FlashError.probeRequired }
-            return try FlashPlan(model: model, packages: packages, device: device, reboot: reboot)
+            return try FlashPlan(model: deviceModel, packages: packages, device: device, reboot: reboot)
         } catch {
             fail(error)
             return nil
@@ -207,7 +201,8 @@ final class FlashModel {
         guard connectionTested, plan.device == selectedDevice else { fail(FlashError.deviceChanged); return }
         begin(String(localized: "Conferindo os pacotes antes de instalar…"))
         isFlashing = true
-        append(String(localized: "Instalação de \(plan.model ?? String(localized: "modelo não informado")) · USB \(plan.device.target)"))
+        append(plan.model.map { String(localized: "Instalação de \($0) · USB \(plan.device.target)") }
+               ?? String(localized: "Instalação · USB \(plan.device.target)"))
         for package in plan.packages { append(package.url.lastPathComponent) }
         Task {
             defer {

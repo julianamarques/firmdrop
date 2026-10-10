@@ -86,7 +86,7 @@ Fora do escopo (reporte diretamente aos projetos de origem):
   descoberta mDNS desligada, então não procura aparelhos na rede local. Se o FirmDrop
   iniciou o servidor ADB, ele o encerra depois do reinício; um servidor que já estava
   em execução, de outro app ou do usuário, é mantido.
-- A instalação USB é experimental. O modelo informado e os nomes dos arquivos não
+- A instalação USB é experimental. O modelo lido pelo ADB e os nomes dos arquivos não
   comprovam compatibilidade com o hardware ou com a revisão de bootloader. O app
   exige revisão explícita antes de iniciar, usa uma única conexão USB e não envia PIT.
 - O app não instala atualizações sozinho: ele apenas abre o link do `.dmg` da

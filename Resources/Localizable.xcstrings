@@ -123,16 +123,6 @@
         }
       }
     },
-    "A revisão mínima do bootloader não é verificada; confira-a na tela de Download.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The minimum bootloader revision is not checked; verify it on the Download screen."
-          }
-        }
-      }
-    },
     "A versão %@ está disponível. Você está usando a %@.": {
       "localizations": {
         "en": {
@@ -1051,12 +1041,12 @@
         }
       }
     },
-    "Lido do aparelho pelo ADB": {
+    "Instalação · USB %@": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Read from the device over ADB"
+            "value": "Installation · USB %@"
           }
         }
       }
@@ -1121,26 +1111,6 @@
         }
       }
     },
-    "Modelo do aparelho (opcional), ex.: SM-S931B": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Device model (optional), e.g. SM-S931B"
-          }
-        }
-      }
-    },
-    "Modelo informado: %@": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Entered model: %@"
-          }
-        }
-      }
-    },
     "Modelo inválido: “%@”. Use o código do aparelho, por exemplo SM-A556E.": {
       "localizations": {
         "en": {
@@ -1151,12 +1121,12 @@
         }
       }
     },
-    "Modelo não informado · os arquivos não foram conferidos com o aparelho": {
+    "Modelo lido pelo ADB: %@": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Model not entered · the files were not checked against the device"
+            "value": "Model read over ADB: %@"
           }
         }
       }
@@ -1471,16 +1441,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "macOS detected the device, but it is not in Download Mode."
-          }
-        }
-      }
-    },
-    "O modelo é lido do aparelho ao reiniciar pelo ADB. Sem ADB, é opcional: se informar o PRODUCT NAME exibido na tela de Download, o FirmDrop confere os arquivos com ele. A revisão mínima do bootloader não é verificada.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The model is read from the device when rebooting over ADB. Without ADB it is optional: if you enter the PRODUCT NAME shown on the Download screen, FirmDrop checks the files against it. The minimum bootloader revision is not checked."
           }
         }
       }
@@ -2159,16 +2119,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ left"
-          }
-        }
-      }
-    },
-    "modelo não informado": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "model not entered"
           }
         }
       }

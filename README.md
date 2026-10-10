@@ -108,7 +108,7 @@ Também nos Ajustes: manter o `.enc4` depois de decifrar e escolher a região pa
   manutenção e pelo ADB.
 - **Galaxy A05s (SM-A057M):** One UI 7 (Android 15, `A057MUBUGDZH1`, CSC `OWO`), com o
   CSC completo e, em seguida, com o HOME_CSC, que manteve os dados. O aparelho entrou em
-  Download pelos botões, sem ADB e sem informar o modelo.
+  Download pelos botões, sem ADB.
 
 O HOME_CSC segue a lista `meta-data/download-list.txt` do pacote: além de `userdata`,
 ela deixou de fora outras imagens, como `rpm.mbn` e `keymint.mbn`. No teste, a versão
@@ -127,11 +127,9 @@ a causa de um aparelho não reconhecido.
    o app não escolhe sozinho: escolha na linha do CSC entre **HOME_CSC**, que tenta
    preservar os dados, e **CSC**, que apaga o aparelho. Dá para trocar a qualquer momento
    antes de instalar. Tenha backup em ambos os casos.
-3. Ao reiniciar pelo ADB (passo 4), o app lê o modelo do aparelho (`ro.product.model`)
-   e o usa no lugar do campo. Sem ADB, o campo é opcional, como no Odin: se informar o
-   modelo exato exibido como `PRODUCT NAME` na tela de Download, o app verifica se os
-   nomes dos pacotes correspondem a ele. Em todos os casos, o app confere se BL/AP
-   pertencem à mesma versão. Isso não verifica
+3. O app não pede o modelo do aparelho. Ao reiniciar pelo ADB (passo 4), ele lê o
+   modelo (`ro.product.model`) e confere se os nomes dos pacotes correspondem a ele.
+   Em todos os casos, o app confere se BL/AP pertencem à mesma versão. Isso não verifica
    automaticamente CSC, anti-rollback, FRP, Knox ou bloqueios do bootloader; essas
    restrições continuam sendo aplicadas pelo aparelho.
 4. Na One UI 9, ative o **Modo de manutenção** no Samsung, aguarde o reinício e
