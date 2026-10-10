@@ -90,7 +90,7 @@ struct FlashView: View {
                 if flash.isScanning { ProgressView().controlSize(.small) }
                 Button("Detectar") { Task { await flash.refreshDevices() } }
                     .disabled(flash.isBusy || flash.isScanning)
-                Button("Testar conexão") { flash.probe() }
+                Button("Testar Conexão") { flash.probe() }
                     .disabled(flash.isBusy || flash.selectedDevice?.isDownloadMode != true)
             }
             if let device = flash.selectedDevice {
@@ -109,7 +109,7 @@ struct FlashView: View {
             }
             Text("Em versões que permitem entrar por botões: desligue, segure os dois botões de volume e conecte o cabo ao Mac. Confirme com Volume +. Feche OdinMac, Smart Switch e outros programas que usam o aparelho.")
                 .font(.callout).foregroundStyle(.secondary)
-            Text("Testar conexão confirma a comunicação USB, mas não confirma a compatibilidade do firmware. A instalação no S25 continua experimental.")
+            Text("Testar Conexão confirma a comunicação USB, mas não confirma a compatibilidade do firmware. A instalação no S25 continua experimental.")
                 .font(.caption).foregroundStyle(.secondary)
             if let error = flash.deviceError { Text(error).foregroundStyle(.red).textSelection(.enabled) }
             Divider()
@@ -139,7 +139,7 @@ struct FlashView: View {
                 }
                 Spacer()
                 Button("Importar ZIP…") { flash.chooseZIP() }
-                Button("Abrir pasta…") { flash.chooseFolder() }
+                Button("Abrir Pasta…") { flash.chooseFolder() }
             }
             .disabled(flash.isBusy)
             Text(flash.deviceModel == nil
@@ -211,7 +211,7 @@ struct FlashView: View {
                 Text("Mensagens de conexão e instalação")
                     .font(.caption).foregroundStyle(.secondary)
                 Spacer()
-                Button("Copiar registro") { flash.copyLog() }
+                Button("Copiar Registro") { flash.copyLog() }
             }
             ScrollView {
                 Text(flash.logs.joined(separator: "\n"))
@@ -276,7 +276,7 @@ private struct FlashConfirmation: View {
             HStack {
                 Spacer()
                 Button("Cancelar", role: .cancel) { dismiss() }
-                Button("Iniciar instalação", role: .destructive) { dismiss(); start() }
+                Button("Iniciar Instalação", role: .destructive) { dismiss(); start() }
                     .buttonStyle(.borderedProminent)
                     .disabled(!confirmed || (!plan.preservesData && !confirmedErase))
             }

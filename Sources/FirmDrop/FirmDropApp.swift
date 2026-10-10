@@ -63,7 +63,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let alert = NSAlert()
         alert.messageText = String(localized: "Há downloads em andamento")
         alert.informativeText = String(localized: "Eles serão pausados e poderão ser retomados quando você abrir o FirmDrop de novo.")
-        alert.addButton(withTitle: String(localized: "Pausar e sair"))
+        alert.addButton(withTitle: String(localized: "Pausar e Sair"))
         alert.addButton(withTitle: String(localized: "Cancelar"))
         guard alert.runModal() == .alertFirstButtonReturn else { return .terminateCancel }
         downloads.pauseAll()

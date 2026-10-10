@@ -113,7 +113,7 @@ public enum ADBError: LocalizedError, Equatable, Sendable {
         case .deviceChanged:
             String(localized: "A conexão do aparelho mudou durante a verificação do ADB. Confira o cabo e tente novamente.")
         case .alreadyInDownloadMode:
-            String(localized: "O aparelho já está em modo Download. Use Testar conexão para continuar.")
+            String(localized: "O aparelho já está em modo Download. Use Testar Conexão para continuar.")
         case .downloadNotDetected:
             String(localized: "O reinício foi solicitado, mas o modo Download não apareceu no USB a tempo. Confira a tela do aparelho. Se aparecer Reboot Device - D2, ele não permaneceu em modo Download.")
         }

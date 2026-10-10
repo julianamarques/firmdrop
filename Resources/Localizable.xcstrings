@@ -149,12 +149,12 @@
         }
       }
     },
-    "Abrir pasta…": {
+    "Abrir Pasta…": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open folder…"
+            "value": "Open Folder…"
           }
         }
       }
@@ -439,7 +439,7 @@
         }
       }
     },
-    "Cancelar download": {
+    "Cancelar Download": {
       "localizations": {
         "en": {
           "stringUnit": {
@@ -449,7 +449,7 @@
         }
       }
     },
-    "Cancelar e apagar arquivo parcial": {
+    "Cancelar e Apagar Arquivo Parcial": {
       "localizations": {
         "en": {
           "stringUnit": {
@@ -459,7 +459,7 @@
         }
       }
     },
-    "Cancelar e apagar arquivo parcial…": {
+    "Cancelar e Apagar Arquivo Parcial…": {
       "localizations": {
         "en": {
           "stringUnit": {
@@ -479,12 +479,12 @@
         }
       }
     },
-    "Clique em Testar conexão.": {
+    "Clique em Testar Conexão.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Click Test connection."
+            "value": "Click Test Connection."
           }
         }
       }
@@ -589,7 +589,7 @@
         }
       }
     },
-    "Continuar baixando": {
+    "Continuar Baixando": {
       "localizations": {
         "en": {
           "stringUnit": {
@@ -599,7 +599,7 @@
         }
       }
     },
-    "Copiar chave de decifragem": {
+    "Copiar Chave de Decifragem": {
       "localizations": {
         "en": {
           "stringUnit": {
@@ -609,12 +609,12 @@
         }
       }
     },
-    "Copiar registro": {
+    "Copiar Registro": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Copy log"
+            "value": "Copy Log"
           }
         }
       }
@@ -935,12 +935,12 @@
         }
       }
     },
-    "Iniciar instalação": {
+    "Iniciar Instalação": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Start installation"
+            "value": "Start Installation"
           }
         }
       }
@@ -1051,7 +1051,7 @@
         }
       }
     },
-    "Limpar concluídos": {
+    "Limpar Concluídos": {
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1141,12 +1141,12 @@
         }
       }
     },
-    "Modo Download detectado. Clique em Testar conexão para continuar.": {
+    "Modo Download detectado. Clique em Testar Conexão para continuar.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Download Mode detected. Click Test connection to continue."
+            "value": "Download Mode detected. Click Test Connection to continue."
           }
         }
       }
@@ -1385,12 +1385,12 @@
         }
       }
     },
-    "O aparelho já está em modo Download. Use Testar conexão para continuar.": {
+    "O aparelho já está em modo Download. Use Testar Conexão para continuar.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The device is already in Download Mode. Use Test connection to continue."
+            "value": "The device is already in Download Mode. Use Test Connection to continue."
           }
         }
       }
@@ -1597,7 +1597,7 @@
         }
       }
     },
-    "Outra região…": {
+    "Outra Região…": {
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1667,7 +1667,7 @@
         }
       }
     },
-    "Pausar e sair": {
+    "Pausar e Sair": {
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1767,7 +1767,7 @@
         }
       }
     },
-    "Remover da lista": {
+    "Remover da Lista": {
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1777,7 +1777,7 @@
         }
       }
     },
-    "Remover da lista (manter arquivo parcial)": {
+    "Remover da Lista (Manter Arquivo Parcial)": {
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1893,7 +1893,7 @@
         }
       }
     },
-    "Tentar de novo": {
+    "Tentar de Novo": {
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1913,22 +1913,22 @@
         }
       }
     },
-    "Testar conexão": {
+    "Testar Conexão": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Test connection"
+            "value": "Test Connection"
           }
         }
       }
     },
-    "Testar conexão confirma a comunicação USB, mas não confirma a compatibilidade do firmware. A instalação no S25 continua experimental.": {
+    "Testar Conexão confirma a comunicação USB, mas não confirma a compatibilidade do firmware. A instalação no S25 continua experimental.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Test connection confirms USB communication, but does not confirm firmware compatibility. Firmware installation on S25 remains experimental."
+            "value": "Test Connection confirms USB communication, but does not confirm firmware compatibility. Firmware installation on S25 remains experimental."
           }
         }
       }

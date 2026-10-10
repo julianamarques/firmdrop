@@ -38,7 +38,7 @@ final class FlashModel {
     var reviewRequirement: String? {
         guard let device = selectedDevice else { return String(localized: "Conecte o aparelho e clique em Detectar.") }
         guard device.isDownloadMode else { return String(localized: "Coloque o aparelho em modo Download.") }
-        guard connectionTested else { return String(localized: "Clique em Testar conexão.") }
+        guard connectionTested else { return String(localized: "Clique em Testar Conexão.") }
         let missing = FlashSlot.allCases.filter { packages[$0] == nil }
         guard missing.isEmpty else {
             return String(localized: "Falta selecionar: \(missing.map(\.rawValue).formatted(.list(type: .and))).")
@@ -112,7 +112,7 @@ final class FlashModel {
                         selectedDeviceID = target.id
                         deviceError = nil
                         if let model { reportedModel = (target, model) }
-                        stage = String(localized: "Modo Download detectado. Clique em Testar conexão para continuar.")
+                        stage = String(localized: "Modo Download detectado. Clique em Testar Conexão para continuar.")
                         append(stage)
                         return
                     }

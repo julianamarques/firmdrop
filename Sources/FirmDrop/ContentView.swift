@@ -169,7 +169,7 @@ struct SearchBar: View {
                 }
             }
             Divider()
-            Button("Outra região…") {
+            Button("Outra Região…") {
                 customRegion = true
                 search.region = ""
             }
@@ -204,7 +204,7 @@ struct ResultView: View {
             } description: {
                 Text(message)
             } actions: {
-                Button("Tentar de novo") { search.search() }
+                Button("Tentar de Novo") { search.search() }
                     .buttonStyle(.glass)
             }
         case let .loaded(versions):
