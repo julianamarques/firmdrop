@@ -202,6 +202,7 @@ struct FlashView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .textSelection(.enabled)
             }
+            .defaultScrollAnchor(.bottom)
             .frame(height: 160)
         }
     }

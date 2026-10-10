@@ -268,14 +268,24 @@ final class FlashModel {
         case let .stage(value):
             if isBusy {
                 progress = nil
-                if isFlashing, value.hasPrefix("Flashing") {
-                    stage = String(localized: "Instalando firmware… Não desconecte o cabo.")
-                }
+                if isFlashing, let status = Self.flashStatus(for: value) { stage = status }
             }
             append(value)
         case .done, .device, .probe: break
         case nil: append(line)
         }
+    }
+
+    private static func flashStatus(for stage: String) -> String? {
+        let preparing = ["ODIN", "Negotiating", "Uploading PIT", "Downloading PIT", "Checking if devices",
+                         "Verifying PIT", "Sending total size", "Declaring super size"]
+        if stage.hasPrefix("Verifying packages") || stage.hasPrefix("Checking package") {
+            return String(localized: "Conferindo os pacotes antes de instalar…")
+        }
+        if preparing.contains(where: stage.hasPrefix) { return String(localized: "Preparando o aparelho para a gravação…") }
+        if stage.hasPrefix("Flashing") { return String(localized: "Instalando firmware… Não desconecte o cabo.") }
+        if stage.hasPrefix("Finalizing") { return String(localized: "Finalizando a instalação… Não desconecte o cabo.") }
+        return nil
     }
 
     private func append(_ line: String) {

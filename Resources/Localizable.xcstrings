@@ -765,6 +765,16 @@
         }
       }
     },
+    "Finalizando a instalação… Não desconecte o cabo.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finishing the installation… Do not disconnect the cable."
+          }
+        }
+      }
+    },
     "FirmDrop": {
       "localizations": {
         "en": {
@@ -1623,6 +1633,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pause and Quit"
+          }
+        }
+      }
+    },
+    "Preparando o aparelho para a gravação…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparing the device for flashing…"
           }
         }
       }
