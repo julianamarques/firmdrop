@@ -101,10 +101,13 @@ Também nos Ajustes: manter o `.enc4` depois de decifrar e escolher a região pa
 
 ### Instalar firmware pelo Mac (experimental)
 
-**A instalação no Galaxy S25 / SM-S931B ainda não foi validada em hardware.**
-A detecção USB e a comunicação com o protocolo Odin 3 foram verificadas em um
-SM-S931B com One UI 9 (`S931BXXUCDZIF`), após entrar no Modo de manutenção e
-reiniciar para Download pelo ADB. Isso não comprova a compatibilidade de gravação.
+**Testado em um Galaxy S25 (SM-S931B):** em 10/10/2026, o FirmDrop instalou a
+One UI 9 (Android 17, `S931BXXUCDZIF`, CSC `OWO`) do começo ao fim. O aparelho entrou
+em Download pelo Modo de manutenção e pelo ADB, e a instalação usou o CSC completo
+(instalação limpa). Foi um único teste, com um aparelho e um firmware; outros modelos,
+versões e a instalação com HOME_CSC ainda não foram validados, e a função continua
+experimental.
+
 O FirmDrop usa o transporte IOKit do Brokkr, diferente do Heimdall usado pelo OdinMac.
 Isso permite investigar a conexão por outra implementação, mas não garante resolver
 a causa de um aparelho não reconhecido.

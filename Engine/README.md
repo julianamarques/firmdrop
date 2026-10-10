@@ -29,8 +29,10 @@ files offline. These are private integration arguments, not the upstream CLI.
 
 USB discovery and the Odin protocol 3 handshake were validated on a Galaxy S25
 SM-S931B running One UI 9 (`S931BXXUCDZIF`). The phone entered Download Mode through
-`adb reboot download` with Maintenance Mode active. No firmware was flashed:
-successful discovery and a protocol probe do not establish flashing compatibility.
+`adb reboot download` with Maintenance Mode active. On 2026-10-10 the same device was
+flashed end to end with One UI 9 (Android 17, `S931BXXUCDZIF`) using the full CSC,
+after a probe and `--flash --resume`. This is one device and one firmware; it does not
+establish compatibility with other models, versions or HOME_CSC installs.
 Firmware filename checks in the app are not device identification or anti-rollback
 verification. ADB is a separate executable bundled and invoked by the Swift app.
 
