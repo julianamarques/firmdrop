@@ -34,7 +34,11 @@ final class FlashModel {
 
     var selectedDevice: FlashDevice? { devices.first { $0.id == selectedDeviceID } }
     var deviceModel: String? { reportedModel.flatMap { $0.device == selectedDevice ? $0.model : nil } }
-    var model: String { deviceModel ?? Format.cleanModel(modelText) }
+    var model: String? {
+        if let deviceModel { return deviceModel }
+        let typed = Format.cleanModel(modelText)
+        return typed.isEmpty ? nil : typed
+    }
     var connectionTested: Bool { selectedDevice != nil && selectedDevice == probedDevice }
     var reviewRequirement: String? {
         guard let device = selectedDevice else { return String(localized: "Conecte o aparelho e clique em Detectar.") }
@@ -45,7 +49,6 @@ final class FlashModel {
         guard missing.isEmpty else {
             return String(localized: "Falta selecionar: \(missing.map(\.rawValue).formatted(.list(type: .and))).")
         }
-        guard !model.isEmpty else { return String(localized: "Informe o modelo do aparelho.") }
         return nil
     }
 
@@ -203,7 +206,7 @@ final class FlashModel {
         guard plan.device == selectedDevice, plan.device == probedDevice else { fail(FlashError.deviceChanged); return }
         begin(String(localized: "Conferindo os pacotes antes de instalar…"))
         isFlashing = true
-        append(String(localized: "Instalação de \(plan.model) · USB \(plan.device.target)"))
+        append(String(localized: "Instalação de \(plan.model ?? String(localized: "modelo não informado")) · USB \(plan.device.target)"))
         for package in plan.packages { append(package.url.lastPathComponent) }
         Task {
             defer {

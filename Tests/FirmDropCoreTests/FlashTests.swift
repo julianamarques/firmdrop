@@ -85,6 +85,26 @@ import Testing
         }
     }
 
+    @Test func flashesWithoutModelButKeepsBLAndAPTogether() async throws {
+        try await withTemporaryDirectory { directory in
+            var selected = try packages(in: directory)
+            for model in [nil, "", "  "] {
+                let plan = try FlashPlan(model: model, packages: selected, device: device, reboot: true)
+                #expect(plan.model == nil)
+                #expect(plan.packages.map(\.slot) == [.bl, .ap, .cp, .csc])
+            }
+            #expect(selected[.ap]?.releaseBuild == "S931BXXU1AYB4")
+            let different = directory.appending(path: "BL_S931BXXU2AYC1_test.tar.md5")
+            try Data(repeating: 0, count: 512).write(to: different)
+            selected[.bl] = try FlashPackage(url: different)
+            #expect(throws: FlashError.mixedBuilds) { try FlashPlan(model: nil, packages: selected, device: device, reboot: true) }
+            let unnamed = directory.appending(path: "BL_test.tar.md5")
+            try Data(repeating: 0, count: 512).write(to: unnamed)
+            selected[.bl] = try FlashPackage(url: unnamed)
+            #expect(throws: FlashError.mixedBuilds) { try FlashPlan(model: nil, packages: selected, device: device, reboot: true) }
+        }
+    }
+
     @Test func rejectsChangesAfterReviewAndNonDownloadDevices() async throws {
         try await withTemporaryDirectory { directory in
             let selected = try packages(in: directory)

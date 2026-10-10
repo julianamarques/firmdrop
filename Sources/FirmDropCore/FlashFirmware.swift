@@ -57,6 +57,13 @@ public struct FlashPackage: Hashable, Sendable, Identifiable {
         }
     }
 
+    /// The release build that Samsung names BL and AP after, e.g. S931BXXUCDZIF in BL_S931BXXUCDZIF_….
+    public var releaseBuild: String? {
+        let tokens = url.lastPathComponent.split(separator: ".")[0].split(separator: "_")
+        guard tokens.count > 1, tokens[1].wholeMatch(of: /[A-Z][A-Z0-9]{7,23}/) != nil else { return nil }
+        return String(tokens[1])
+    }
+
     public static func select(_ urls: [URL]) throws -> FlashSelection {
         var selection = FlashSelection()
         let packages = try urls.filter { FlashSlot.identify($0.lastPathComponent) != nil }.map { try FlashPackage(url: $0) }
@@ -84,25 +91,30 @@ public struct FlashSelection: Sendable {
 }
 
 public struct FlashPlan: Equatable, Sendable {
-    public let model: String
+    /// Checked against the package names when known; like Odin, flashing does not require it.
+    public let model: String?
     public let packages: [FlashPackage]
     public let device: FlashDevice
     public let reboot: Bool
     public var preservesData: Bool { packages.contains(where: \.preservesData) }
 
-    public init(model: String, packages: [FlashSlot: FlashPackage], device: FlashDevice, reboot: Bool) throws {
-        let model = model.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-        guard Identifiers.isDeviceModel(model) else { throw FUSError.invalidModel(model) }
+    public init(model: String?, packages: [FlashSlot: FlashPackage], device: FlashDevice, reboot: Bool) throws {
+        let model = model.map { $0.trimmingCharacters(in: .whitespacesAndNewlines).uppercased() }.flatMap { $0.isEmpty ? nil : $0 }
+        if let model, !Identifiers.isDeviceModel(model) { throw FUSError.invalidModel(model) }
         guard device.isDownloadMode else { throw FlashError.notInDownloadMode }
         var ordered: [FlashPackage] = []
         for slot in FlashSlot.allCases {
             guard let package = packages[slot], package.slot == slot else { throw FlashError.missingSlot(slot.rawValue) }
             try package.checkUnchanged()
-            guard package.build(for: model) != nil else { throw FlashError.modelMismatch(package.url.lastPathComponent, model) }
+            if let model, package.build(for: model) == nil {
+                throw FlashError.modelMismatch(package.url.lastPathComponent, model)
+            }
             ordered.append(package)
         }
-        guard packages[.bl]?.build(for: model) == packages[.ap]?.build(for: model) else {
-            throw FlashError.mixedBuilds
+        if let model {
+            guard packages[.bl]?.build(for: model) == packages[.ap]?.build(for: model) else { throw FlashError.mixedBuilds }
+        } else {
+            guard let build = packages[.bl]?.releaseBuild, build == packages[.ap]?.releaseBuild else { throw FlashError.mixedBuilds }
         }
         self.model = model
         self.packages = ordered

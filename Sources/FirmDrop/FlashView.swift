@@ -144,7 +144,7 @@ struct FlashView: View {
                     Label("Lido do aparelho pelo ADB", systemImage: "checkmark.seal.fill")
                         .font(.callout).foregroundStyle(.green)
                 } else {
-                    TextField("Modelo do aparelho, ex.: SM-S931B", text: $flash.modelText)
+                    TextField("Modelo do aparelho (opcional), ex.: SM-S931B", text: $flash.modelText)
                         .textFieldStyle(.plain)
                         .padding(.horizontal, 14)
                         .frame(height: 30)
@@ -157,7 +157,7 @@ struct FlashView: View {
             }
             .disabled(flash.isBusy)
             Text(flash.deviceModel == nil
-                 ? "O modelo é lido do aparelho ao reiniciar pelo ADB. Sem ADB, informe o PRODUCT NAME exibido na tela de Download. A revisão mínima do bootloader não é verificada."
+                 ? "O modelo é lido do aparelho ao reiniciar pelo ADB. Sem ADB, é opcional: se informar o PRODUCT NAME exibido na tela de Download, o FirmDrop confere os arquivos com ele. A revisão mínima do bootloader não é verificada."
                  : "A revisão mínima do bootloader não é verificada; confira-a na tela de Download.")
                 .font(.caption).foregroundStyle(.secondary)
             ForEach(FlashSlot.allCases) { slot in
@@ -285,7 +285,9 @@ private struct FlashConfirmation: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Revisar instalação").font(.title2.bold())
-            Text("Modelo informado: \(plan.model)").font(.headline)
+            Text(plan.model.map { String(localized: "Modelo informado: \($0)") }
+                 ?? String(localized: "Modelo não informado · os arquivos não foram conferidos com o aparelho"))
+                .font(.headline)
             Text("Aparelho USB: \(plan.device.target)").font(.system(.callout, design: .monospaced))
             ForEach(plan.packages) { package in
                 Text(package.slot.rawValue + ": " + package.url.lastPathComponent)
