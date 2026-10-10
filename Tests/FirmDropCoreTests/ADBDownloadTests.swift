@@ -17,11 +17,12 @@ import Testing
         return url
     }
 
-    private func fixture(in directory: URL, serverRunning: Bool = true) throws -> (ADBDownload, FlashEngine) {
+    private func fixture(in directory: URL, startsServer: Bool = false) throws -> (ADBDownload, FlashEngine) {
         try write(listing, to: "devices", in: directory)
         try write("samsung\n", to: "manufacturer", in: directory)
         try write("true\n", to: "maintenance", in: directory)
         try write("@firmdrop\tDEVICE\t0x00100000\t42\t26720\tother\n", to: "usb", in: directory)
+        if startsServer { try write("", to: "no-server", in: directory) }
         let adb = try executable("fake-adb", body: #"""
         printf '%s\n' "$*" >> calls
         printf '%s\n' "$ADB_MDNS" >> mdns
@@ -36,12 +37,15 @@ import Testing
             if [ -f next-usb ]; then mv next-usb usb; fi
             ;;
           '-t 7 reboot download') touch rebooted ;;
+          'start-server')
+            if [ -f no-server ]; then rm no-server; echo '* daemon started successfully' >&2; fi
+            ;;
           'kill-server') touch killed ;;
           *) exit 99 ;;
         esac
         """#, in: directory)
         let engine = try executable("fake-engine", body: "cat usb\n", in: directory)
-        return (ADBDownload(executable: adb, serverRunning: { serverRunning }), FlashEngine(executable: engine))
+        return (ADBDownload(executable: adb), FlashEngine(executable: engine))
     }
 
     private func wasRebooted(_ directory: URL) -> Bool {
@@ -69,15 +73,15 @@ import Testing
         }
     }
 
-    @Test func locatesExecutableIncludingSymlinksAndRejectsDirectories() async throws {
+    @Test func findsBundledExecutablesIncludingSymlinksAndRejectsDirectories() async throws {
         try await withTemporaryDirectory { directory in
             let file = directory.appending(path: "adb")
             try write("not executable", to: "adb", in: directory)
-            #expect(throws: ADBError.notInstalled) { try ADBDownload.locate([directory, file]) }
+            #expect(FileManager.default.firstExecutable(in: [directory, file]) == nil)
             let actual = try executable("real-adb", body: "exit 0\n", in: directory)
             let link = directory.appending(path: "adb-link")
             try FileManager.default.createSymbolicLink(at: link, withDestinationURL: actual)
-            #expect(try ADBDownload.locate([directory, file, link]).executable == link)
+            #expect(FileManager.default.firstExecutable(in: [directory, file, link]) == link)
         }
     }
 
@@ -98,7 +102,7 @@ import Testing
 
     @Test func stopsOnlyTheServerItStartedWithMDNSDisabled() async throws {
         try await withTemporaryDirectory { directory in
-            let (adb, engine) = try fixture(in: directory, serverRunning: false)
+            let (adb, engine) = try fixture(in: directory, startsServer: true)
             try await adb.rebootToDownload(from: source, using: engine)
             let calls = try String(contentsOf: directory.appending(path: "calls"), encoding: .utf8)
             #expect(calls.hasSuffix("-t 7 reboot download\nkill-server\n"))
@@ -106,6 +110,7 @@ import Testing
             #expect(Set(mdns.split(separator: "\n")) == ["0"])
 
             try FileManager.default.removeItem(at: directory.appending(path: "killed"))
+            try write("", to: "no-server", in: directory)
             try write("false\n", to: "maintenance", in: directory)
             await #expect(throws: ADBError.maintenanceRequired) {
                 try await adb.rebootToDownload(from: source, using: engine)

@@ -19,46 +19,12 @@ struct ADBDevice: Equatable, Sendable {
 
 public struct ADBDownload: Sendable {
     public let executable: URL
-    private let serverRunning: @Sendable () -> Bool
 
-    public init(executable: URL) {
-        self.init(executable: executable, serverRunning: { Self.isServerRunning() })
-    }
-
-    init(executable: URL, serverRunning: @escaping @Sendable () -> Bool) {
-        self.executable = executable
-        self.serverRunning = serverRunning
-    }
+    public init(executable: URL) { self.executable = executable }
 
     public static func bundled() throws -> ADBDownload {
-        guard Bundle.main.bundleURL.pathExtension != "app" else {
-            return try locate([Bundle.main.bundleURL.appending(path: "Contents/MacOS/adb")])
-        }
-        let environment = ProcessInfo.processInfo.environment
-        let homeDirectory = FileManager.default.homeDirectoryForCurrentUser
-        var candidates = [
-            URL(filePath: FileManager.default.currentDirectoryPath).appending(path: "build/adb/adb"),
-            URL(filePath: "/opt/homebrew/bin/adb"),
-            URL(filePath: "/usr/local/bin/adb"),
-            homeDirectory.appending(path: "Library/Android/sdk/platform-tools/adb"),
-        ]
-        for key in ["ANDROID_HOME", "ANDROID_SDK_ROOT"] {
-            if let path = environment[key], path.hasPrefix("/") {
-                candidates.append(URL(filePath: path).appending(path: "platform-tools/adb"))
-            }
-        }
-        candidates += (environment["PATH"] ?? "").split(separator: ":").filter { $0.hasPrefix("/") }
-            .map { URL(filePath: String($0)).appending(path: "adb") }
-        return try locate(candidates)
-    }
-
-    static func locate(_ candidates: [URL]) throws -> ADBDownload {
-        guard let url = candidates.first(where: {
-            guard $0.isFileURL, FileManager.default.isExecutableFile(atPath: $0.path) else { return false }
-            return (try? $0.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) == true
-                || (try? $0.resolvingSymlinksInPath().resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) == true
-        }) else { throw ADBError.notInstalled }
-        return ADBDownload(executable: url)
+        guard let executable = Bundle.helperExecutable("adb", development: "build/adb/adb") else { throw ADBError.notInstalled }
+        return ADBDownload(executable: executable)
     }
 
     static let environment: [String: String] = {
@@ -68,33 +34,17 @@ public struct ADBDownload: Sendable {
         return environment
     }()
 
-    static func isServerRunning() -> Bool {
-        let socket = Darwin.socket(AF_INET, SOCK_STREAM, 0)
-        guard socket >= 0 else { return false }
-        defer { close(socket) }
-        var address = sockaddr_in()
-        address.sin_len = UInt8(MemoryLayout<sockaddr_in>.size)
-        address.sin_family = sa_family_t(AF_INET)
-        address.sin_port = UInt16(5037).bigEndian
-        address.sin_addr.s_addr = inet_addr("127.0.0.1")
-        return withUnsafePointer(to: &address) {
-            $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
-                connect(socket, $0, socklen_t(MemoryLayout<sockaddr_in>.size)) == 0
-            }
-        }
-    }
-
     public func rebootToDownload(from device: FlashDevice, using engine: FlashEngine,
                                  onLine: @escaping @Sendable (String) -> Void = { _ in }) async throws {
         guard !device.isDownloadMode else { throw ADBError.alreadyInDownloadMode }
-        let startsServer = !serverRunning()
+        let startedServer = try await command(["start-server"]).contains("daemon started successfully")
         do {
             try await reboot(device, using: engine, onLine: onLine)
         } catch {
-            if startsServer { _ = try? await command(["kill-server"]) }
+            if startedServer { _ = try? await command(["kill-server"]) }
             throw error
         }
-        if startsServer { _ = try? await command(["kill-server"]) }
+        if startedServer { _ = try? await command(["kill-server"]) }
     }
 
     private func reboot(_ device: FlashDevice, using engine: FlashEngine,
@@ -129,11 +79,9 @@ public struct ADBDownload: Sendable {
     }
 
     private func command(_ arguments: [String], onLine: @escaping @Sendable (String) -> Void = { _ in }) async throws -> String {
-        let result = try await CommandRunner.run(executable, arguments: arguments, environment: Self.environment,
-                                                 timeout: 15, onLine: onLine)
-        try result.requireSuccess()
-        guard !result.truncated else { throw FlashError.outputTooLarge }
-        return result.lines.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
+        let lines = try await CommandRunner.run(executable, arguments: arguments, environment: Self.environment,
+                                                timeout: 15, onLine: onLine).completeLines()
+        return lines.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 

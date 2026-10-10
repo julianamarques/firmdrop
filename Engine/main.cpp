@@ -17,10 +17,6 @@
 #include <string>
 #include <vector>
 
-namespace brokkr::odin {
-extern bool firmdrop_resume_session;
-}
-
 namespace {
 constexpr auto version = "firmdrop-flash/1 brokkr/f7ae23067b4ee6c2e0211a1dee563f4be991cb4d";
 std::mutex output_mutex;

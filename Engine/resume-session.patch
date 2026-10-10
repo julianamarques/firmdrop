@@ -1,17 +1,15 @@
 --- a/src/protocol/odin/group_flasher.cpp
 +++ b/src/protocol/odin/group_flasher.cpp
-@@ -44,6 +44,10 @@
+@@ -43,6 +43,8 @@
+ #include <spdlog/spdlog.h>
  
  namespace brokkr::odin {
- 
-+// FirmDrop: set by the adapter when a previous session on this connection ended without a reboot.
-+// Like Heimdall --resume, the next session skips the ODIN/LOKE handshake.
-+bool firmdrop_resume_session = false;
 +
++bool firmdrop_resume_session = false;
+ 
  namespace {
  
- using u64 = std::uint64_t;
-@@ -338,14 +342,16 @@
+@@ -338,14 +340,16 @@
  
    steps.emplace_back([&] {
      spdlog::info("> Odin");

@@ -50,21 +50,17 @@ public struct FlashEngine: Sendable {
     public init(executable: URL) { self.executable = executable }
 
     public static func bundled() throws -> FlashEngine {
-        var candidates = [Bundle.main.bundleURL.appending(path: "Contents/MacOS/firmdrop-flash")]
-        if Bundle.main.bundleURL.pathExtension != "app" {
-            candidates.append(URL(filePath: FileManager.default.currentDirectoryPath).appending(path: "build/flash-engine/firmdrop-flash"))
-        }
-        guard let executable = candidates.first(where: { FileManager.default.isExecutableFile(atPath: $0.path) }) else {
+        guard let executable = Bundle.helperExecutable("firmdrop-flash", development: "build/flash-engine/firmdrop-flash") else {
             throw FlashError.engineMissing
         }
         return FlashEngine(executable: executable)
     }
 
+    private static func isEvent(_ line: String) -> Bool { line.hasPrefix("@firmdrop\t") }
+
     public func devices() async throws -> [FlashDevice] {
-        let result = try await CommandRunner.run(executable, arguments: ["--list"], timeout: 15)
-        try result.requireSuccess()
-        guard !result.truncated else { throw FlashError.outputTooLarge }
-        return result.lines.compactMap { line in
+        let lines = try await CommandRunner.run(executable, arguments: ["--list"], timeout: 15).completeLines(hiding: Self.isEvent)
+        return lines.compactMap { line in
             if case let .device(device) = FlashEvent(line: line) { device } else { nil }
         }
     }
@@ -72,10 +68,10 @@ public struct FlashEngine: Sendable {
     public func probe(_ device: FlashDevice, resume: Bool = false,
                       onLine: @escaping @Sendable (String) -> Void = { _ in }) async throws -> Int {
         guard device.isDownloadMode else { throw FlashError.notInDownloadMode }
-        let arguments = ["--probe", "--target", device.target, "--connection", String(device.connection)]
-        let result = try await CommandRunner.run(executable, arguments: arguments + (resume ? ["--resume"] : []),
-                                                 timeout: 30, onLine: onLine)
-        try result.requireSuccess()
+        var arguments = ["--probe", "--target", device.target, "--connection", String(device.connection)]
+        if resume { arguments.append("--resume") }
+        let result = try await CommandRunner.run(executable, arguments: arguments, timeout: 30, onLine: onLine)
+        try result.requireSuccess(hiding: Self.isEvent)
         guard let version = result.lines.compactMap({ line -> Int? in
             if case let .probe(version) = FlashEvent(line: line) { version } else { nil }
         }).last else { throw FlashError.probeRequired }
@@ -86,7 +82,7 @@ public struct FlashEngine: Sendable {
         guard try await devices().contains(plan.device) else { throw FlashError.deviceChanged }
         let arguments = try plan.arguments(resume: resume)
         let result = try await CommandRunner.run(executable, arguments: arguments, onLine: onLine)
-        try result.requireSuccess()
+        try result.requireSuccess(hiding: Self.isEvent)
         guard result.lines.contains("@firmdrop\tDONE") else { throw FlashError.incompleteFlash }
     }
 }

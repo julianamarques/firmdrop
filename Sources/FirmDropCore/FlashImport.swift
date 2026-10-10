@@ -12,7 +12,7 @@ public enum FlashImport {
         var names = Set<String>()
         for member in members {
             let components = member.split(separator: "/", omittingEmptySubsequences: false)
-            guard components.allSatisfy({ Identifiers.isPlainFileName(String($0)) && !$0.hasPrefix("-") && $0 != "." && $0 != ".." }),
+            guard components.allSatisfy({ Identifiers.isPlainFileName(String($0)) }),
                   names.insert((member as NSString).lastPathComponent).inserted else { throw FlashError.invalidZIP }
         }
         return members
@@ -36,14 +36,9 @@ public enum FlashImport {
                                   onLine: @escaping @Sendable (String) -> Void = { _ in }) async throws -> [FlashSlot: FlashPackage] {
         guard url.isFileURL, url.pathExtension.lowercased() == "zip" else { throw FlashError.invalidZIP }
         let unzip = URL(filePath: "/usr/bin/unzip")
-        let listing = try await CommandRunner.run(unzip, arguments: ["-Z1", url.path], timeout: 30)
-        try listing.requireSuccess()
-        guard !listing.truncated else { throw FlashError.outputTooLarge }
-        let members = try zipMembers(listing.lines)
-        let details = try await CommandRunner.run(unzip, arguments: ["-l", url.path], timeout: 30)
-        try details.requireSuccess()
-        guard !details.truncated else { throw FlashError.outputTooLarge }
-        let sizes = try declaredSizes(details.lines, of: members)
+        let members = try zipMembers(try await CommandRunner.run(unzip, arguments: ["-Z1", url.path], timeout: 30).completeLines())
+        let details = try await CommandRunner.run(unzip, arguments: ["-l", url.path], timeout: 30).completeLines()
+        let sizes = try declaredSizes(details, of: members)
         let needed = sizes.values.reduce(0, +)
         let parent = directory.deletingLastPathComponent()
         if let available = try parent.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey])

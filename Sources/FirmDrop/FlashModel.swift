@@ -32,8 +32,6 @@ final class FlashModel {
 
     var selectedDevice: FlashDevice? { devices.first { $0.id == selectedDeviceID } }
     var connectionTested: Bool { selectedDevice != nil && selectedDevice == probedDevice }
-    var canReview: Bool { !isBusy && reviewRequirement == nil }
-
     var reviewRequirement: String? {
         guard let device = selectedDevice else { return String(localized: "Conecte o aparelho e clique em Detectar.") }
         guard device.isDownloadMode else { return String(localized: "Coloque o aparelho em modo Download.") }

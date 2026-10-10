@@ -82,7 +82,7 @@ import Testing
         #expect(Identifiers.isPlainFileName(name))
     }
 
-    @Test(arguments: ["../fw.zip.enc4", "a/b.zip", "..", ".hidden.zip", "", "fw.zip\u{0}"])
+    @Test(arguments: ["../fw.zip.enc4", "a/b.zip", "..", ".hidden.zip", "", "fw.zip\u{0}", "-d", "-x.zip"])
     func rejectsUnsafeFileNames(name: String) {
         #expect(!Identifiers.isPlainFileName(name))
     }

@@ -6,11 +6,16 @@ struct CommandResult: Sendable {
     let lines: [String]
     let truncated: Bool
 
-    func requireSuccess() throws {
+    func requireSuccess(hiding hidden: (String) -> Bool = { _ in false }) throws {
         guard status == 0 else {
-            let messages = lines.filter { !$0.hasPrefix("@firmdrop\t") }
-            throw FlashError.commandFailed(status, messages.suffix(12).joined(separator: "\n"))
+            throw FlashError.commandFailed(status, lines.filter { !hidden($0) }.suffix(12).joined(separator: "\n"))
         }
+    }
+
+    func completeLines(hiding hidden: (String) -> Bool = { _ in false }) throws -> [String] {
+        try requireSuccess(hiding: hidden)
+        guard !truncated else { throw FlashError.outputTooLarge }
+        return lines
     }
 }
 

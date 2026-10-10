@@ -18,7 +18,7 @@ enum Identifiers {
     }
 
     static func isPlainFileName(_ name: String) -> Bool {
-        name.wholeMatch(of: /[A-Za-z0-9_-][A-Za-z0-9._-]{0,254}/) != nil
+        name.wholeMatch(of: /[A-Za-z0-9_][A-Za-z0-9._-]{0,254}/) != nil
     }
 
     static func validated(model: String, region: String) throws -> (model: String, region: String) {

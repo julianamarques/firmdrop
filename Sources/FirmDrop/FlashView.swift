@@ -27,11 +27,12 @@ struct FlashView: View {
         }
         .scrollEdgeEffectStyle(.soft, for: .all)
         .safeAreaBar(edge: .bottom) {
+            let requirement = flash.reviewRequirement
             HStack(spacing: 14) {
                 Toggle("Reiniciar após instalar", isOn: $flash.reboot)
                     .disabled(flash.isBusy)
                 Spacer()
-                if !flash.isBusy, let requirement = flash.reviewRequirement {
+                if !flash.isBusy, let requirement {
                     Label(requirement, systemImage: "info.circle")
                         .font(.callout).foregroundStyle(.secondary)
                         .lineLimit(2)
@@ -41,7 +42,7 @@ struct FlashView: View {
                 }
                 .buttonStyle(.glassProminent)
                 .controlSize(.large)
-                .disabled(!flash.canReview)
+                .disabled(flash.isBusy || requirement != nil)
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 12)
