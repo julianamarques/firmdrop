@@ -975,16 +975,6 @@
         }
       }
     },
-    "Instalar este Firmware": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Install This Firmware"
-          }
-        }
-      }
-    },
     "Instalar este Firmware…": {
       "localizations": {
         "en": {

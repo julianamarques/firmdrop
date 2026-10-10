@@ -138,8 +138,7 @@ struct DownloadRow: View {
                 case .failed:
                     iconButton("arrow.clockwise", help: "Tentar de Novo") { downloads.resume(item) }
                 case .completed:
-                    iconButton("iphone.and.arrow.forward.outward", help: "Instalar este Firmware") { flash.importDownload(item) }
-                        .disabled(flash.isBusy)
+                    EmptyView()
                 }
                 iconButton("magnifyingglass", help: "Mostrar no Finder") { downloads.reveal(item) }
                 if item.isCompleted {
