@@ -148,6 +148,18 @@ import Testing
         }
     }
 
+    @Test func keepsDrainingAProcessThatIgnoresTerminationAfterOversizedOutput() async throws {
+        let script = """
+        trap '' TERM
+        exec /usr/bin/perl -e 'alarm 30; exec @ARGV' /usr/bin/awk 'BEGIN { s = "A"; while (length(s) < 131072) s = s s; print s; for (i = 0; i < 20000; i++) print "output after the long line"; exit 0 }'
+        """
+        let start = ContinuousClock.now
+        await #expect(throws: FlashError.outputTooLarge) {
+            try await CommandRunner.run(URL(filePath: "/bin/sh"), arguments: ["-c", script])
+        }
+        #expect(ContinuousClock.now - start < .seconds(10))
+    }
+
     @Test func metadataCommandsHaveTimeouts() async throws {
         await #expect(throws: FlashError.timedOut) {
             try await CommandRunner.run(URL(filePath: "/bin/sleep"), arguments: ["10"], timeout: 0.1)

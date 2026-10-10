@@ -97,6 +97,7 @@ enum CommandRunner {
                 receive(try decoder.append(Data(), finished: true))
             } catch {
                 if process.isRunning { process.terminate() }
+                while let chunk = try? pipe.fileHandleForReading.read(upToCount: 16384), !chunk.isEmpty {}
                 process.waitUntilExit()
                 throw error
             }
