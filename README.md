@@ -101,16 +101,20 @@ Também nos Ajustes: manter o `.enc4` depois de decifrar e escolher a região pa
 
 ### Instalar firmware pelo Mac (experimental)
 
-**Testado em dois aparelhos**, ambos em 10/10/2026, do começo ao fim e com o CSC completo
-(instalação limpa):
+**Testado em dois aparelhos**, todos os testes em 10/10/2026 e do começo ao fim:
 
-- **Galaxy S25 (SM-S931B):** One UI 9 (Android 17, `S931BXXUCDZIF`, CSC `OWO`). O
-  aparelho entrou em Download pelo Modo de manutenção e pelo ADB.
-- **Galaxy A05s (SM-A057M):** One UI 7 (Android 15, `A057MUBUGDZH1`, CSC `OWO`). O
-  aparelho entrou em Download pelos botões, sem ADB e sem informar o modelo.
+- **Galaxy S25 (SM-S931B):** One UI 9 (Android 17, `S931BXXUCDZIF`, CSC `OWO`), com o
+  CSC completo (instalação limpa). O aparelho entrou em Download pelo Modo de
+  manutenção e pelo ADB.
+- **Galaxy A05s (SM-A057M):** One UI 7 (Android 15, `A057MUBUGDZH1`, CSC `OWO`), com o
+  CSC completo e, em seguida, com o HOME_CSC, que manteve os dados. O aparelho entrou em
+  Download pelos botões, sem ADB e sem informar o modelo.
 
-Foram dois testes, cada um com um aparelho e um firmware; outros modelos, versões e a
-instalação com HOME_CSC ainda não foram validados, e a função continua experimental.
+O HOME_CSC segue a lista `meta-data/download-list.txt` do pacote: além de `userdata`,
+ela deixou de fora outras imagens, como `rpm.mbn` e `keymint.mbn`. No teste, a versão
+instalada era a mesma que já estava no aparelho; uma atualização de versão com HOME_CSC
+ainda não foi validada. Outros modelos e versões também não, e a função continua
+experimental.
 
 O FirmDrop usa o transporte IOKit do Brokkr, diferente do Heimdall usado pelo OdinMac.
 Isso permite investigar a conexão por outra implementação, mas não garante resolver

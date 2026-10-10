@@ -37,8 +37,11 @@ SM-S931B running One UI 9 (`S931BXXUCDZIF`). The phone entered Download Mode thr
 flashed end to end with One UI 9 (Android 17, `S931BXXUCDZIF`) using the full CSC,
 after a probe and `--flash --resume`. The same day a Galaxy A05s SM-A057M was flashed
 end to end with One UI 7 (Android 15, `A057MUBUGDZH1`) using the full CSC, after entering
-Download Mode with the hardware buttons. These are two devices with one firmware each;
-they do not establish compatibility with other models, versions or HOME_CSC installs.
+Download Mode with the hardware buttons, and then again with HOME_CSC, which kept the
+user data. The HOME_CSC download list also skipped images such as `rpm.mbn` and
+`keymint.mbn`; that install reused the version already on the device, so a version
+upgrade with HOME_CSC is not validated. These are two devices with one firmware each;
+they do not establish compatibility with other models or versions.
 Firmware filename checks in the app are not device identification or anti-rollback
 verification. ADB is a separate executable bundled and invoked by the Swift app.
 
