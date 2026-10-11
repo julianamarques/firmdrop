@@ -125,12 +125,6 @@ Settings also let you keep the `.enc4` after decrypting and choose the default r
   full CSC and then with HOME_CSC, which kept the data. The device entered Download Mode
   with the buttons, without ADB.
 
-HOME_CSC follows the package's `meta-data/download-list.txt`: besides `userdata`, it left
-out other images, such as `rpm.mbn` and `keymint.mbn`. In the test, the installed version
-was the same one already on the device; a version upgrade with HOME_CSC has not been
-validated yet. Neither have other models and versions, and the feature remains
-experimental.
-
 FirmDrop uses Brokkr's IOKit transport, unlike the Heimdall used by OdinMac.
 This makes it possible to investigate the connection with a different implementation, but
 does not guarantee a fix when a device is not recognized.
@@ -142,12 +136,7 @@ does not guarantee a fix when a device is not recognized.
    the app does not choose for you: pick in the CSC row between **HOME_CSC**, which tries to
    keep the data, and **CSC**, which wipes the device. You can switch at any time before
    installing. Have a backup in both cases.
-3. The app always checks that BL/AP belong to the same version. When the device is rebooted
-   over ADB (step 4, only in One UI 9 Maintenance Mode), it also reads the model
-   (`ro.product.model`) and checks that the package names match it. This does not
-   automatically check CSC, anti-rollback, FRP, Knox or bootloader locks;
-   those restrictions are still enforced by the device.
-4. On One UI 9, enable **Maintenance Mode** on the Samsung device, wait for it to restart and
+3. On One UI 9, enable **Maintenance Mode** on the Samsung device, wait for it to restart and
    keep the phone powered on in that mode. Connect it to the Mac, authorize USB debugging
    on the device screen and click **Reboot to Download Mode (ADB)**. The app checks
    that maintenance is active, requests the direct reboot and waits up to 45 seconds
@@ -155,12 +144,12 @@ does not guarantee a fix when a device is not recognized.
    turn off maintenance. On versions that support the button combination, power off
    the phone and hold both volume buttons while connecting the cable; confirm with
    Volume Up. Close all apps that use the device.
-5. Click **Detect** and **Test Connection**. Detect only enumerates USB;
+4. Click **Detect** and **Test Connection**. Detect only enumerates USB;
    testing opens a protocol session, queries its version and ends without rebooting
    or writing partitions. Installation resumes that session without repeating the handshake,
    like Heimdall's `--resume`. If you need to reconnect the cable, test again;
    if installation fails, leave Download Mode and enter it again before retrying.
-6. Click **Install Firmware…** at the bottom of the window. In the review, check the
+5. Click **Install Firmware…** at the bottom of the window. In the review, check the
    files, the model and the bootloader revision, then confirm. Flashing only starts
    after that confirmation. Don't disconnect the cable; the app prevents idle sleep
    and blocks quitting normally while the operation is in progress.
@@ -253,8 +242,6 @@ FIRMDROP_LIVE=1 swift test     # includes tests against the real server (downloa
 
 - `version.xml` only lists previous versions that have an OTA update. Others may
   exist on the server, but the app has no way to discover them.
-- Use it for your own devices. Redistributing the firmware publicly may violate
-  Samsung's terms of use.
 
 ## Contributing
 
