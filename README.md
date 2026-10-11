@@ -1,6 +1,12 @@
-# FirmDrop — firmwares Samsung no Mac
+# FirmDrop — baixe e instale firmwares Samsung no Mac
 
-Aplicação open source macOS para baixar firmwares oficiais da Samsung direto do servidor FUS (Firmware Update Server), com instalação experimental via USB. Os downloads são os pacotes oficiais da Samsung, sem nenhuma modificação: o app decifra o .enc4 com a chave fornecida pelo servidor. O .zip pode ser importado no FirmDrop ou utilizado com outra ferramenta de instalação.
+Aplicação open source para macOS que **baixa** firmwares oficiais da Samsung direto do servidor FUS
+(Firmware Update Server) e **instala** esses firmwares no aparelho via USB, em modo Download.
+A instalação ainda é experimental.
+
+Os downloads são os pacotes oficiais da Samsung, sem nenhuma modificação: o app decifra o `.enc4`
+com a chave fornecida pelo servidor. O `.zip` baixado pode ser instalado pelo próprio FirmDrop ou
+usado com outra ferramenta de instalação.
 
 <p align="center">
   <img src="docs/images/tela-inicial.png" width="560" alt="Tela inicial do FirmDrop, com o campo de modelo, o menu de região ZTO · Brasil (desbloqueado), o botão Buscar e a mensagem Busque um modelo">
@@ -127,11 +133,11 @@ a causa de um aparelho não reconhecido.
    o app não escolhe sozinho: escolha na linha do CSC entre **HOME_CSC**, que tenta
    preservar os dados, e **CSC**, que apaga o aparelho. Dá para trocar a qualquer momento
    antes de instalar. Tenha backup em ambos os casos.
-3. O app não pede o modelo do aparelho. Ao reiniciar pelo ADB (passo 4), ele lê o
-   modelo (`ro.product.model`) e confere se os nomes dos pacotes correspondem a ele.
-   Em todos os casos, o app confere se BL/AP pertencem à mesma versão. Isso não verifica
-   automaticamente CSC, anti-rollback, FRP, Knox ou bloqueios do bootloader; essas
-   restrições continuam sendo aplicadas pelo aparelho.
+3. O app sempre confere se BL/AP pertencem à mesma versão. Quando o aparelho é reiniciado
+   pelo ADB (passo 4, só no Modo de manutenção da One UI 9), ele também lê o modelo
+   (`ro.product.model`) e confere se os nomes dos pacotes correspondem a ele. Isso não
+   verifica automaticamente CSC, anti-rollback, FRP, Knox ou bloqueios do bootloader;
+   essas restrições continuam sendo aplicadas pelo aparelho.
 4. Na One UI 9, ative o **Modo de manutenção** no Samsung, aguarde o reinício e
    mantenha o telefone ligado nesse modo. Conecte ao Mac, autorize a depuração USB
    na tela do aparelho e clique em **Reiniciar em Download (ADB)**. O app verifica
