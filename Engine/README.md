@@ -45,6 +45,19 @@ they do not establish compatibility with other models or versions.
 Firmware filename checks in the app are not device identification or anti-rollback
 verification. ADB is a separate executable bundled and invoked by the Swift app.
 
+## Modifications
+
+FirmDrop's changes to Brokkr, as required by section 5(a) of the GPL-3.0. Each patch
+applies to the pinned commit above, and the date is when the file last changed.
+
+| File | Change | Date |
+|---|---|---|
+| `strict-mapping.patch` | Rejects images with no PIT partition before any write; skips `meta-data/` | 2026-10-10 |
+| `resume-session.patch` | Adds `--resume`, which skips the `ODIN`/`LOKE` handshake after a probe | 2026-10-10 |
+| `download-list.patch` | Ignores repeated names in `meta-data/download-list.txt` | 2026-10-10 |
+| `macos-sdk.patch` | Removes the pre-macOS 12 port-constant fallback | 2026-10-09 |
+| `main.cpp`, `compat.hpp`, `build.sh` | FirmDrop's command-line adapter and build script | 2026-10-10 |
+
 ## Rebuild the bundled binary
 
 Run `bash scripts/build-flash-engine.sh [--universal]` in the FirmDrop repository.
