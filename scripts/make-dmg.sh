@@ -13,7 +13,7 @@ scripts/build-app.sh "$@"
 rm -rf "$STAGE" "$DMG"
 mkdir -p "$STAGE"
 cp -R "$APP" "$STAGE/"
-ln -s /Applications "$STAGE/Aplicativos"
+ln -s /Applications "$STAGE/Applications"
 hdiutil create -quiet -volname "FirmDrop" -srcfolder "$STAGE" -ov -format UDZO "$DMG"
 rm -rf "$STAGE"
 

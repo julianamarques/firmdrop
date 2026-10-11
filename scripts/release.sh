@@ -30,16 +30,16 @@ BUILD=$(( $(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" "$PLIST") + 1 ))
 CHANGES="$(git log ${PREVIOUS:+$PREVIOUS..}HEAD --pretty='- %s' --no-merges)"
 NOTICE=""
 if [ -n "$STAGE" ]; then
-    NOTICE="> **Versão $STAGE.** Esta é uma versão de teste e pode ter bugs. Se encontrar algum, abra uma issue contando o modelo do aparelho, a região, a versão do macOS e o que aconteceu.
+    NOTICE="> **$STAGE release.** This is a test version and may have bugs. If you find one, open an issue with the device model, region, macOS version and what happened.
 "
 fi
 NOTES="$(cat <<NOTES
 $NOTICE
-## Instalação
+## Installation
 
-Baixe o \`FirmDrop.dmg\`, abra e arraste o **FirmDrop** para **Aplicativos**. Requer macOS 26 ou mais novo. Se o macOS bloquear a primeira abertura, libere em **Ajustes do Sistema › Privacidade e Segurança › Abrir Mesmo Assim**.
+Download \`FirmDrop.dmg\`, open it and drag **FirmDrop** to **Applications**. Requires macOS 26 or later. If macOS blocks the first launch, allow it in **System Settings › Privacy & Security › Open Anyway**.
 
-## Mudanças
+## Changes
 
 $CHANGES
 NOTES
