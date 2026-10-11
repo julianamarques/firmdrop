@@ -1,22 +1,22 @@
-# Como Contribuir?
+# How to Contribute
 
-Obrigado pelo interesse em contribuir com o FirmDrop. Este guia descreve o fluxo recomendado para propor correções, melhorias e ajustes de documentação.
+Thank you for your interest in contributing to FirmDrop. This guide describes the recommended workflow for proposing fixes, improvements and documentation changes.
 
-## Fluxo de Trabalho
+## Workflow
 
-- Faça um fork do repositório e clone o projeto.
-- Crie uma branch a partir da branch principal.
-- Use nomes de branch objetivos, como `feature/nome-da-feature` ou
-  `fix/descricao-do-ajuste`.
-- Consulte o `README.md` para compilar, empacotar e rodar o app localmente.
-- Mantenha pull requests pequenos e focados em uma mudança principal.
-- Explique no pull request o problema resolvido, a solução aplicada e como a
-  alteração foi validada.
+- Fork the repository and clone the project.
+- Create a branch from the main branch.
+- Use descriptive branch names, such as `feature/feature-name` or
+  `fix/short-description`.
+- See `README.md` to build, package and run the app locally.
+- Keep pull requests small and focused on one main change.
+- In the pull request, explain the problem solved, the solution applied and how
+  the change was validated.
 
 ## Commits
 
-Escreva as mensagens em inglês, curtas, no imperativo e com um prefixo que
-indique o tipo da mudança ([Conventional Commits](https://www.conventionalcommits.org/)):
+Write messages in English, short, in the imperative mood and with a prefix that
+indicates the type of change ([Conventional Commits](https://www.conventionalcommits.org/)):
 
 ```text
 feat: show the Android version of previous firmware versions
@@ -28,82 +28,81 @@ build: pin a newer auth_param.dat
 chore: release v1.1.0
 ```
 
-## Padrões de Código
+## Code Standards
 
-- Siga a organização existente: o que não depende de interface (protocolo do
-  FUS, criptografia, download, verificação de atualizações) fica em
-  `Sources/FirmDropCore`, com testes em `Tests/FirmDropCoreTests`; o app
-  SwiftUI fica em `Sources/FirmDrop`.
-- Não adicione comentários no código Swift: prefira nomes claros, funções
-  pequenas e tipos explícitos. Os scripts podem ter comentários.
-- O projeto usa o modo de linguagem Swift 6, com verificação estrita de
-  concorrência. Não introduza avisos de compilação.
-- Lógica nova em `FirmDropCore` deve vir com testes.
-- Trate tudo o que vem dos servidores como não confiável: leia XML com
-  `XMLDocument.untrusted`, valide modelos, regiões, versões, nomes de arquivo e
-  caminhos com `Identifiers` e monte caminhos locais com
+- Follow the existing organization: everything that does not depend on the
+  interface (FUS protocol, cryptography, download, update check) lives in
+  `Sources/FirmDropCore`, with tests in `Tests/FirmDropCoreTests`; the SwiftUI
+  app lives in `Sources/FirmDrop`.
+- Do not add comments to Swift code: prefer clear names, small functions and
+  explicit types. Scripts may have comments.
+- The project uses the Swift 6 language mode, with strict concurrency
+  checking. Do not introduce build warnings.
+- New logic in `FirmDropCore` must come with tests.
+- Treat everything that comes from the servers as untrusted: read XML with
+  `XMLDocument.untrusted`, validate models, regions, versions, file names and
+  paths with `Identifiers` and build local paths with
   `FirmwareDownload.localURLs`.
-- Os textos exibidos ao usuário são escritos em português do Brasil no código e
-  traduzidos para inglês em `Resources/Localizable.xcstrings`. Depois de
-  adicionar ou alterar textos, rode `scripts/sync-strings.sh` e preencha a
-  tradução; o `swift test` falha enquanto houver texto sem tradução ou com
-  marcadores (`%@`, `%lld`) diferentes do original.
-- Não inclua no controle de versão o `Resources/auth_param.dat` (baixado por
-  `scripts/fetch-auth-params.sh`), firmwares baixados, credenciais ou dados
-  pessoais.
-- Ao atualizar o `auth_param.dat`, altere juntos o commit em
-  `scripts/fetch-auth-params.sh` e o `paramsSHA256` em
-  `Sources/FirmDropCore/Authenticator.swift`.
+- User-facing strings are written in Brazilian Portuguese in the code and
+  translated to English in `Resources/Localizable.xcstrings`. After adding or
+  changing strings, run `scripts/sync-strings.sh` and fill in the translation;
+  `swift test` fails while any string is untranslated or has placeholders
+  (`%@`, `%lld`) that differ from the original.
+- Do not commit `Resources/auth_param.dat` (downloaded by
+  `scripts/fetch-auth-params.sh`), downloaded firmware, credentials or personal
+  data.
+- When updating `auth_param.dat`, change the commit in
+  `scripts/fetch-auth-params.sh` and `paramsSHA256` in
+  `Sources/FirmDropCore/Authenticator.swift` together.
 
-## Validação
+## Validation
 
-Antes de abrir um pull request, rode as verificações aplicáveis:
+Before opening a pull request, run the checks that apply:
 
 ```sh
-scripts/fetch-auth-params.sh   # uma vez
+scripts/fetch-auth-params.sh   # once
 swift build
 swift test
-FIRMDROP_LIVE=1 swift test     # quando a mudança afeta o protocolo ou o download
+FIRMDROP_LIVE=1 swift test     # when the change affects the protocol or the download
 scripts/build-app.sh
 ```
 
-Também revise se:
+Also check that:
 
-- A alteração está limitada ao escopo proposto.
-- A compilação não gera avisos e todos os testes passam.
-- Novas regras possuem testes quando aplicável.
-- O app foi testado de verdade quando a mudança afeta busca, download, pausa e
-  retomada ou decifragem.
-- Os textos novos aparecem corretamente em português e em inglês.
-- Nenhuma credencial, token ou dado pessoal foi versionado.
-- A documentação foi atualizada quando a alteração muda o uso do projeto.
+- The change is limited to the proposed scope.
+- The build produces no warnings and all tests pass.
+- New rules have tests where applicable.
+- The app was actually tested when the change affects search, download, pause and
+  resume, or decryption.
+- New strings show up correctly in Portuguese and in English.
+- No credentials, tokens or personal data were committed.
+- The documentation was updated when the change affects how the project is used.
 
 ## Pull Requests
 
-Ao abrir um pull request, inclua:
+When opening a pull request, include:
 
-- Um resumo curto da alteração.
-- O motivo da mudança.
-- Os comandos executados para validação.
-- Os modelos e regiões (CSC) usados nos testes manuais e a versão do macOS.
-- Observações sobre impactos de compatibilidade, se existirem.
+- A short summary of the change.
+- The reason for the change.
+- The commands run for validation.
+- The models and regions (CSC) used in manual testing and the macOS version.
+- Notes on compatibility impact, if any.
 
 ## Issues
 
-Para reportar vulnerabilidades, não abra uma issue: siga a
-[política de segurança](SECURITY.md).
+To report vulnerabilities, do not open an issue: follow the
+[security policy](SECURITY.md).
 
-Ao abrir uma issue, informe:
+When opening an issue, include:
 
-- Descrição clara do problema ou melhoria.
-- Passos para reproduzir, quando for um bug.
-- Comportamento esperado e comportamento atual.
-- Versão do FirmDrop, versão do macOS e se o Mac é Apple Silicon ou Intel.
-- Modelo, região (CSC) e versão do firmware envolvidos.
-- A mensagem de erro exibida no app, que pode ser selecionada e copiada na
-  lista de downloads.
-- Em problemas com a verificação de atualizações, os logs, que podem ser
-  obtidos com:
+- A clear description of the problem or improvement.
+- Steps to reproduce, for a bug.
+- Expected and actual behavior.
+- The FirmDrop version, the macOS version and whether the Mac is Apple Silicon or Intel.
+- The model, region (CSC) and firmware version involved.
+- The error message shown in the app, which can be selected and copied in the
+  downloads list.
+- For problems with the update check, the logs, which can be collected with:
 
 ```sh
 /usr/bin/log show --last 10m --predicate 'subsystem == "com.julianamarques.FirmDrop"' --info

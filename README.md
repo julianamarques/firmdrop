@@ -1,268 +1,273 @@
-# FirmDrop — firmwares Samsung no Mac
+# FirmDrop — download and install Samsung firmware on your Mac
 
-Aplicação open source macOS para baixar firmwares oficiais da Samsung direto do servidor FUS (Firmware Update Server), com instalação experimental via USB. Os downloads são os pacotes oficiais da Samsung, sem nenhuma modificação: o app decifra o .enc4 com a chave fornecida pelo servidor. O .zip pode ser importado no FirmDrop ou utilizado com outra ferramenta de instalação.
+An open source macOS app that **downloads** official Samsung firmware straight from the FUS
+(Firmware Update Server) and **installs** it on the device over USB, in Download Mode.
+Installation is still experimental.
+
+Downloads are Samsung's official packages, with no modification: the app decrypts the `.enc4`
+with the key provided by the server. The downloaded `.zip` can be installed by FirmDrop itself or
+used with another flashing tool.
 
 <p align="center">
-  <img src="docs/images/tela-inicial.png" width="560" alt="Tela inicial do FirmDrop, com o campo de modelo, o menu de região ZTO · Brasil (desbloqueado), o botão Buscar e a mensagem Busque um modelo">
+  <img src="docs/images/download-firmware.png" width="420" alt="Download Firmware tab, with the model field, the ZTO · Brazil (unlocked) region menu, the Search button and the Search for a model message">
+  <img src="docs/images/install-firmware.png" width="420" alt="Install Firmware tab, with the Device card (Detect, Test Connection and Reboot to Download Mode over ADB), the BL, AP and CP packages and the Install Firmware button">
 </p>
 
-- Busca por modelo e região (Brasil: ZTO, Claro, TIM, Vivo, ou qualquer outro CSC)
-- Mostra nome comercial, tamanho, versão do Android e versões anteriores com mês/ano
-- **Não exige IMEI**
-- Downloads com pausa e retomada, inclusive depois de fechar o app
-- Confere o **CRC32** e decifra o `.enc4` automaticamente
-- Evita que o Mac entre em repouso durante o download, avisa com notificação ao terminar
-  e mostra a contagem de downloads no Dock
-- Avisa quando há uma versão nova do app (Releases do GitHub)
-- Em português e inglês, conforme o idioma do macOS (inglês para os demais idiomas)
-- Instalação experimental de BL/AP/CP/CSC pelo motor [Brokkr](https://github.com/Gabriel2392/brokkr-flash), com USB nativo do macOS, teste de conexão, importação de ZIP e registro de progresso
+- Search by model and region (Brazil: ZTO, Claro, TIM, Vivo, or any other CSC)
+- Shows the marketing name, size, Android version and previous versions with month/year
+- **No IMEI required**
+- Downloads can be paused and resumed, even after quitting the app
+- Checks the **CRC32** and decrypts the `.enc4` automatically
+- Keeps the Mac awake while downloading, sends a notification when done
+  and shows the download count on the Dock
+- Lets you know when a new version of the app is out (GitHub Releases)
+- In Portuguese and English, following the macOS language (English for any other language)
+- Experimental BL/AP/CP/CSC installation with the [Brokkr](https://github.com/Gabriel2392/brokkr-flash) engine, using native macOS USB, with a connection test, ZIP import and a progress log
 
-Visual Liquid Glass (barras e cartões de vidro flutuantes, modo claro e escuro).
-Requer **macOS 26** ou mais novo.
+Liquid Glass design (floating glass bars and cards, light and dark mode).
+Requires **macOS 26** or later.
 
-## Instalar
+## Install
 
-1. Baixe o `FirmDrop.dmg` da versão mais recente na [página de Releases](https://github.com/julianamarques/firmdrop/releases).
-2. Abra o arquivo e arraste o **FirmDrop** para **Aplicativos**.
+1. Download `FirmDrop.dmg` from the latest version on the [Releases page](https://github.com/julianamarques/firmdrop/releases).
+2. Open the file and drag **FirmDrop** to **Applications**.
 
-O app avisa quando há uma versão nova. Em **FirmDrop › Verificar Atualizações…** você verifica
-na hora, e em **Ajustes › Atualizações** escolhe se a verificação é automática (ao abrir o app e
-uma vez por dia) ou só manual. Quem usa uma versão estável não é avisado de pré-lançamentos
+The app tells you when a new version is out. **FirmDrop › Check for Updates…** checks right
+away, and **Settings › Updates** chooses whether checks are automatic (when the app opens and
+once a day) or manual only. Users on a stable version are not told about pre-releases
 (alpha, beta, rc).
 
-O app é assinado apenas localmente (*ad-hoc*). Em outro Mac, o macOS bloqueia a primeira
-abertura: libere em **Ajustes do Sistema › Privacidade e Segurança › Abrir Mesmo Assim**.
-Para distribuir sem esse aviso, é preciso assinar e notarizar com uma conta Apple Developer.
+The app is only signed locally (*ad-hoc*). On another Mac, macOS blocks the first launch:
+allow it in **System Settings › Privacy & Security › Open Anyway**. Distributing without
+that warning requires signing and notarizing with an Apple Developer account.
 
-## Compilar
+## Build
 
-É preciso o Xcode 26 ou mais novo (ou as Command Line Tools com Swift 6.2+).
+You need Xcode 26 or later (or the Command Line Tools with Swift 6.2+).
 
 ```sh
-scripts/build-app.sh             # gera build/FirmDrop.app
-scripts/build-app.sh --install   # e copia para /Applications
-scripts/make-dmg.sh              # gera build/FirmDrop.dmg
+scripts/build-app.sh             # builds build/FirmDrop.app
+scripts/build-app.sh --install   # and copies it to /Applications
+scripts/make-dmg.sh              # builds build/FirmDrop.dmg
 ```
 
-Opção para os dois scripts: `--universal` gera um binário para Apple Silicon e Intel.
+Option for both scripts: `--universal` builds a binary for Apple Silicon and Intel.
 
-O build baixa o `auth_param.dat` uma vez (ver [abaixo](#auth_paramdat)) e o embute no app.
-Também baixa o `adb` do Android SDK Platform-Tools (versão fixa, conferida por SHA-256)
-e o embute com seu NOTICE.
-Também compila o motor de instalação como um executável separado, usando revisões fixas
-do Brokkr e de suas dependências. A primeira compilação precisa de internet e Git;
-não precisa de Qt, Homebrew, Heimdall ou OdinMac. O motor e seus fontes completos
-acompanham o `.app`. Veja [Engine/README.md](Engine/README.md).
+The build downloads `auth_param.dat` once (see [below](#auth_paramdat)) and embeds it in the app.
+It also downloads `adb` from the Android SDK Platform-Tools (pinned version, checked by SHA-256)
+and embeds it with its NOTICE.
+It also compiles the installation engine as a separate executable, using pinned revisions
+of Brokkr and its dependencies. The first build needs internet access and Git;
+it does not need Qt, Homebrew, Heimdall or OdinMac. The engine and its complete sources
+ship with the `.app`. See [Engine/README.md](Engine/README.md).
 
-Para desenvolver no Xcode, abra o `Package.swift` (`xed .`) e rode o esquema **FirmDrop**.
-Rodando fora do `.app`, o app usa o `Resources/auth_param.dat`: baixe-o antes com
+To develop in Xcode, open `Package.swift` (`xed .`) and run the **FirmDrop** scheme.
+When it runs outside the `.app`, the app uses `Resources/auth_param.dat`: download it first with
 `scripts/fetch-auth-params.sh`.
-Para testar a instalação ao executar `swift run`, compile também o motor uma vez com
-`bash scripts/build-flash-engine.sh`; para o botão ADB, rode `scripts/fetch-adb.sh`.
+To test installation with `swift run`, also build the engine once with
+`bash scripts/build-flash-engine.sh`; for the ADB button, run `scripts/fetch-adb.sh`.
 
-## Traduções
+## Translations
 
-Os textos ficam em português no código, e as traduções em
-`Resources/Localizable.xcstrings` (String Catalog, que pode ser editado no Xcode). Depois de
-adicionar ou alterar textos, rode:
-
-```sh
-scripts/sync-strings.sh   # extrai os textos do código e atualiza o catálogo
-```
-
-Os textos novos aparecem sem tradução no catálogo, e o `swift test` falha até que todos
-tenham a versão em inglês, com os mesmos marcadores (`%@`, `%lld`) do original.
-
-## Publicar uma versão
-
-O `scripts/release.sh` atualiza a versão no `Info.plist`, faz o commit `chore: release vX.Y.Z`,
-envia o `main`, gera o `.dmg` universal e cria a Release no GitHub com as notas tiradas dos
-commits desde a versão anterior. Requer o [GitHub CLI](https://cli.github.com) autenticado e o
-`main` local igual ao `origin/main`.
+Strings are written in Portuguese in the code, and the translations live in
+`Resources/Localizable.xcstrings` (a String Catalog, which can be edited in Xcode). After
+adding or changing strings, run:
 
 ```sh
-DRY_RUN=1 scripts/release.sh 0.1.0-beta.1   # mostra as notas sem alterar nada
-scripts/release.sh 0.1.0-beta.1             # pré-lançamento (alpha, beta ou rc)
-scripts/release.sh 1.0.0                    # versão estável
+scripts/sync-strings.sh   # extracts the strings from the code and updates the catalog
 ```
 
-A verificação de atualizações consulta a API pública do GitHub, então só funciona com o
-repositório público.
+New strings show up untranslated in the catalog, and `swift test` fails until every one
+has an English version with the same placeholders (`%@`, `%lld`) as the original.
 
-## Uso
+## Publish a release
 
-1. Digite o modelo, por exemplo `SM-A556E`. Ele aparece em Configurações › Sobre o
-   telefone; sufixos como `/DS` podem ficar, o app remove.
-2. Escolha a região e clique em **Buscar**.
-3. Clique em **Baixar** na versão mais recente ou em qualquer versão anterior.
+`scripts/release.sh` updates the version in `Info.plist`, makes the `chore: release vX.Y.Z`
+commit, pushes `main`, builds the universal `.dmg` and creates the GitHub Release with notes
+taken from the commits since the previous version. It requires an authenticated
+[GitHub CLI](https://cli.github.com) and a local `main` that matches `origin/main`.
 
-Os arquivos vão para `~/Downloads`; a pasta pode ser trocada em **FirmDrop › Ajustes** (⌘,).
-Também nos Ajustes: manter o `.enc4` depois de decifrar e escolher a região padrão.
+```sh
+DRY_RUN=1 scripts/release.sh 0.1.0-beta.1   # shows the notes without changing anything
+scripts/release.sh 0.1.0-beta.1             # pre-release (alpha, beta or rc)
+scripts/release.sh 1.0.0                    # stable version
+```
 
-### Instalar firmware pelo Mac (experimental)
+The update check uses GitHub's public API, so it only works while the repository is public.
 
-**Testado em dois aparelhos**, todos os testes em 10/10/2026 e do começo ao fim:
+## Usage
 
-- **Galaxy S25 (SM-S931B):** One UI 9 (Android 17, `S931BXXUCDZIF`, CSC `OWO`), com o
-  CSC completo (instalação limpa). O aparelho entrou em Download pelo Modo de
-  manutenção e pelo ADB.
-- **Galaxy A05s (SM-A057M):** One UI 7 (Android 15, `A057MUBUGDZH1`, CSC `OWO`), com o
-  CSC completo e, em seguida, com o HOME_CSC, que manteve os dados. O aparelho entrou em
-  Download pelos botões, sem ADB.
+1. Type the model, for example `SM-A556E`. It is shown in Settings › About phone;
+   suffixes such as `/DS` can stay, the app removes them.
+2. Choose the region and click **Search**.
+3. Click **Download** on the latest version or on any previous version.
 
-O HOME_CSC segue a lista `meta-data/download-list.txt` do pacote: além de `userdata`,
-ela deixou de fora outras imagens, como `rpm.mbn` e `keymint.mbn`. No teste, a versão
-instalada era a mesma que já estava no aparelho; uma atualização de versão com HOME_CSC
-ainda não foi validada. Outros modelos e versões também não, e a função continua
+Files go to `~/Downloads`; the folder can be changed in **FirmDrop › Settings** (⌘,).
+Settings also let you keep the `.enc4` after decrypting and choose the default region.
+
+### Install firmware from your Mac (experimental)
+
+**Tested on two devices**, all tests on 2026-10-10 and from start to finish:
+
+- **Galaxy S25 (SM-S931B):** One UI 9 (Android 17, `S931BXXUCDZIF`, CSC `OWO`), with the
+  full CSC (clean install). The device entered Download Mode through Maintenance Mode
+  and ADB.
+- **Galaxy A05s (SM-A057M):** One UI 7 (Android 15, `A057MUBUGDZH1`, CSC `OWO`), with the
+  full CSC and then with HOME_CSC, which kept the data. The device entered Download Mode
+  with the buttons, without ADB.
+
+HOME_CSC follows the package's `meta-data/download-list.txt`: besides `userdata`, it left
+out other images, such as `rpm.mbn` and `keymint.mbn`. In the test, the installed version
+was the same one already on the device; a version upgrade with HOME_CSC has not been
+validated yet. Neither have other models and versions, and the feature remains
 experimental.
 
-O FirmDrop usa o transporte IOKit do Brokkr, diferente do Heimdall usado pelo OdinMac.
-Isso permite investigar a conexão por outra implementação, mas não garante resolver
-a causa de um aparelho não reconhecido.
+FirmDrop uses Brokkr's IOKit transport, unlike the Heimdall used by OdinMac.
+This makes it possible to investigate the connection with a different implementation, but
+does not guarantee a fix when a device is not recognized.
 
-1. Abra a aba **Instalar Firmware**, ou **Instalar este Firmware…**
-   no download concluído.
-2. Importe o ZIP, abra a pasta já extraída ou selecione BL, AP, CP e CSC individualmente.
-   Use os quatro pacotes do mesmo download oficial. Quando o ZIP ou a pasta traz os dois,
-   o app não escolhe sozinho: escolha na linha do CSC entre **HOME_CSC**, que tenta
-   preservar os dados, e **CSC**, que apaga o aparelho. Dá para trocar a qualquer momento
-   antes de instalar. Tenha backup em ambos os casos.
-3. O app não pede o modelo do aparelho. Ao reiniciar pelo ADB (passo 4), ele lê o
-   modelo (`ro.product.model`) e confere se os nomes dos pacotes correspondem a ele.
-   Em todos os casos, o app confere se BL/AP pertencem à mesma versão. Isso não verifica
-   automaticamente CSC, anti-rollback, FRP, Knox ou bloqueios do bootloader; essas
-   restrições continuam sendo aplicadas pelo aparelho.
-4. Na One UI 9, ative o **Modo de manutenção** no Samsung, aguarde o reinício e
-   mantenha o telefone ligado nesse modo. Conecte ao Mac, autorize a depuração USB
-   na tela do aparelho e clique em **Reiniciar em Download (ADB)**. O app verifica
-   que a manutenção está ativa, solicita o reinício direto e aguarda até 45 segundos
-   pelo modo Download na mesma porta USB. Não é preciso desligar pelo menu nem
-   desativar a manutenção. Em versões que permitem a combinação de botões, desligue
-   o telefone e segure os dois botões de volume ao conectar o cabo; confirme com
-   Volume +. Feche todos os programas que utilizam o aparelho.
-5. Clique em **Detectar** e **Testar Conexão**. Detectar apenas enumera o USB;
-   testar abre uma sessão do protocolo, consulta sua versão e encerra sem reiniciar
-   ou gravar partições. A instalação retoma essa sessão sem repetir o handshake,
-   como o `--resume` do Heimdall. Se precisar reconectar o cabo, teste novamente;
-   se a instalação falhar, saia do modo Download e entre de novo antes de repetir.
-6. Clique em **Instalar Firmware…**, no rodapé da janela. Na revisão, confira os
-   arquivos, o modelo e a revisão do bootloader e confirme. A gravação só começa
-   depois dessa confirmação. Não desconecte o cabo; o app impede o repouso por
-   inatividade e bloqueia a saída normal enquanto a operação estiver em andamento.
+1. Open the **Install Firmware** tab, or click **Install This Firmware…**
+   on a completed download.
+2. Import the ZIP, open the already extracted folder or select BL, AP, CP and CSC one by one.
+   Use all four packages from the same official download. When the ZIP or folder includes both,
+   the app does not choose for you: pick in the CSC row between **HOME_CSC**, which tries to
+   keep the data, and **CSC**, which wipes the device. You can switch at any time before
+   installing. Have a backup in both cases.
+3. The app always checks that BL/AP belong to the same version. When the device is rebooted
+   over ADB (step 4, only in One UI 9 Maintenance Mode), it also reads the model
+   (`ro.product.model`) and checks that the package names match it. This does not
+   automatically check CSC, anti-rollback, FRP, Knox or bootloader locks;
+   those restrictions are still enforced by the device.
+4. On One UI 9, enable **Maintenance Mode** on the Samsung device, wait for it to restart and
+   keep the phone powered on in that mode. Connect it to the Mac, authorize USB debugging
+   on the device screen and click **Reboot to Download Mode (ADB)**. The app checks
+   that maintenance is active, requests the direct reboot and waits up to 45 seconds
+   for Download Mode on the same USB port. You don't need to power off from the menu or
+   turn off maintenance. On versions that support the button combination, power off
+   the phone and hold both volume buttons while connecting the cable; confirm with
+   Volume Up. Close all apps that use the device.
+5. Click **Detect** and **Test Connection**. Detect only enumerates USB;
+   testing opens a protocol session, queries its version and ends without rebooting
+   or writing partitions. Installation resumes that session without repeating the handshake,
+   like Heimdall's `--resume`. If you need to reconnect the cable, test again;
+   if installation fails, leave Download Mode and enter it again before retrying.
+6. Click **Install Firmware…** at the bottom of the window. In the review, check the
+   files, the model and the bootloader revision, then confirm. Flashing only starts
+   after that confirmation. Don't disconnect the cable; the app prevents idle sleep
+   and blocks quitting normally while the operation is in progress.
 
-O botão ADB usa o `adb` do
+The ADB button uses the `adb` from
 [Android SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools)
-incluído no app (versão fixa, baixada da Google no build e conferida por SHA-256).
-Não é preciso instalar nada. O servidor ADB iniciado pelo FirmDrop não usa a descoberta
-mDNS na rede local e é encerrado depois do reinício; um servidor que já estava em
-execução é mantido. Para esse reinício, conecte apenas um
-Samsung por USB e apenas um aparelho USB ao ADB; conexões ADB por Wi-Fi são ignoradas.
-O comando é direcionado à conexão ADB verificada, com nova checagem do aparelho
-antes do reinício. A instalação de firmware continua sendo uma operação separada.
+included in the app (pinned version, downloaded from Google at build time and checked by SHA-256).
+There is nothing to install. The ADB server started by FirmDrop does not use mDNS discovery
+on the local network and is stopped after the reboot; a server that was already running
+is left alone. For this reboot, connect only one
+Samsung device over USB and only one USB device to ADB; Wi-Fi ADB connections are ignored.
+The command targets the verified ADB connection, and the device is checked again
+before the reboot. Firmware installation remains a separate operation.
 
-Se o telefone mostrar **Reboot Device - D2**, ele não permaneceu em modo Download.
-O fluxo de manutenção com ADB funcionou no SM-S931B testado, mas não estabelece
-compatibilidade com todos os modelos ou versões da One UI.
+If the phone shows **Reboot Device - D2**, it did not stay in Download Mode.
+The Maintenance Mode flow with ADB worked on the tested SM-S931B, but that does not establish
+compatibility with every model or One UI version.
 
-O motor verifica o MD5 dos `.tar.md5` antes da comunicação de gravação. Arquivos
-`.tar` passam pela validação da estrutura, mas não possuem essa verificação MD5.
-O FirmDrop não envia PIT nem oferece reparticionamento, NAND erase, USERDATA avulso,
-flash parcial ou bypass de bloqueios. Todas as imagens selecionadas precisam
-corresponder ao mapa de partições do aparelho; caso contrário, a operação falha
-antes da gravação. A sessão fica vinculada à conexão USB escolhida, sem seleção
-automática de vários dispositivos. Não existe pausa ou retomada do flash.
+The engine verifies the MD5 of `.tar.md5` files before the flashing communication. `.tar`
+files go through structure validation, but have no MD5 check.
+FirmDrop does not send a PIT and does not offer repartitioning, NAND erase, standalone USERDATA,
+partial flashing or lock bypasses. Every selected image must match the device's partition
+map; otherwise, the operation fails before writing. The session is bound to the chosen USB
+connection, with no automatic selection across multiple devices. Flashing cannot be paused
+or resumed.
 
-Se o aparelho não aparecer, teste cabo de dados e porta diretamente no Mac e
-confira a autorização de acessórios USB do macOS. Se aparecer, mas o teste de
-conexão falhar, copie o registro: ele permite distinguir descoberta do dispositivo,
-acesso exclusivo à interface e negociação do protocolo. Uma falha exige nova
-avaliação e confirmação; não há tentativa automática de reinstalação.
+If the device does not show up, try a data cable and a port directly on the Mac and
+check the macOS USB accessory authorization. If it shows up but the connection test
+fails, copy the log: it tells apart device discovery, exclusive access to the interface
+and protocol negotiation. A failure requires a new review and confirmation; there is no
+automatic reinstallation attempt.
 
-O ZIP é mantido. A extração cria cópias temporárias apenas dos pacotes selecionáveis;
-reserve espaço para esses arquivos. Elas são apagadas ao substituir a importação
-ou encerrar normalmente o app. O registro mostra as mensagens originais do motor,
-que podem estar em inglês.
+The ZIP is kept. Extraction creates temporary copies of the selectable packages only;
+leave room for those files. They are deleted when the import is replaced or when the app
+quits normally. The log also includes the engine's original messages.
 
-### Regiões do Brasil
+### Brazilian regions
 
-| CSC | Região/operadora |
-|-----|------------------|
-| `ZTO` | Brasil, desbloqueado (padrão) |
+| CSC | Region/carrier |
+|-----|----------------|
+| `ZTO` | Brazil, unlocked (default) |
 | `ZTA` | Claro |
 | `ZTM` | TIM |
 | `ZVV` | Vivo |
 
-Todos servem o mesmo firmware multi-CSC (`OWO`). O CSC ativo é escolhido pelo chip.
+All of them serve the same multi-CSC firmware (`OWO`). The active CSC is chosen by the SIM card.
 
-### Espaço em disco
+### Disk space
 
-Durante a decifragem, o `.enc4` e o `.zip` existem ao mesmo tempo, então é preciso o
-**dobro** do tamanho do firmware. Um topo de linha como o S24 Ultra passa de 19 GB.
+While decrypting, the `.enc4` and the `.zip` exist at the same time, so you need **twice**
+the size of the firmware. A flagship such as the S24 Ultra goes over 19 GB.
 
-## Como funciona
+## How it works
 
-1. **Versões**: `https://fota-cloud-dn.ospserver.net/firmware/{CSC}/{MODELO}/version.xml`
-   (público; o CDN só aceita alguns User-Agents).
-2. **Autenticação**: `NF_SmartDownloadGenerateNonce.do` devolve um nonce. A assinatura é
-   esse nonce passado por uma cifra AES *white-box* extraída do Smart Switch, cujas
-   tabelas ficam no `auth_param.dat` (ver abaixo).
-3. **BinaryInform**: informa modelo, CSC e versão; a resposta traz o nome do arquivo, o
-   tamanho, o CRC32 e o `LOGIC_VALUE_FACTORY`, do qual se deriva a chave AES.
-4. **BinaryInitForMass** libera o arquivo, que é baixado de
-   `cloud-neofussvr.samsungmobile.com/NF_SmartDownloadBinaryForMass.do` (aceita `Range`).
-5. **Decifragem**: AES-128-ECB com `MD5(logicCheck(versão, LOGIC_VALUE_FACTORY))`.
+1. **Versions**: `https://fota-cloud-dn.ospserver.net/firmware/{CSC}/{MODEL}/version.xml`
+   (public; the CDN only accepts some User-Agents).
+2. **Authentication**: `NF_SmartDownloadGenerateNonce.do` returns a nonce. The signature is
+   that nonce run through a *white-box* AES cipher extracted from Smart Switch, whose
+   tables live in `auth_param.dat` (see below).
+3. **BinaryInform**: sends the model, CSC and version; the response has the file name,
+   size, CRC32 and `LOGIC_VALUE_FACTORY`, from which the AES key is derived.
+4. **BinaryInitForMass** releases the file, which is downloaded from
+   `cloud-neofussvr.samsungmobile.com/NF_SmartDownloadBinaryForMass.do` (accepts `Range`).
+5. **Decryption**: AES-128-ECB with `MD5(logicCheck(version, LOGIC_VALUE_FACTORY))`.
 
 ### `auth_param.dat`
 
-O `auth_param.dat` (~800 KB) vem embutido no app, então ele funciona sem depender de
-nenhum outro servidor além dos da Samsung. No build, o `scripts/fetch-auth-params.sh` baixa o
-arquivo do projeto [Bifrost](https://github.com/zacharee/SamloaderKotlin) num commit fixo e
-confere o SHA-256; o app confere de novo ao carregar. O arquivo não é versionado neste
-repositório.
+`auth_param.dat` (~800 KB) is embedded in the app, so it works without depending on any
+server other than Samsung's. At build time, `scripts/fetch-auth-params.sh` downloads the
+file from the [Bifrost](https://github.com/zacharee/SamloaderKotlin) project at a pinned commit
+and checks its SHA-256; the app checks it again when loading it. The file is not versioned in
+this repository.
 
-Se a Samsung trocar o esquema de autenticação, as buscas passam a falhar com
-"Autenticação recusada pelo servidor" (HTTP/status 401). Nesse caso, é preciso
-atualizar o commit em `scripts/fetch-auth-params.sh` e o `paramsSHA256` em
-`Sources/FirmDropCore/Authenticator.swift` (e possivelmente o algoritmo) acompanhando o
-Bifrost, e publicar uma nova versão.
+If Samsung changes the authentication scheme, searches start failing with
+"The server rejected the authentication" (HTTP/status 401). In that case, the commit in
+`scripts/fetch-auth-params.sh` and `paramsSHA256` in
+`Sources/FirmDropCore/Authenticator.swift` (and possibly the algorithm) need to be updated
+following Bifrost, and a new version published.
 
-## Estrutura
+## Layout
 
-| Caminho | Conteúdo |
+| Path | Contents |
 |---|---|
-| `Sources/FirmDropCore/` | Protocolo FUS, autenticação, download, validação de pacotes e comunicação com o motor de instalação |
-| `Sources/FirmDrop/` | App SwiftUI: busca, downloads, instalação, ajustes |
-| `Engine/` | Adaptador GPL do Brokkr, patches do motor e build reproduzível |
-| `Tests/FirmDropCoreTests/` | Testes (`swift test`) |
-| `Resources/` | `Info.plist`, ícone do app e traduções (`Localizable.xcstrings`) |
-| `scripts/` | `build-app.sh` (monta o .app), `fetch-auth-params.sh`, `fetch-adb.sh`, `sync-strings.sh`, `make-source-strings.swift`, `make-dmg.sh`, `release.sh` e `make-icon.sh` (gera o ícone) |
+| `Sources/FirmDropCore/` | FUS protocol, authentication, download, package validation and communication with the installation engine |
+| `Sources/FirmDrop/` | SwiftUI app: search, downloads, installation, settings |
+| `Engine/` | Brokkr GPL adapter, engine patches and reproducible build |
+| `Tests/FirmDropCoreTests/` | Tests (`swift test`) |
+| `Resources/` | `Info.plist`, app icon and translations (`Localizable.xcstrings`) |
+| `scripts/` | `build-app.sh` (assembles the .app), `fetch-auth-params.sh`, `fetch-adb.sh`, `sync-strings.sh`, `make-source-strings.swift`, `make-dmg.sh`, `release.sh` and `make-icon.sh` (generates the icon) |
 
-## Testes
+## Tests
 
 ```sh
-scripts/fetch-auth-params.sh   # uma vez, para os testes de autenticação
-swift test                     # testes offline
-python3 Engine/test-engine.py build/flash-engine/firmdrop-flash # motor, sem acessar USB
-FIRMDROP_LIVE=1 swift test     # inclui testes contra o servidor real (baixa ~30 MB)
+scripts/fetch-auth-params.sh   # once, for the authentication tests
+swift test                     # offline tests
+python3 Engine/test-engine.py build/flash-engine/firmdrop-flash # engine, without touching USB
+FIRMDROP_LIVE=1 swift test     # includes tests against the real server (downloads ~30 MB)
 ```
 
-## Limitações
+## Limitations
 
-- O `version.xml` só lista versões anteriores que têm atualização OTA. Outras podem
-  existir no servidor, mas o app não tem como descobri-las.
-- Use para seus próprios aparelhos. Redistribuir os firmwares publicamente pode violar os
-  termos de uso da Samsung.
+- `version.xml` only lists previous versions that have an OTA update. Others may
+  exist on the server, but the app has no way to discover them.
+- Use it for your own devices. Redistributing the firmware publicly may violate
+  Samsung's terms of use.
 
-## Contribuindo
+## Contributing
 
-Correções e melhorias são bem-vindas. Veja o [guia de contribuição](CONTRIBUTING.md). Para reportar vulnerabilidades, siga a [política de segurança](SECURITY.md).
+Fixes and improvements are welcome. See the [contribution guide](CONTRIBUTING.md). To report vulnerabilities, follow the [security policy](SECURITY.md).
 
-## Licença
+## License
 
-O app Swift é distribuído sob a [licença Apache 2.0](LICENSE). O motor separado de
-instalação e seu adaptador são GPL-3.0-or-later. Os créditos, licenças e fontes do
-motor estão em [NOTICE](NOTICE) e acompanham o app em `Contents/Resources/`.
+The Swift app is distributed under the [Apache 2.0 license](LICENSE). The separate
+installation engine and its adapter are GPL-3.0-or-later. The engine's credits, licenses
+and sources are in [NOTICE](NOTICE) and ship with the app in `Contents/Resources/`.
 
-## Créditos
+## Credits
 
-A autenticação no servidor FUS é um porte do [Bifrost](https://github.com/zacharee/SamloaderKotlin), de Zachary Wander, sob a licença MIT (texto completo em [Resources/licenses/Bifrost-LICENSE.txt](Resources/licenses/Bifrost-LICENSE.txt)). O `auth_param.dat` usado na autenticação vem do mesmo projeto e é embutido no app.
+Authentication with the FUS server is a port of [Bifrost](https://github.com/zacharee/SamloaderKotlin), by Zachary Wander, under the MIT license (full text in [Resources/licenses/Bifrost-LICENSE.txt](Resources/licenses/Bifrost-LICENSE.txt)). The `auth_param.dat` used for authentication comes from the same project and is embedded in the app.
