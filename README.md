@@ -9,8 +9,8 @@ with the key provided by the server. The downloaded `.zip` can be installed by F
 used with another flashing tool.
 
 <p align="center">
-  <img src="docs/images/download-firmware.png" width="420" alt="Download Firmware tab, with the model field, the ZTO · Brazil (unlocked) region menu, the Search button and the Search for a model message">
-  <img src="docs/images/install-firmware.png" width="420" alt="Install Firmware tab, with the Device card (Detect, Test Connection and Reboot to Download Mode over ADB), the BL, AP and CP packages and the Install Firmware button">
+  <img src="docs/images/download-firmware.png" width="49%" alt="Download Firmware tab, with the model field, the ZTO · Brazil (unlocked) region menu, the Search button and the Search for a model message">
+  <img src="docs/images/install-firmware.png" width="49%" alt="Install Firmware tab, with the Device card (Detect, Test Connection and Reboot to Download Mode over ADB), the BL, AP and CP packages and the Install Firmware button">
 </p>
 
 - Search by model and region (Brazil: ZTO, Claro, TIM, Vivo, or any other CSC)
