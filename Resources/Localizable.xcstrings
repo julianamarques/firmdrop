@@ -139,6 +139,16 @@
         }
       }
     },
+    "Abrir Pasta usa uma pasta já extraída: basta escolher a pasta, sem selecionar arquivo por arquivo. Os arquivos ficam onde estão, sem cópia. Nos dois casos, o app reconhece BL, AP, CP e CSC e preenche cada linha; se houver HOME_CSC e CSC, você escolhe qual usar.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Folder uses an already extracted folder: just choose the folder, with no need to select each file. The files stay where they are, without being copied. Either way, the app recognizes BL, AP, CP and CSC and fills in each row; if there are both HOME_CSC and CSC, you choose which one to use."
+          }
+        }
+      }
+    },
     "Abrir Pasta…": {
       "localizations": {
         "en": {
@@ -931,6 +941,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Import"
+          }
+        }
+      }
+    },
+    "Importar ZIP extrai os pacotes do firmware baixado para uma pasta temporária, apagada ao fechar o app; o ZIP é mantido.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import ZIP extracts the packages from the downloaded firmware into a temporary folder that is deleted when the app quits; the ZIP is kept."
           }
         }
       }

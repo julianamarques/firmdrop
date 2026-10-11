@@ -145,6 +145,11 @@ struct FlashView: View {
                 Button("Importar ZIP…") { flash.chooseZIP() }
                 Button("Abrir Pasta…") { flash.chooseFolder() }
             }
+            VStack(alignment: .leading, spacing: 3) {
+                Text("Importar ZIP extrai os pacotes do firmware baixado para uma pasta temporária, apagada ao fechar o app; o ZIP é mantido.")
+                Text("Abrir Pasta usa uma pasta já extraída: basta escolher a pasta, sem selecionar arquivo por arquivo. Os arquivos ficam onde estão, sem cópia. Nos dois casos, o app reconhece BL, AP, CP e CSC e preenche cada linha; se houver HOME_CSC e CSC, você escolhe qual usar.")
+            }
+            .font(.caption).foregroundStyle(.secondary)
             ForEach(FlashSlot.allCases) { slot in
                 let showsCSCPicker = slot == .csc && flash.cscOptions.count > 1
                 HStack(spacing: 12) {
