@@ -197,17 +197,6 @@ The ZIP is kept. Extraction creates temporary copies of the selectable packages 
 leave room for those files. They are deleted when the import is replaced or when the app
 quits normally. The log also includes the engine's original messages.
 
-### Brazilian regions
-
-| CSC | Region/carrier |
-|-----|----------------|
-| `ZTO` | Brazil, unlocked (default) |
-| `ZTA` | Claro |
-| `ZTM` | TIM |
-| `ZVV` | Vivo |
-
-All of them serve the same multi-CSC firmware (`OWO`). The active CSC is chosen by the SIM card.
-
 ### Disk space
 
 While decrypting, the `.enc4` and the `.zip` exist at the same time, so you need **twice**
