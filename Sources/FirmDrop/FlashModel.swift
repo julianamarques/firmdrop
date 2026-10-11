@@ -39,7 +39,6 @@ final class FlashModel {
     var reviewRequirement: String? {
         guard let device = selectedDevice else { return String(localized: "Conecte o aparelho e clique em Detectar.") }
         guard device.isDownloadMode else { return String(localized: "Coloque o aparelho em modo Download.") }
-        guard connectionTested else { return String(localized: "Clique em Testar Conexão.") }
         if packages[.csc] == nil, cscOptions.count > 1 { return String(localized: "Escolha HOME_CSC ou CSC.") }
         guard hasAllPackages else {
             let missing = FlashSlot.allCases.filter { packages[$0] == nil }
@@ -115,7 +114,7 @@ final class FlashModel {
                     }) {
                         selectedDeviceID = target.id
                         if let model { reportedModel = (target, model) }
-                        stage = String(localized: "Modo Download detectado. Clique em Testar Conexão para continuar.")
+                        stage = String(localized: "Modo Download detectado.")
                         append(stage)
                         return
                     }
@@ -188,7 +187,7 @@ final class FlashModel {
 
     func review() -> FlashPlan? {
         do {
-            guard connectionTested, let device = selectedDevice else { throw FlashError.probeRequired }
+            guard let device = selectedDevice else { throw FlashError.deviceChanged }
             return try FlashPlan(model: deviceModel, packages: packages, device: device, reboot: reboot)
         } catch {
             fail(error)
@@ -198,7 +197,7 @@ final class FlashModel {
 
     func start(_ plan: FlashPlan) {
         guard !isBusy else { return }
-        guard connectionTested, plan.device == selectedDevice else { fail(FlashError.deviceChanged); return }
+        guard plan.device == selectedDevice else { fail(FlashError.deviceChanged); return }
         begin(String(localized: "Conferindo os pacotes antes de instalar…"))
         isFlashing = true
         append(plan.model.map { String(localized: "Instalação de \($0) · USB \(plan.device.target)") }
@@ -299,6 +298,7 @@ final class FlashModel {
         if stage.hasPrefix("Verifying packages") || stage.hasPrefix("Checking package") {
             return String(localized: "Conferindo os pacotes antes de instalar…")
         }
+        if stage.hasPrefix("ODIN handshake") { return String(localized: "Testando a conexão…") }
         if preparing.contains(where: stage.hasPrefix) { return String(localized: "Preparando o aparelho para a gravação…") }
         if stage.hasPrefix("Flashing") { return String(localized: "Instalando firmware… Não desconecte o cabo.") }
         if stage.hasPrefix("Finalizing") { return String(localized: "Finalizando a instalação… Não desconecte o cabo.") }

@@ -18,7 +18,8 @@ After a session ends without a reboot, the bootloader no longer answers the
 `--resume`, the resume-session patch lets `--probe --resume` and
 `--flash --resume` skip only that handshake and continue with the same session
 requests. The app passes `--resume` only after a successful probe on the same
-USB connection.
+USB connection. The probe is optional: without it, `--flash` performs the handshake
+itself, as upstream Brokkr does.
 HOME_CSC packages carry `meta-data/download-list.txt`, an allowlist of images to flash.
 Samsung names an image once per package that ships it (for example `vbmeta.img` in BL
 and AP), which upstream rejects as a duplicate; the download-list patch ignores repeated

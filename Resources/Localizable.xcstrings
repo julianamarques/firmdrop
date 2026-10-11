@@ -479,16 +479,6 @@
         }
       }
     },
-    "Clique em Testar Conexão.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Click Test Connection."
-          }
-        }
-      }
-    },
     "Coloque o aparelho em modo Download.": {
       "localizations": {
         "en": {
@@ -1141,22 +1131,12 @@
         }
       }
     },
-    "Modo Download detectado. Clique em Testar Conexão para continuar.": {
+    "Modo Download detectado.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Download Mode detected. Click Test Connection to continue."
-          }
-        }
-      }
-    },
-    "Modo Download detectado. Teste a comunicação antes de instalar.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Download Mode detected. Test communication before installing."
+            "value": "Download Mode detected."
           }
         }
       }
@@ -1385,12 +1365,12 @@
         }
       }
     },
-    "O aparelho já está em modo Download. Use Testar Conexão para continuar.": {
+    "O aparelho já está em modo Download. Prossiga para a instalação.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The device is already in Download Mode. Use Test Connection to continue."
+            "value": "The device is already in Download Mode. Continue with the installation."
           }
         }
       }
@@ -1401,6 +1381,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "The device is not in Download Mode."
+          }
+        }
+      }
+    },
+    "O aparelho não respondeu ao teste de conexão.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The device did not respond to the connection test."
           }
         }
       }
@@ -1913,22 +1903,12 @@
         }
       }
     },
-    "Testar Conexão confirma a comunicação USB, mas não confirma a compatibilidade do firmware.": {
+    "Testar Conexão é opcional: a instalação testa a conexão antes de gravar. O teste confirma a comunicação USB, mas não a compatibilidade do firmware.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Test Connection confirms USB communication, but does not confirm firmware compatibility."
-          }
-        }
-      }
-    },
-    "Teste a conexão com o aparelho antes de instalar.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Test the device connection before installing."
+            "value": "Test Connection is optional: installing tests the connection before writing. The test confirms USB communication, but not firmware compatibility."
           }
         }
       }

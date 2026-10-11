@@ -115,7 +115,7 @@ struct FlashView: View {
                     if flash.connectionTested {
                         Label("Comunicação confirmada", systemImage: "checkmark.circle.fill").foregroundStyle(.green)
                     } else if device.isDownloadMode {
-                        Text("Modo Download detectado. Teste a comunicação antes de instalar.")
+                        Text("Modo Download detectado.")
                     } else {
                         Text("O macOS detectou o aparelho, mas ele não está em modo Download.")
                     }
@@ -124,7 +124,7 @@ struct FlashView: View {
             }
             Text("Em versões que permitem entrar por botões: desligue, segure os dois botões de volume e conecte o cabo ao Mac. Confirme com Volume +. Feche todos os programas que utilizam o aparelho.")
                 .font(.callout).foregroundStyle(.secondary)
-            Text("Testar Conexão confirma a comunicação USB, mas não confirma a compatibilidade do firmware.")
+            Text("Testar Conexão é opcional: a instalação testa a conexão antes de gravar. O teste confirma a comunicação USB, mas não a compatibilidade do firmware.")
                 .font(.caption).foregroundStyle(.secondary)
             if let error = flash.deviceError { Text(error).foregroundStyle(.red).textSelection(.enabled) }
             Divider()

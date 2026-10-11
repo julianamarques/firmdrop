@@ -149,11 +149,12 @@ does not guarantee a fix when a device is not recognized.
    turn off maintenance. On versions that support the button combination, power off
    the phone and hold both volume buttons while connecting the cable; confirm with
    Volume Up. Close all apps that use the device.
-4. Click **Detect** and **Test Connection**. Detect only enumerates USB;
-   testing opens a protocol session, queries its version and ends without rebooting
-   or writing partitions. Installation resumes that session without repeating the handshake,
-   like Heimdall's `--resume`. If you need to reconnect the cable, test again;
-   if installation fails, leave Download Mode and enter it again before retrying.
+4. **Detect** and **Test Connection** are optional. The device list refreshes on its own,
+   and installing tests the connection right after checking the files. Detect only
+   enumerates USB; testing opens a protocol session, queries its version and ends without
+   rebooting or writing partitions. After a test, installation resumes that session without
+   repeating the handshake, like Heimdall's `--resume`. If installation fails, leave
+   Download Mode and enter it again before retrying.
 5. Click **Install Firmware…** at the bottom of the window. In the review, check the
    files, the model and the bootloader revision, then confirm. Flashing only starts
    after that confirmation. Don't disconnect the cable; the app prevents idle sleep
