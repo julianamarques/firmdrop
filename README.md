@@ -21,11 +21,12 @@ used with another flashing tool.
 - Keeps the Mac awake while downloading, sends a notification when done
   and shows the download count on the Dock
 - Lets you know when a new version of the app is out (GitHub Releases)
-- In Portuguese and English, following the macOS language (English for any other language)
 - Experimental BL/AP/CP/CSC installation with the [Brokkr](https://github.com/Gabriel2392/brokkr-flash) engine, using native macOS USB, with a connection test, ZIP import and a progress log
 
 Liquid Glass design (floating glass bars and cards, light and dark mode).
 Requires **macOS 26** or later.
+Available in **English** and **Brazilian Portuguese**, following the macOS language
+(English for any other language).
 
 ## Install
 
