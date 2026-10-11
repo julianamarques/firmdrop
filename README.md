@@ -26,8 +26,15 @@ used with another flashing tool.
 
 Liquid Glass design (floating glass bars and cards, light and dark mode).
 Requires **macOS 26** or later.
-Available in **English** and **Brazilian Portuguese**, following the macOS language
-(English for any other language).
+
+## Languages
+
+| | Language |
+|---|---|
+| 🇺🇸 | English |
+| 🇧🇷 | Brazilian Portuguese |
+
+The app follows the macOS language; any other language falls back to English.
 
 ## Install
 
