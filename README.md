@@ -13,6 +13,11 @@ used with another flashing tool.
   <img src="docs/images/install-firmware.png" width="49%" alt="Install Firmware tab, with the Device card (Detect, Test Connection and Reboot to Download Mode over ADB), the BL, AP and CP packages and the Install Firmware button">
 </p>
 
+> [!CAUTION]
+> Installing firmware can permanently damage a device or erase its data. Only use firmware
+> made for the device's exact model number and keep a backup: the full CSC always wipes the
+> device. Installation is experimental, and you use FirmDrop at your own risk.
+
 - Search by model and region: the menu lists Brazil's codes (ZTO, Claro, TIM, Vivo), and
   **Other Region…** accepts any other CSC, such as `XAA` or `BTU`
 - Shows the marketing name, size, Android version and previous versions with month/year
