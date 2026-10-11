@@ -9,7 +9,8 @@ com a chave fornecida pelo servidor. O `.zip` baixado pode ser instalado pelo pr
 usado com outra ferramenta de instalação.
 
 <p align="center">
-  <img src="docs/images/tela-inicial.png" width="560" alt="Tela inicial do FirmDrop, com o campo de modelo, o menu de região ZTO · Brasil (desbloqueado), o botão Buscar e a mensagem Busque um modelo">
+  <img src="docs/images/baixar-firmware.png" width="420" alt="Aba Baixar Firmware, com o campo de modelo, o menu de região ZTO · Brasil (desbloqueado), o botão Buscar e a mensagem Busque um modelo">
+  <img src="docs/images/instalar-firmware.png" width="420" alt="Aba Instalar Firmware, com o cartão Aparelho (Detectar, Testar Conexão e Reiniciar em Download pelo ADB), os pacotes BL, AP e CP e o botão Instalar Firmware">
 </p>
 
 - Busca por modelo e região (Brasil: ZTO, Claro, TIM, Vivo, ou qualquer outro CSC)
