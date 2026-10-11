@@ -5,6 +5,10 @@ enum Identifiers {
         model.wholeMatch(of: /[A-Z0-9][A-Z0-9-]{0,31}/) != nil
     }
 
+    public static func isDeviceModel(_ model: String) -> Bool {
+        model.wholeMatch(of: /SM-[A-Z0-9]{5,12}/) != nil
+    }
+
     static func isValidRegion(_ region: String) -> Bool {
         region.wholeMatch(of: /[A-Z0-9]{2,5}/) != nil
     }
@@ -18,7 +22,7 @@ enum Identifiers {
     }
 
     static func isPlainFileName(_ name: String) -> Bool {
-        name.wholeMatch(of: /[A-Za-z0-9_-][A-Za-z0-9._-]{0,254}/) != nil
+        name.wholeMatch(of: /[A-Za-z0-9_][A-Za-z0-9._-]{0,254}/) != nil
     }
 
     static func validated(model: String, region: String) throws -> (model: String, region: String) {

@@ -1,0 +1,30 @@
+--- a/src/protocol/odin/group_flasher.cpp
++++ b/src/protocol/odin/group_flasher.cpp
+@@ -43,6 +43,8 @@
+ #include <spdlog/spdlog.h>
+ 
+ namespace brokkr::odin {
++
++bool firmdrop_resume_session = false;
+ 
+ namespace {
+ 
+@@ -338,14 +340,16 @@
+ 
+   steps.emplace_back([&] {
+     spdlog::info("> Odin");
+-    stage("ODIN handshake");
++    stage(firmdrop_resume_session ? "ODIN resume" : "ODIN handshake");
+ 
+     auto st = fanout_keep([&](Target& d) -> brokkr::core::Status {
+       auto& c = link(d);
+       c.set_timeout_ms(cfg.preflash_timeout_ms);
+       OdinCommands odin(c);
+ 
+-      BRK_TRY(odin.handshake(cfg.preflash_retries));
++      if (!firmdrop_resume_session) {
++        BRK_TRY(odin.handshake(cfg.preflash_retries));
++      }
+       BRK_TRYV(vr, odin.get_version(cfg.preflash_retries));
+ 
+       d.init = vr;

@@ -22,7 +22,7 @@ struct DownloadsTray: View {
                 }
                 Spacer()
                 if hasFinished {
-                    Button("Limpar concluídos") {
+                    Button("Limpar Concluídos") {
                         withAnimation(.smooth) { downloads.clearFinished() }
                     }
                     .buttonStyle(.glass)
@@ -53,6 +53,7 @@ struct DownloadsTray: View {
 
 struct DownloadRow: View {
     @Environment(DownloadManager.self) private var downloads
+    @Environment(FlashModel.self) private var flash
     let item: DownloadItem
     @State private var confirmCancel = false
 
@@ -99,8 +100,8 @@ struct DownloadRow: View {
         .background(.fill.quaternary, in: .rect(cornerRadius: 20))
         .contextMenu { menuItems }
         .confirmationDialog("Cancelar o download de \(item.title)?", isPresented: $confirmCancel) {
-            Button("Cancelar e apagar arquivo parcial", role: .destructive) { downloads.cancel(item) }
-            Button("Continuar baixando", role: .cancel) {}
+            Button("Cancelar e Apagar Arquivo Parcial", role: .destructive) { downloads.cancel(item) }
+            Button("Continuar Baixando", role: .cancel) {}
         } message: {
             Text("O que já foi baixado será apagado.")
         }
@@ -135,17 +136,17 @@ struct DownloadRow: View {
                 case .paused:
                     iconButton("play.fill", help: "Retomar") { downloads.resume(item) }
                 case .failed:
-                    iconButton("arrow.clockwise", help: "Tentar de novo") { downloads.resume(item) }
+                    iconButton("arrow.clockwise", help: "Tentar de Novo") { downloads.resume(item) }
                 case .completed:
                     EmptyView()
                 }
                 iconButton("magnifyingglass", help: "Mostrar no Finder") { downloads.reveal(item) }
                 if item.isCompleted {
-                    iconButton("xmark", help: "Remover da lista") {
+                    iconButton("xmark", help: "Remover da Lista") {
                         withAnimation(.smooth) { downloads.remove(item) }
                     }
                 } else {
-                    iconButton("xmark", help: "Cancelar download") { confirmCancel = true }
+                    iconButton("xmark", help: "Cancelar Download") { confirmCancel = true }
                 }
             }
         }
@@ -154,14 +155,16 @@ struct DownloadRow: View {
     @ViewBuilder private var menuItems: some View {
         Button("Mostrar no Finder") { downloads.reveal(item) }
         if item.isCompleted {
-            Button("Remover da lista") { downloads.remove(item) }
+            Button("Instalar este Firmware…") { flash.importDownload(item) }
+                .disabled(flash.isBusy)
+            Button("Remover da Lista") { downloads.remove(item) }
         } else {
-            Button("Remover da lista (manter arquivo parcial)") { downloads.remove(item) }
-            Button("Cancelar e apagar arquivo parcial…") { confirmCancel = true }
+            Button("Remover da Lista (Manter Arquivo Parcial)") { downloads.remove(item) }
+            Button("Cancelar e Apagar Arquivo Parcial…") { confirmCancel = true }
         }
         if let key = item.info?.key {
             Divider()
-            Button("Copiar chave de decifragem") {
+            Button("Copiar Chave de Decifragem") {
                 NSPasteboard.general.clearContents()
                 NSPasteboard.general.setString(key.hexString, forType: .string)
             }

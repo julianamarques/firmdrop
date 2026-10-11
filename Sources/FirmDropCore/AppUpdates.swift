@@ -100,7 +100,7 @@ public enum UpdateChecker {
 
     static func isTrusted(_ url: URL) -> Bool {
         url.scheme == "https" && url.host() == "github.com" && url.port == nil && url.user() == nil
-            && url.path().hasPrefix("/julianamarques/firmdrop/releases/")
+            && url.path().wholeMatch(of: /\/julianamarques\/firmdrop\/releases(\/[A-Za-z0-9_-][A-Za-z0-9._-]*)+/) != nil
     }
 
     public static func fetchReleases(session: URLSession = .shared) async throws -> [AppRelease] {

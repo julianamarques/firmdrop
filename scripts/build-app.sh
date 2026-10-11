@@ -8,9 +8,10 @@ cd "$(dirname "$0")/.."
 
 ARCH_FLAGS=()
 INSTALL=0
+ENGINE_FLAGS=()
 for arg in "$@"; do
   case "$arg" in
-    --universal) ARCH_FLAGS=(--arch arm64 --arch x86_64) ;;
+    --universal) ARCH_FLAGS=(--arch arm64 --arch x86_64); ENGINE_FLAGS=(--universal) ;;
     --install) INSTALL=1 ;;
     *) echo "opção desconhecida: $arg" >&2; exit 1 ;;
   esac
@@ -21,11 +22,18 @@ BIN_DIR=$(swift build -c release --show-bin-path ${ARCH_FLAGS[@]+"${ARCH_FLAGS[@
 
 [ -f Resources/AppIcon.icns ] || scripts/make-icon.sh
 scripts/fetch-auth-params.sh
+scripts/fetch-adb.sh
+bash scripts/build-flash-engine.sh ${ENGINE_FLAGS[@]+"${ENGINE_FLAGS[@]}"}
 
 APP=build/FirmDrop.app
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN_DIR/FirmDrop" "$APP/Contents/MacOS/FirmDrop"
+cp build/flash-engine/firmdrop-flash "$APP/Contents/MacOS/firmdrop-flash"
+cp build/adb/adb "$APP/Contents/MacOS/adb"
+cp build/adb/adb-NOTICE.txt "$APP/Contents/Resources/adb-NOTICE.txt"
+cp build/flash-engine/Brokkr-LICENSE.txt build/flash-engine/Brokkr-NOTICES.txt \
+  build/flash-engine/flash-engine-source.tar.gz "$APP/Contents/Resources/"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
 cp Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
 cp LICENSE NOTICE Resources/licenses/Bifrost-LICENSE.txt "$APP/Contents/Resources/"

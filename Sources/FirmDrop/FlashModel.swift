@@ -1,0 +1,312 @@
+import AppKit
+import FirmDropCore
+import Observation
+import UniformTypeIdentifiers
+
+enum FirmwareTab: Hashable {
+    case download, install
+}
+
+@MainActor @Observable
+final class FlashModel {
+    var selectedTab: FirmwareTab = .download
+    var selectedDeviceID = ""
+    var reboot = true
+    private(set) var devices: [FlashDevice] = []
+    private(set) var packages: [FlashSlot: FlashPackage] = [:]
+    private(set) var cscOptions: [FlashPackage] = []
+    private(set) var probedDevice: FlashDevice?
+    private(set) var isScanning = false
+    private(set) var isBusy = false
+    private(set) var isFlashing = false
+    private(set) var isADBOperation = false
+    private(set) var progress: Double?
+    private(set) var stage = ""
+    private(set) var logs: [String] = []
+    private(set) var error: String?
+    private(set) var deviceError: String?
+    private(set) var success = false
+    private var ownedDirectory: URL?
+    private var closedSession: FlashDevice?
+    private var reportedModel: (device: FlashDevice, model: String)?
+    private var activity: NSObjectProtocol?
+
+    var selectedDevice: FlashDevice? { devices.first { $0.id == selectedDeviceID } }
+    /// Read over ADB before rebooting to Download; like Odin, installing does not ask for it.
+    var deviceModel: String? { reportedModel.flatMap { $0.device == selectedDevice ? $0.model : nil } }
+    var hasAllPackages: Bool { FlashSlot.allCases.allSatisfy { packages[$0] != nil } }
+    var connectionTested: Bool { selectedDevice != nil && selectedDevice == probedDevice }
+    var reviewRequirement: String? {
+        guard let device = selectedDevice else { return String(localized: "Conecte o aparelho e clique em Detectar.") }
+        guard device.isDownloadMode else { return String(localized: "Coloque o aparelho em modo Download.") }
+        guard connectionTested else { return String(localized: "Clique em Testar Conexão.") }
+        if packages[.csc] == nil, cscOptions.count > 1 { return String(localized: "Escolha HOME_CSC ou CSC.") }
+        guard hasAllPackages else {
+            let missing = FlashSlot.allCases.filter { packages[$0] == nil }
+            return String(localized: "Falta selecionar: \(missing.map(\.rawValue).formatted(.list(type: .and))).")
+        }
+        return nil
+    }
+
+    func refreshDevices() async {
+        guard !isBusy, !isScanning else { return }
+        isScanning = true
+        defer { isScanning = false }
+        do {
+            let found = try await FlashEngine.bundled().devices()
+            guard !isBusy else { return }
+            update(found)
+        } catch {
+            deviceError = error.localizedDescription
+            devices = []
+            probedDevice = nil
+        }
+    }
+
+    private func update(_ found: [FlashDevice]) {
+        devices = found
+        deviceError = nil
+        if !found.contains(where: { $0.id == selectedDeviceID }) {
+            selectedDeviceID = found.count == 1 ? found[0].id : ""
+        }
+        if let probedDevice, !found.contains(probedDevice) { self.probedDevice = nil }
+        if let closedSession, !found.contains(closedSession) { self.closedSession = nil }
+        if let reportedModel, !found.contains(reportedModel.device) { self.reportedModel = nil }
+    }
+
+    func probe() {
+        guard !isBusy, let device = selectedDevice else { return }
+        begin(String(localized: "Testando a conexão…"))
+        probedDevice = nil
+        Task {
+            defer { finish() }
+            do {
+                let version = try await FlashEngine.bundled().probe(device, resume: closedSession == device, onLine: logHandler())
+                closedSession = device
+                guard selectedDevice == device else { throw FlashError.deviceChanged }
+                probedDevice = device
+                stage = String(localized: "Conexão testada · protocolo \(version)")
+                append(stage)
+            } catch { fail(error) }
+        }
+    }
+
+    func rebootToDownload() {
+        guard !isBusy else { return }
+        begin(String(localized: "Verificando o ADB e o Modo de manutenção…"), adb: true)
+        probedDevice = nil
+        Task {
+            defer { finish() }
+            do {
+                let adb = try ADBDownload.bundled()
+                let engine = try FlashEngine.bundled()
+                let connected = try await engine.devices()
+                guard connected.count <= 1 else { throw ADBError.multipleDevices }
+                guard let source = connected.first else { throw ADBError.noDevice }
+                let model = try await adb.rebootToDownload(from: source, using: engine, onLine: logHandler())
+                stage = String(localized: "Reinício solicitado. Aguardando o modo Download…")
+                append(stage)
+                let deadline = ContinuousClock.now + .seconds(45)
+                while ContinuousClock.now < deadline {
+                    let found = try await engine.devices()
+                    update(found)
+                    if let target = found.first(where: {
+                        $0.target == source.target && $0.connection != source.connection && $0.isDownloadMode
+                    }) {
+                        selectedDeviceID = target.id
+                        if let model { reportedModel = (target, model) }
+                        stage = String(localized: "Modo Download detectado. Clique em Testar Conexão para continuar.")
+                        append(stage)
+                        return
+                    }
+                    try await Task.sleep(for: .seconds(1))
+                }
+                throw ADBError.downloadNotDetected
+            } catch { fail(error) }
+        }
+    }
+
+    func importDownload(_ item: DownloadItem) {
+        guard !isBusy, case let .completed(url) = item.state else { return }
+        selectedTab = .install
+        importZIP(url)
+    }
+
+    func chooseZIP() {
+        guard !isBusy else { return }
+        let panel = NSOpenPanel()
+        panel.allowedContentTypes = [.zip]
+        panel.directoryURL = AppDefaults.downloadFolder
+        panel.prompt = String(localized: "Importar")
+        if panel.runModal() == .OK, let url = panel.url { importZIP(url) }
+    }
+
+    func chooseFolder() {
+        guard !isBusy else { return }
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = false
+        panel.canChooseDirectories = true
+        panel.directoryURL = AppDefaults.downloadFolder
+        if panel.runModal() == .OK, let url = panel.url {
+            do {
+                let selection = try FlashImport.folder(url)
+                guard !selection.isEmpty else { throw FlashError.invalidZIP }
+                apply(selection)
+                if url.standardizedFileURL.path != ownedDirectory?.standardizedFileURL.path { cleanup() }
+                error = nil
+                success = false
+            } catch { fail(error) }
+        }
+    }
+
+    func choosePackage(_ slot: FlashSlot) {
+        guard !isBusy else { return }
+        let panel = NSOpenPanel()
+        panel.directoryURL = ownedDirectory ?? AppDefaults.downloadFolder
+        panel.message = String(localized: "Selecione o pacote \(slot.rawValue).")
+        if panel.runModal() == .OK, let url = panel.url {
+            do {
+                let package = try FlashPackage(url: url)
+                guard package.slot == slot else { throw FlashError.invalidPackage(url.lastPathComponent) }
+                packages[slot] = package
+                if slot == .csc, !cscOptions.contains(package) { cscOptions = [] }
+                error = nil
+                success = false
+            } catch { fail(error) }
+        }
+    }
+
+    func chooseCSC(_ package: FlashPackage) {
+        guard !isBusy, cscOptions.contains(package) else { return }
+        packages[.csc] = package
+    }
+
+    private func apply(_ selection: FlashSelection) {
+        packages = selection.packages
+        cscOptions = selection.cscOptions
+    }
+
+    func review() -> FlashPlan? {
+        do {
+            guard connectionTested, let device = selectedDevice else { throw FlashError.probeRequired }
+            return try FlashPlan(model: deviceModel, packages: packages, device: device, reboot: reboot)
+        } catch {
+            fail(error)
+            return nil
+        }
+    }
+
+    func start(_ plan: FlashPlan) {
+        guard !isBusy else { return }
+        guard connectionTested, plan.device == selectedDevice else { fail(FlashError.deviceChanged); return }
+        begin(String(localized: "Conferindo os pacotes antes de instalar…"))
+        isFlashing = true
+        append(plan.model.map { String(localized: "Instalação de \($0) · USB \(plan.device.target)") }
+               ?? String(localized: "Instalação · USB \(plan.device.target)"))
+        for package in plan.packages { append(package.url.lastPathComponent) }
+        Task {
+            defer {
+                isFlashing = false
+                probedDevice = nil
+                finish()
+            }
+            do {
+                try await FlashEngine.bundled().flash(plan, resume: closedSession == plan.device, onLine: logHandler())
+                closedSession = plan.reboot ? nil : plan.device
+                success = true
+                progress = 1
+                stage = String(localized: "Instalação concluída")
+                append(stage)
+            } catch { fail(error) }
+        }
+    }
+
+    func copyLog() {
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(logs.joined(separator: "\n"), forType: .string)
+    }
+
+    func cleanup() {
+        guard let ownedDirectory else { return }
+        try? FileManager.default.removeItem(at: ownedDirectory)
+        self.ownedDirectory = nil
+    }
+
+    private func importZIP(_ url: URL) {
+        guard !isBusy else { return }
+        begin(String(localized: "Extraindo os pacotes do ZIP…"))
+        let directory = FileManager.default.temporaryDirectory.appending(path: "FirmDrop-flash-\(UUID().uuidString)")
+        Task {
+            defer { finish() }
+            do {
+                let selection = try await FlashImport.extractZIP(url, into: directory, onLine: logHandler())
+                cleanup()
+                ownedDirectory = directory
+                apply(selection)
+                stage = String(localized: "Pacotes preparados. Prossiga para a instalação.")
+            } catch { fail(error) }
+        }
+    }
+
+    private func begin(_ message: String, adb: Bool = false) {
+        isBusy = true
+        isADBOperation = adb
+        error = nil
+        success = false
+        progress = nil
+        stage = message
+        append(message)
+        activity = ProcessInfo.processInfo.beginActivity(
+            options: [.userInitiated, .idleSystemSleepDisabled], reason: "Instalando firmware")
+    }
+
+    private func finish() {
+        isBusy = false
+        if let activity { ProcessInfo.processInfo.endActivity(activity) }
+        activity = nil
+    }
+
+    private func fail(_ error: Error) {
+        self.error = error.localizedDescription
+        success = false
+        progress = nil
+        stage = String(localized: "A operação não foi concluída")
+        append(error.localizedDescription)
+    }
+
+    private func logHandler() -> @Sendable (String) -> Void {
+        { [weak self] line in Task { @MainActor in self?.receive(line) } }
+    }
+
+    private func receive(_ line: String) {
+        switch FlashEvent(line: line) {
+        case let .progress(completed, total):
+            if isBusy { progress = Double(completed) / Double(total) }
+        case let .stage(value):
+            if isBusy {
+                progress = nil
+                if isFlashing, let status = Self.flashStatus(for: value) { stage = status }
+            }
+            append(value)
+        case .done, .device, .probe: break
+        case nil: append(line)
+        }
+    }
+
+    private static func flashStatus(for stage: String) -> String? {
+        let preparing = ["ODIN", "Negotiating", "Uploading PIT", "Downloading PIT", "Checking if devices",
+                         "Verifying PIT", "Sending total size", "Declaring super size"]
+        if stage.hasPrefix("Verifying packages") || stage.hasPrefix("Checking package") {
+            return String(localized: "Conferindo os pacotes antes de instalar…")
+        }
+        if preparing.contains(where: stage.hasPrefix) { return String(localized: "Preparando o aparelho para a gravação…") }
+        if stage.hasPrefix("Flashing") { return String(localized: "Instalando firmware… Não desconecte o cabo.") }
+        if stage.hasPrefix("Finalizing") { return String(localized: "Finalizando a instalação… Não desconecte o cabo.") }
+        return nil
+    }
+
+    private func append(_ line: String) {
+        logs.append(line)
+        if logs.count > 800 { logs.removeFirst(logs.count - 800) }
+    }
+}

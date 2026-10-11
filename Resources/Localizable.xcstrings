@@ -47,6 +47,82 @@
         }
       }
     },
+    "A conexão USB mudou. Detecte e teste o aparelho novamente.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The USB connection changed. Detect and test the device again."
+          }
+        }
+      }
+    },
+    "A conexão do aparelho mudou durante a verificação do ADB. Confira o cabo e tente novamente.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The device connection changed during the ADB check. Check the cable and try again."
+          }
+        }
+      }
+    },
+    "A instalação de firmware é experimental. Tenha backup e um plano de recuperação.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Firmware installation is experimental. Keep a backup and a recovery plan."
+          }
+        }
+      }
+    },
+    "A instalação pode causar perda de dados ou impedir a inicialização se o firmware for incompatível. O teste de USB não verifica modelo, bloqueios de segurança ou anti-rollback. Testada no S25 e no A05s, com CSC completo e HOME_CSC; continua experimental.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installing incompatible firmware may erase data or prevent the device from booting. The USB test does not check the model, security locks or anti-rollback. Tested on the S25 and A05s with a full CSC and HOME_CSC; still experimental."
+          }
+        }
+      }
+    },
+    "A operação falhou (código %d): %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The operation failed (code %d): %@"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "new",
+            "value": "A operação falhou (código %1$d): %2$@"
+          }
+        }
+      }
+    },
+    "A operação não foi concluída": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The operation did not complete"
+          }
+        }
+      }
+    },
+    "A resposta excedeu o limite de tamanho permitido.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The response exceeded the allowed size limit."
+          }
+        }
+      }
+    },
     "A versão %@ está disponível. Você está usando a %@.": {
       "localizations": {
         "en": {
@@ -63,12 +139,42 @@
         }
       }
     },
+    "Abrir Pasta…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Folder…"
+          }
+        }
+      }
+    },
     "Agora Não": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Not Now"
+          }
+        }
+      }
+    },
+    "Aguardar": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wait"
+          }
+        }
+      }
+    },
+    "Aguarde a conclusão antes de fechar o FirmDrop. Durante a instalação, mantenha o cabo conectado.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wait for the operation to finish before quitting FirmDrop. Keep the cable connected during installation."
           }
         }
       }
@@ -83,12 +189,72 @@
         }
       }
     },
+    "Andamento": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Progress"
+          }
+        }
+      }
+    },
     "Android %@": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Android %@"
+          }
+        }
+      }
+    },
+    "Aparelho": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Device"
+          }
+        }
+      }
+    },
+    "Aparelho USB": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "USB device"
+          }
+        }
+      }
+    },
+    "Aparelho USB: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "USB device: %@"
+          }
+        }
+      }
+    },
+    "Ative o Modo de manutenção no Samsung e aguarde o reinício. Deixe esse modo ativo e o telefone ligado para reiniciar em Download por ADB.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enable Maintenance Mode on the Samsung device and wait for it to restart. Keep this mode active and the phone powered on to reboot to Download Mode using ADB."
+          }
+        }
+      }
+    },
+    "Ative o Modo de manutenção no Samsung e aguarde o reinício. Mantenha o telefone ligado nesse modo, conectado ao Mac, com a depuração USB autorizada. O botão abaixo reinicia diretamente em Download.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enable Maintenance Mode on the Samsung device and wait for it to restart. Keep the phone powered on in this mode, connected to your Mac, with USB debugging authorized. The button below reboots directly to Download Mode."
           }
         }
       }
@@ -109,6 +275,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "The server rejected the authentication. The authentication scheme may have changed."
+          }
+        }
+      }
+    },
+    "Autorize a depuração USB neste Mac pela tela do aparelho e tente novamente.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Authorize USB debugging for this Mac on the device screen and try again."
+          }
+        }
+      }
+    },
+    "Autorizo a instalação com CSC e a possível exclusão de todos os dados.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I authorize installation with CSC and the possible deletion of all data."
+          }
+        }
+      }
+    },
+    "BL e AP pertencem a versões diferentes. Use arquivos do mesmo download.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BL and AP belong to different builds. Use files from the same download."
           }
         }
       }
@@ -139,6 +335,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Download Update"
+          }
+        }
+      }
+    },
+    "Baixar Firmware": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download Firmware"
           }
         }
       }
@@ -193,6 +399,36 @@
         }
       }
     },
+    "CSC · apaga os dados": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CSC · erases data"
+          }
+        }
+      }
+    },
+    "CSC: esta instalação pode apagar todos os dados do aparelho.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CSC: this installation may erase all data on the device."
+          }
+        }
+      }
+    },
+    "CSC: instalação limpa, com possível perda de dados": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CSC: clean installation, with possible data loss"
+          }
+        }
+      }
+    },
     "Cancelar": {
       "localizations": {
         "en": {
@@ -203,7 +439,7 @@
         }
       }
     },
-    "Cancelar download": {
+    "Cancelar Download": {
       "localizations": {
         "en": {
           "stringUnit": {
@@ -213,7 +449,7 @@
         }
       }
     },
-    "Cancelar e apagar arquivo parcial": {
+    "Cancelar e Apagar Arquivo Parcial": {
       "localizations": {
         "en": {
           "stringUnit": {
@@ -223,7 +459,7 @@
         }
       }
     },
-    "Cancelar e apagar arquivo parcial…": {
+    "Cancelar e Apagar Arquivo Parcial…": {
       "localizations": {
         "en": {
           "stringUnit": {
@@ -243,6 +479,36 @@
         }
       }
     },
+    "Clique em Testar Conexão.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Click Test Connection."
+          }
+        }
+      }
+    },
+    "Coloque o aparelho em modo Download.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Put the device in Download mode."
+          }
+        }
+      }
+    },
+    "Comunicação confirmada": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Communication confirmed"
+          }
+        }
+      }
+    },
     "Conectando ao servidor da Samsung…": {
       "localizations": {
         "en": {
@@ -253,12 +519,52 @@
         }
       }
     },
+    "Conecte o aparelho e clique em Detectar.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect the device and click Detect."
+          }
+        }
+      }
+    },
+    "Conexão testada · protocolo %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connection tested · protocol %lld"
+          }
+        }
+      }
+    },
+    "Conferi o PRODUCT NAME e a revisão do bootloader na tela do aparelho e tenho backup.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I checked PRODUCT NAME and the bootloader revision on the device screen and have a backup."
+          }
+        }
+      }
+    },
     "Conferindo a parte já baixada… %@": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Checking the part already downloaded… %@"
+          }
+        }
+      }
+    },
+    "Conferindo os pacotes antes de instalar…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checking packages before installation…"
           }
         }
       }
@@ -283,7 +589,7 @@
         }
       }
     },
-    "Continuar baixando": {
+    "Continuar Baixando": {
       "localizations": {
         "en": {
           "stringUnit": {
@@ -293,12 +599,32 @@
         }
       }
     },
-    "Copiar chave de decifragem": {
+    "Copiado": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copied"
+          }
+        }
+      }
+    },
+    "Copiar Chave de Decifragem": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Copy Decryption Key"
+          }
+        }
+      }
+    },
+    "Copiar Registro": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy Log"
           }
         }
       }
@@ -309,6 +635,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Decrypting… %@"
+          }
+        }
+      }
+    },
+    "Detectar": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detect"
           }
         }
       }
@@ -363,6 +699,36 @@
         }
       }
     },
+    "Em versões que permitem entrar por botões: desligue, segure os dois botões de volume e conecte o cabo ao Mac. Confirme com Volume +. Feche todos os programas que utilizam o aparelho.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On versions that support the button combination: power off, hold both volume buttons and connect the cable to your Mac. Confirm with Volume Up. Close all apps that use the device."
+          }
+        }
+      }
+    },
+    "Escolha HOME_CSC ou CSC.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose HOME_CSC or CSC."
+          }
+        }
+      }
+    },
+    "Escolha HOME_CSC para manter os dados ou CSC para uma instalação limpa, que apaga o aparelho.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose HOME_CSC to keep data or CSC for a clean install, which erases the device."
+          }
+        }
+      }
+    },
     "Escolher": {
       "localizations": {
         "en": {
@@ -379,6 +745,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "Choose…"
+          }
+        }
+      }
+    },
+    "Espaço insuficiente para extrair os pacotes. São necessários %@ livres no disco.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not enough space to extract the packages. %@ of free disk space is required."
+          }
+        }
+      }
+    },
+    "Experimental": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Experimental"
+          }
+        }
+      }
+    },
+    "Extraindo %@…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Extracting %@…"
+          }
+        }
+      }
+    },
+    "Extraindo os pacotes do ZIP…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Extracting packages from ZIP…"
           }
         }
       }
@@ -409,6 +815,26 @@
         }
       }
     },
+    "Falta selecionar: %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Still to select: %@."
+          }
+        }
+      }
+    },
+    "Finalizando a instalação… Não desconecte o cabo.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finishing the installation… Do not disconnect the cable."
+          }
+        }
+      }
+    },
     "FirmDrop": {
       "localizations": {
         "en": {
@@ -429,12 +855,72 @@
         }
       }
     },
+    "HOME_CSC · mantém os dados": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HOME_CSC · keeps data"
+          }
+        }
+      }
+    },
+    "HOME_CSC: preservar dados": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HOME_CSC: preserve data"
+          }
+        }
+      }
+    },
+    "HOME_CSC: tenta preservar os dados. Tenha um backup antes de instalar.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HOME_CSC: attempts to preserve data. Make a backup before installing."
+          }
+        }
+      }
+    },
     "Há downloads em andamento": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Downloads are in progress"
+          }
+        }
+      }
+    },
+    "Há mais de um aparelho conectado. Para reiniciar por ADB, deixe apenas o Samsung desejado conectado por USB.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "More than one device is connected. To reboot using ADB, leave only the intended Samsung device connected over USB."
+          }
+        }
+      }
+    },
+    "Há mais de um pacote para %@. Selecione os arquivos individualmente.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There is more than one package for %@. Select the files individually."
+          }
+        }
+      }
+    },
+    "Há uma operação de firmware em andamento": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A firmware operation is in progress"
           }
         }
       }
@@ -449,6 +935,122 @@
         }
       }
     },
+    "Importar": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import"
+          }
+        }
+      }
+    },
+    "Importar ZIP…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import ZIP…"
+          }
+        }
+      }
+    },
+    "Iniciar Instalação": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start Installation"
+          }
+        }
+      }
+    },
+    "Instalando firmware… Não desconecte o cabo.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installing firmware… Do not disconnect the cable."
+          }
+        }
+      }
+    },
+    "Instalar Firmware": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Install Firmware"
+          }
+        }
+      }
+    },
+    "Instalar Firmware…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Install Firmware…"
+          }
+        }
+      }
+    },
+    "Instalar este Firmware…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Install This Firmware…"
+          }
+        }
+      }
+    },
+    "Instalação concluída": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installation complete"
+          }
+        }
+      }
+    },
+    "Instalação de %@ · USB %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installing %@ · USB %@"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Instalação de %1$@ · USB %2$@"
+          }
+        }
+      }
+    },
+    "Instalação via USB · motor Brokkr": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "USB installation · Brokkr engine"
+          }
+        }
+      }
+    },
+    "Instalação · USB %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installation · USB %@"
+          }
+        }
+      }
+    },
     "Limpar": {
       "localizations": {
         "en": {
@@ -459,12 +1061,22 @@
         }
       }
     },
-    "Limpar concluídos": {
+    "Limpar Concluídos": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Clear Completed"
+          }
+        }
+      }
+    },
+    "Mantenha o Mac ligado e o cabo conectado. Depois de iniciar, aguarde a conclusão; a gravação não pode ser pausada.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep your Mac on and the cable connected. Once started, wait for completion; flashing cannot be paused."
           }
         }
       }
@@ -475,6 +1087,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Keep the encrypted file (.enc4) after decrypting"
+          }
+        }
+      }
+    },
+    "Mensagens de conexão e instalação": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connection and installation messages"
           }
         }
       }
@@ -499,6 +1121,16 @@
         }
       }
     },
+    "Modelo lido pelo ADB: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model read over ADB: %@"
+          }
+        }
+      }
+    },
     "Modelo, ex.: SM-A556E": {
       "localizations": {
         "en": {
@@ -509,12 +1141,52 @@
         }
       }
     },
+    "Modo Download detectado. Clique em Testar Conexão para continuar.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download Mode detected. Click Test Connection to continue."
+          }
+        }
+      }
+    },
+    "Modo Download detectado. Teste a comunicação antes de instalar.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download Mode detected. Test communication before installing."
+          }
+        }
+      }
+    },
     "Mostrar no Finder": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Show in Finder"
+          }
+        }
+      }
+    },
+    "Nenhum Samsung detectado no USB": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Samsung device detected on USB"
+          }
+        }
+      }
+    },
+    "Nenhum aparelho USB disponível no ADB. Mantenha o Samsung ligado, ative a depuração USB e autorize este Mac na tela do aparelho.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No USB device is available in ADB. Keep the Samsung device powered on, enable USB debugging and authorize this Mac on the device screen."
           }
         }
       }
@@ -531,6 +1203,16 @@
           "stringUnit": {
             "state": "new",
             "value": "Nenhum arquivo disponível para %1$@/%2$@ na versão %3$@."
+          }
+        }
+      }
+    },
+    "Nenhum arquivo selecionado": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No file selected"
           }
         }
       }
@@ -637,6 +1319,16 @@
         }
       }
     },
+    "O ADB incluído no FirmDrop não foi encontrado. Reinstale o app.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The ADB bundled with FirmDrop was not found. Reinstall the app."
+          }
+        }
+      }
+    },
     "O CRC32 não confere (esperado %@, obtido %@). Apague o arquivo e baixe novamente.": {
       "localizations": {
         "en": {
@@ -663,6 +1355,76 @@
         }
       }
     },
+    "O ZIP não contém um conjunto válido de pacotes Samsung ou contém nomes ambíguos.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The ZIP does not contain a valid set of Samsung packages or contains ambiguous names."
+          }
+        }
+      }
+    },
+    "O aparelho conectado ao ADB não foi identificado como Samsung.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The device connected to ADB was not identified as a Samsung device."
+          }
+        }
+      }
+    },
+    "O aparelho está offline no ADB. Desbloqueie a tela, reconecte o cabo e tente novamente.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The device is offline in ADB. Unlock the screen, reconnect the cable and try again."
+          }
+        }
+      }
+    },
+    "O aparelho já está em modo Download. Use Testar Conexão para continuar.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The device is already in Download Mode. Use Test Connection to continue."
+          }
+        }
+      }
+    },
+    "O aparelho não está em modo Download.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The device is not in Download Mode."
+          }
+        }
+      }
+    },
+    "O aparelho ou processo não respondeu a tempo. Reconecte em modo Download e tente novamente.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The device or process did not respond in time. Reconnect in Download Mode and try again."
+          }
+        }
+      }
+    },
+    "O arquivo %@ mudou desde a seleção. Selecione-o novamente.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The file %@ changed since selection. Select it again."
+          }
+        }
+      }
+    },
     "O arquivo parcial é maior que o esperado. Apague-o e baixe novamente.": {
       "localizations": {
         "en": {
@@ -673,12 +1435,68 @@
         }
       }
     },
+    "O macOS detectou o aparelho, mas ele não está em modo Download.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS detected the device, but it is not in Download Mode."
+          }
+        }
+      }
+    },
+    "O motor de instalação não está incluído neste build. Compile com scripts/build-app.sh.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The flash engine is missing from this build. Build with scripts/build-app.sh."
+          }
+        }
+      }
+    },
+    "O motor encerrou sem confirmar a conclusão da instalação. Consulte o registro antes de tentar novamente.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The engine exited without confirming completion. Check the log before trying again."
+          }
+        }
+      }
+    },
+    "O nome de %@ não corresponde ao modelo %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The name of %@ does not match model %@."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "new",
+            "value": "O nome de %1$@ não corresponde ao modelo %2$@."
+          }
+        }
+      }
+    },
     "O que já foi baixado será apagado.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "What has been downloaded so far will be deleted."
+          }
+        }
+      }
+    },
+    "O reinício foi solicitado, mas o modo Download não apareceu no USB a tempo. Confira a tela do aparelho. Se aparecer Reboot Device - D2, ele não permaneceu em modo Download.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The reboot was requested, but Download Mode was not detected over USB in time. Check the device screen. If it shows Reboot Device - D2, it did not stay in Download Mode."
           }
         }
       }
@@ -739,6 +1557,16 @@
         }
       }
     },
+    "One UI 9 · entrar em Download por ADB": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One UI 9 · enter Download Mode using ADB"
+          }
+        }
+      }
+    },
     "Os códigos do Brasil servem o mesmo firmware; o CSC ativo é escolhido pelo chip.": {
       "localizations": {
         "en": {
@@ -759,12 +1587,42 @@
         }
       }
     },
-    "Outra região…": {
+    "Outra Região…": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Other Region…"
+          }
+        }
+      }
+    },
+    "Pacote inválido: %@. Selecione um arquivo BL, AP, CP ou CSC em .tar ou .tar.md5.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalid package: %@. Select a BL, AP, CP or CSC file in .tar or .tar.md5 format."
+          }
+        }
+      }
+    },
+    "Pacotes do Firmware": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Firmware packages"
+          }
+        }
+      }
+    },
+    "Pacotes preparados. Prossiga para a instalação.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Packages prepared. Continue to the installation."
           }
         }
       }
@@ -799,12 +1657,22 @@
         }
       }
     },
-    "Pausar e sair": {
+    "Pausar e Sair": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Pause and Quit"
+          }
+        }
+      }
+    },
+    "Preparando o aparelho para a gravação…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparing the device for flashing…"
           }
         }
       }
@@ -815,6 +1683,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Recent"
+          }
+        }
+      }
+    },
+    "Registro da operação": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Operation log"
           }
         }
       }
@@ -849,7 +1727,37 @@
         }
       }
     },
-    "Remover da lista": {
+    "Reiniciar após instalar": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reboot after installation"
+          }
+        }
+      }
+    },
+    "Reiniciar em Download (ADB)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reboot to Download Mode (ADB)"
+          }
+        }
+      }
+    },
+    "Reinício solicitado. Aguardando o modo Download…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reboot requested. Waiting for Download Mode…"
+          }
+        }
+      }
+    },
+    "Remover da Lista": {
       "localizations": {
         "en": {
           "stringUnit": {
@@ -859,7 +1767,7 @@
         }
       }
     },
-    "Remover da lista (manter arquivo parcial)": {
+    "Remover da Lista (Manter Arquivo Parcial)": {
       "localizations": {
         "en": {
           "stringUnit": {
@@ -889,12 +1797,72 @@
         }
       }
     },
+    "Revisar instalação": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Review installation"
+          }
+        }
+      }
+    },
     "Salvar em": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Save to"
+          }
+        }
+      }
+    },
+    "Se o teste de conexão falhar, reconecte em modo Download e teste outra porta ou cabo de dados diretamente no Mac. Consulte o registro para distinguir acesso USB de falha no protocolo.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If the connection test fails, reconnect in Download Mode and try another port or data cable directly on your Mac. Check the log to distinguish USB access issues from protocol failures."
+          }
+        }
+      }
+    },
+    "Selecionar %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select %@"
+          }
+        }
+      }
+    },
+    "Selecionar…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select…"
+          }
+        }
+      }
+    },
+    "Selecione o aparelho": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select a device"
+          }
+        }
+      }
+    },
+    "Selecione o pacote %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select the %@ package."
           }
         }
       }
@@ -915,12 +1883,72 @@
         }
       }
     },
-    "Tentar de novo": {
+    "Tentar de Novo": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Try Again"
+          }
+        }
+      }
+    },
+    "Testando a conexão…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Testing connection…"
+          }
+        }
+      }
+    },
+    "Testar Conexão": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test Connection"
+          }
+        }
+      }
+    },
+    "Testar Conexão confirma a comunicação USB, mas não confirma a compatibilidade do firmware.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test Connection confirms USB communication, but does not confirm firmware compatibility."
+          }
+        }
+      }
+    },
+    "Teste a conexão com o aparelho antes de instalar.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test the device connection before installing."
+          }
+        }
+      }
+    },
+    "USB 04e8:%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "USB 04e8:%@"
+          }
+        }
+      }
+    },
+    "Verificando o ADB e o Modo de manutenção…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checking ADB and Maintenance Mode…"
           }
         }
       }

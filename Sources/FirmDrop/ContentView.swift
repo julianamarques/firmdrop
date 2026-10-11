@@ -1,10 +1,35 @@
+import AppKit
 import FirmDropCore
 import SwiftUI
 
 struct ContentView: View {
     @Environment(DownloadManager.self) private var downloads
+    @Environment(FlashModel.self) private var flash
 
     var body: some View {
+        @Bindable var flash = flash
+        TabView(selection: $flash.selectedTab) {
+            Tab("Baixar Firmware", systemImage: "arrow.down.circle", value: FirmwareTab.download) {
+                downloadContent
+            }
+            Tab("Instalar Firmware", systemImage: "cable.connector", value: FirmwareTab.install) {
+                FlashView()
+            }
+        }
+        .padding(.top, 8)
+        .background { GlassBackdrop() }
+        .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                SettingsLink {
+                    Label("Ajustes", systemImage: "gearshape")
+                }
+                .help("Ajustes")
+            }
+        }
+    }
+
+    private var downloadContent: some View {
         ResultView()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .safeAreaInset(edge: .top, spacing: 0) {
@@ -22,16 +47,6 @@ struct ContentView: View {
                 }
             }
             .animation(.smooth, value: downloads.items.isEmpty)
-            .background { GlassBackdrop() }
-            .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    SettingsLink {
-                        Label("Ajustes", systemImage: "gearshape")
-                    }
-                    .help("Ajustes")
-                }
-            }
     }
 }
 
@@ -63,6 +78,7 @@ struct SearchBar: View {
     @Environment(SearchModel.self) private var search
     @FocusState private var modelFocused: Bool
     @State private var customRegion = false
+    @State private var regionFrame = CGRect.zero
 
     var body: some View {
         @Bindable var search = search
@@ -95,17 +111,16 @@ struct SearchBar: View {
                     }
 
                     Button {
-                        search.search()
+                        if search.canSearch { search.search() } else { modelFocused = true }
                     } label: {
                         Label("Buscar", systemImage: "magnifyingglass")
                             .labelStyle(.titleAndIcon)
-                            .frame(height: 30)
+                            .frame(height: 35)
                             .padding(.horizontal, 6)
                     }
                     .buttonStyle(.glassProminent)
                     .controlSize(.large)
                     .keyboardShortcut(.defaultAction)
-                    .disabled(!search.canSearch)
                 }
             }
 
@@ -148,27 +163,52 @@ struct SearchBar: View {
     }
 
     private var regionMenu: some View {
-        Menu {
-            ForEach(Region.brazil) { region in
-                Button(region.title) {
-                    customRegion = false
-                    search.region = region.code
-                }
+        Button(action: showRegionMenu) {
+            HStack(spacing: 8) {
+                Label(regionLabel, systemImage: "globe.americas.fill")
+                Image(systemName: "chevron.down").font(.caption.weight(.semibold))
             }
-            Divider()
-            Button("Outra região…") {
-                customRegion = true
-                search.region = ""
-            }
-        } label: {
-            Label(regionLabel, systemImage: "globe.americas.fill")
-                .frame(height: 30)
+            .frame(height: 35)
+            .padding(.horizontal, 6)
         }
-        .menuIndicator(.visible)
         .buttonStyle(.glass)
         .controlSize(.large)
         .fixedSize()
+        .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { regionFrame = $0 }
     }
+
+    private func showRegionMenu() {
+        let menu = NSMenu()
+        let actions = MenuActions()
+        func add(_ title: String, selected: Bool, action: @escaping () -> Void) {
+            let item = NSMenuItem(title: title, action: #selector(MenuActions.run(_:)), keyEquivalent: "")
+            item.target = actions
+            item.tag = actions.handlers.count
+            item.state = selected ? .on : .off
+            actions.handlers.append(action)
+            menu.addItem(item)
+        }
+        for region in Region.brazil {
+            add(region.title, selected: !customRegion && search.region == region.code) {
+                customRegion = false
+                search.region = region.code
+            }
+        }
+        menu.addItem(.separator())
+        add(String(localized: "Outra Região…"), selected: customRegion) {
+            customRegion = true
+            search.region = ""
+        }
+        guard let view = NSApp.keyWindow?.contentView else { return }
+        let y = view.isFlipped ? regionFrame.maxY + 4 : view.bounds.height - regionFrame.maxY - 4
+        menu.popUp(positioning: nil, at: NSPoint(x: regionFrame.minX, y: y), in: view)
+    }
+}
+
+private final class MenuActions: NSObject {
+    var handlers: [() -> Void] = []
+
+    @objc func run(_ item: NSMenuItem) { handlers[item.tag]() }
 }
 
 struct ResultView: View {
@@ -191,7 +231,7 @@ struct ResultView: View {
             } description: {
                 Text(message)
             } actions: {
-                Button("Tentar de novo") { search.search() }
+                Button("Tentar de Novo") { search.search() }
                     .buttonStyle(.glass)
             }
         case let .loaded(versions):
@@ -220,16 +260,17 @@ struct ResultView: View {
     }
 }
 
-private struct GlassCard<Content: View>: View {
+struct GlassCard<Content: View>: View {
     let title: LocalizedStringKey
     let symbol: String
+    var prominentTitle = false
     @ViewBuilder var content: Content
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Label(title, systemImage: symbol)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.secondary)
+                .font(prominentTitle ? .headline : .subheadline.weight(.semibold))
+                .foregroundStyle(prominentTitle ? .primary : .secondary)
             content
         }
         .padding(20)
