@@ -13,7 +13,8 @@ used with another flashing tool.
   <img src="docs/images/install-firmware.png" width="49%" alt="Install Firmware tab, with the Device card (Detect, Test Connection and Reboot to Download Mode over ADB), the BL, AP and CP packages and the Install Firmware button">
 </p>
 
-- Search by model and region (Brazil: ZTO, Claro, TIM, Vivo, or any other CSC)
+- Search by model and region: the menu lists Brazil's codes (ZTO, Claro, TIM, Vivo), and
+  **Other Region…** accepts any other CSC, such as `XAA` or `BTU`
 - Shows the marketing name, size, Android version and previous versions with month/year
 - **No IMEI required**
 - Downloads can be paused and resumed, even after quitting the app
