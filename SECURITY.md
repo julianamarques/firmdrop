@@ -1,95 +1,95 @@
-# Política de Segurança
+# Security Policy
 
-## Versões Suportadas
+## Supported Versions
 
-Apenas a versão mais recente publicada em
-[Releases](https://github.com/julianamarques/firmdrop/releases) recebe
-correções de segurança.
+Only the latest version published on
+[Releases](https://github.com/julianamarques/firmdrop/releases) receives
+security fixes.
 
-| Versão                 | Suportada |
+| Version                | Supported |
 | ---------------------- | --------- |
-| Mais recente (1.0.x)   | Sim       |
-| Anteriores             | Não       |
+| Latest (1.0.x)         | Yes       |
+| Earlier                | No        |
 
-## Como Reportar uma Vulnerabilidade
+## Reporting a Vulnerability
 
-Não abra uma issue pública para relatar vulnerabilidades.
+Do not open a public issue to report vulnerabilities.
 
-Use o reporte privado do GitHub: na aba **Security** do repositório, clique em
-**Report a vulnerability**. O relato fica visível apenas para a mantenedora até
-que uma correção seja publicada.
+Use GitHub's private reporting: on the repository's **Security** tab, click
+**Report a vulnerability**. The report is visible only to the maintainer until
+a fix is published.
 
-Inclua, sempre que possível:
+Whenever possible, include:
 
-- Descrição do problema e do impacto.
-- Passos para reproduzir ou uma prova de conceito.
-- Versão do FirmDrop e do macOS.
-- Modelo, região (CSC) e versão do firmware envolvidos, se for o caso.
-- Sugestão de correção, se houver.
+- A description of the problem and its impact.
+- Steps to reproduce or a proof of concept.
+- The FirmDrop and macOS versions.
+- The model, region (CSC) and firmware version involved, if applicable.
+- A suggested fix, if you have one.
 
-## O Que Esperar
+## What to Expect
 
-- Confirmação do recebimento em até 7 dias.
-- Avaliação inicial e retorno sobre a gravidade em até 14 dias.
-- Correção publicada em uma nova versão, com crédito a quem reportou, se
-  desejado.
+- Acknowledgment of the report within 7 days.
+- An initial assessment and feedback on severity within 14 days.
+- A fix published in a new version, crediting the reporter if they wish.
 
-Por ser um projeto mantido por uma pessoa, os prazos podem variar; o relato
-será acompanhado até a conclusão.
+Because the project is maintained by one person, these timelines may vary; the
+report will be followed through to the end.
 
-## Escopo
+## Scope
 
-Estão no escopo:
+In scope:
 
-- O código do app: comunicação com os servidores da Samsung, assinatura dos
-  pedidos, verificação do `auth_param.dat` embutido, download com retomada,
-  verificação do CRC32, decifragem e gravação dos arquivos no disco.
-- A verificação de atualizações e os links que ela abre.
-- A integração de instalação USB, seleção e validação de pacotes, importação de
-  ZIP e o adaptador do motor de instalação.
-- O uso do `adb` embutido para reiniciar o aparelho em modo Download.
-- Os scripts de build, empacotamento e publicação.
+- The app's code: communication with Samsung's servers, request signing,
+  verification of the embedded `auth_param.dat`, resumable downloads, CRC32
+  verification, decryption and writing files to disk.
+- The update check and the links it opens.
+- The USB installation integration, package selection and validation, ZIP
+  import and the installation engine adapter.
+- The use of the embedded `adb` to reboot the device into Download Mode.
+- The build, packaging and release scripts.
 
-Fora do escopo (reporte diretamente aos projetos de origem):
+Out of scope (report directly to the upstream projects):
 
-- Vulnerabilidades nos servidores ou nos firmwares da Samsung:
+- Vulnerabilities in Samsung's servers or firmware:
   [Samsung Mobile Security](https://security.samsungmobile.com).
-- Vulnerabilidades no `auth_param.dat` ou no Bifrost:
+- Vulnerabilities in `auth_param.dat` or Bifrost:
   [zacharee/SamloaderKotlin](https://github.com/zacharee/SamloaderKotlin).
-- Problemas em outras ferramentas de instalação, como Odin e Heimdall. Para falhas
-  no Brokkr, informe também o projeto de origem; problemas na integração do FirmDrop
-  permanecem no escopo deste repositório.
-- Ataques que exigem acesso físico ao Mac desbloqueado.
-- O aviso do Gatekeeper na primeira abertura, causado pela assinatura local do
-  app (comportamento conhecido e documentado no README).
+- Problems in other flashing tools, such as Odin and Heimdall. For flaws in
+  Brokkr, also notify the upstream project; problems in FirmDrop's integration
+  remain in scope for this repository.
+- Attacks that require physical access to an unlocked Mac.
+- The Gatekeeper warning on first launch, caused by the app's local signing
+  (known behavior, documented in the README).
 
-## Considerações de Segurança para Usuários
+## Security Considerations for Users
 
-- O app não tem contas, não coleta dados e não envia telemetria. Na rede, ele se
-  comunica apenas, e sempre por HTTPS, com:
-  - `fota-cloud-dn.ospserver.net`, `neofussvr.sslcs.cdngc.net` e
-    `cloud-neofussvr.samsungmobile.com`, servidores da Samsung, para consultar
-    versões e baixar os firmwares;
-  - `api.github.com`, para verificar se há uma versão nova do app.
-- O `auth_param.dat` vem embutido no app, baixado de um commit fixo do Bifrost no
-  build. Ele só é usado se o SHA-256 conferir com o valor definido no código; caso
-  contrário, a busca falha.
-- O firmware é baixado direto dos servidores da Samsung, por HTTPS, e conferido com o
-  CRC32 informado por eles antes de ser decifrado. Os `.tar.md5` dentro do `.zip`
-  terminam com um MD5, que o motor de instalação confere antes de gravar. Esse MD5
-  detecta arquivos corrompidos, mas não comprova a origem: quem altera o pacote pode
-  recalcular o MD5. A autenticidade do firmware é verificada pelo próprio aparelho:
-  com o bootloader bloqueado, ele recusa imagens sem a assinatura da Samsung.
-- Um ZIP ou pacote importado de fora do FirmDrop não tem a origem verificada pelo app.
-  Use apenas firmwares baixados pelo FirmDrop ou de fontes em que você confia.
-- O `adb` embutido conversa só com o aparelho conectado por USB. Ele é iniciado com a
-  descoberta mDNS desligada, então não procura aparelhos na rede local. Se o FirmDrop
-  iniciou o servidor ADB, ele o encerra depois do reinício; um servidor que já estava
-  em execução, de outro app ou do usuário, é mantido.
-- A instalação USB é experimental. O modelo lido pelo ADB e os nomes dos arquivos não
-  comprovam compatibilidade com o hardware ou com a revisão de bootloader. O app
-  exige revisão explícita antes de iniciar, usa uma única conexão USB e não envia PIT.
-- O app não instala atualizações sozinho: ele apenas abre o link do `.dmg` da
-  nova versão no navegador. Confira se o endereço é
-  `github.com/julianamarques/firmdrop` antes de baixar.
-- Baixe o app apenas pela página de Releases deste repositório.
+- The app has no accounts, collects no data and sends no telemetry. On the network,
+  it only talks, always over HTTPS, to:
+  - `fota-cloud-dn.ospserver.net`, `neofussvr.sslcs.cdngc.net` and
+    `cloud-neofussvr.samsungmobile.com`, Samsung's servers, to look up
+    versions and download firmware;
+  - `api.github.com`, to check whether a new version of the app is out.
+- `auth_param.dat` is embedded in the app, downloaded from a pinned Bifrost commit at
+  build time. It is only used if its SHA-256 matches the value defined in the code;
+  otherwise, the search fails.
+- Firmware is downloaded straight from Samsung's servers, over HTTPS, and checked
+  against the CRC32 they report before it is decrypted. The `.tar.md5` files inside the
+  `.zip` end with an MD5, which the installation engine checks before writing. That MD5
+  detects corrupted files, but does not prove their origin: whoever alters the package
+  can recompute the MD5. The firmware's authenticity is verified by the device itself:
+  with a locked bootloader, it rejects images without Samsung's signature.
+- The app does not verify the origin of a ZIP or package imported from outside FirmDrop.
+  Only use firmware downloaded by FirmDrop or from sources you trust.
+- The embedded `adb` only talks to the device connected over USB. It starts with mDNS
+  discovery turned off, so it does not look for devices on the local network. If
+  FirmDrop started the ADB server, it stops it after the reboot; a server that was
+  already running, from another app or the user, is left running.
+- USB installation is experimental. The model read over ADB and the file names do not
+  prove compatibility with the hardware or the bootloader revision. The app requires
+  an explicit review before starting, uses a single USB connection and does not send
+  a PIT.
+- The app does not install updates on its own: it only opens the new version's `.dmg`
+  link in the browser. Check that the address is
+  `github.com/julianamarques/firmdrop` before downloading.
+- Only download the app from this repository's Releases page.
