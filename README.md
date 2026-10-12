@@ -18,7 +18,7 @@ used with another flashing tool.
 
 <p align="center">
   <img src="docs/images/download-firmware.png" width="49%" alt="Download Firmware tab, with the model field, the ZTO · Brazil (unlocked) region menu, the Search button and the Search for a model message">
-  <img src="docs/images/install-firmware.png" width="49%" alt="Install Firmware tab, with the Device card (Detect, Test Connection and Reboot to Download Mode over ADB), the BL, AP and CP packages and the Install Firmware button">
+  <img src="docs/images/install-firmware.png" width="49%" alt="Install Firmware tab, with the Device card (Detect, Test Connection and Reboot to Download Mode over ADB), the Firmware packages card (Import ZIP, Open Folder and the BL and AP rows) and the Install Firmware button">
 </p>
 
 > [!CAUTION]
