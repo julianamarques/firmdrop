@@ -9,6 +9,14 @@ with the key provided by the server. The downloaded `.zip` can be installed by F
 used with another flashing tool.
 
 <p align="center">
+  <a href="https://github.com/julianamarques/firmdrop/releases/latest"><img src="https://img.shields.io/github/v/release/julianamarques/firmdrop?style=flat-square&label=release&color=007ec6" alt="Latest release"></a>
+  <img src="https://img.shields.io/badge/macOS-26%2B-000000?style=flat-square&logo=apple&logoColor=white" alt="macOS 26 or later">
+  <img src="https://img.shields.io/badge/Platforms-Apple%20Silicon%20%7C%20Intel-8a8a8a?style=flat-square" alt="Runs on Apple Silicon and Intel">
+  <img src="https://img.shields.io/badge/SwiftUI-native-F05138?style=flat-square&logo=swift&logoColor=white" alt="Native SwiftUI app">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-4c1?style=flat-square" alt="Apache 2.0 license"></a>
+</p>
+
+<p align="center">
   <img src="docs/images/download-firmware.png" width="49%" alt="Download Firmware tab, with the model field, the ZTO · Brazil (unlocked) region menu, the Search button and the Search for a model message">
   <img src="docs/images/install-firmware.png" width="49%" alt="Install Firmware tab, with the Device card (Detect, Test Connection and Reboot to Download Mode over ADB), the BL, AP and CP packages and the Install Firmware button">
 </p>
