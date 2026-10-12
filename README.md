@@ -121,13 +121,13 @@ Settings also let you keep the `.enc4` after decrypting and choose the default r
 
 ### Install firmware from your Mac (experimental)
 
-**Tested on two devices**, all tests on 2026-10-10 and from start to finish:
+**Tested on two devices**, from start to finish on 2026-10-10 and 2026-10-11:
 
 - **Galaxy S25 (SM-S931B):** One UI 9 (Android 17, `S931BXXUCDZIF`, CSC `OWO`), with the
-  full CSC (clean install). The device entered Download Mode through Maintenance Mode
-  and ADB.
+  full CSC (clean install) and with HOME_CSC, which kept the data. The device entered
+  Download Mode through Maintenance Mode and ADB.
 - **Galaxy A05s (SM-A057M):** One UI 7 (Android 15, `A057MUBUGDZH1`, CSC `OWO`), with the
-  full CSC and then with HOME_CSC, which kept the data. The device entered Download Mode
+  full CSC and with HOME_CSC, which kept the data. The device entered Download Mode
   with the buttons, without ADB.
 
 FirmDrop uses Brokkr's IOKit transport, unlike the Heimdall used by OdinMac.
