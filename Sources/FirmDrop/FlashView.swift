@@ -115,7 +115,7 @@ struct FlashView: View {
                     if flash.connectionTested {
                         Label("Comunicação confirmada", systemImage: "checkmark.circle.fill").foregroundStyle(.green)
                     } else if device.isDownloadMode {
-                        Text("Modo Download detectado. Teste a comunicação antes de instalar.")
+                        Text("Modo Download detectado.")
                     } else {
                         Text("O macOS detectou o aparelho, mas ele não está em modo Download.")
                     }
@@ -124,7 +124,7 @@ struct FlashView: View {
             }
             Text("Em versões que permitem entrar por botões: desligue, segure os dois botões de volume e conecte o cabo ao Mac. Confirme com Volume +. Feche todos os programas que utilizam o aparelho.")
                 .font(.callout).foregroundStyle(.secondary)
-            Text("Testar Conexão confirma a comunicação USB, mas não confirma a compatibilidade do firmware.")
+            Text("Testar Conexão é opcional: a instalação testa a conexão antes de gravar. O teste confirma a comunicação USB, mas não a compatibilidade do firmware.")
                 .font(.caption).foregroundStyle(.secondary)
             if let error = flash.deviceError { Text(error).foregroundStyle(.red).textSelection(.enabled) }
             Divider()
@@ -145,6 +145,11 @@ struct FlashView: View {
                 Button("Importar ZIP…") { flash.chooseZIP() }
                 Button("Abrir Pasta…") { flash.chooseFolder() }
             }
+            VStack(alignment: .leading, spacing: 3) {
+                Text("Importar ZIP extrai os pacotes do firmware baixado para uma pasta temporária, apagada ao fechar o app; o ZIP é mantido.")
+                Text("Abrir Pasta usa uma pasta já extraída: basta escolher a pasta, sem selecionar arquivo por arquivo. Os arquivos ficam onde estão, sem cópia. Nos dois casos, o app reconhece BL, AP, CP e CSC e preenche cada linha; se houver HOME_CSC e CSC, você escolhe qual usar.")
+            }
+            .font(.caption).foregroundStyle(.secondary)
             ForEach(FlashSlot.allCases) { slot in
                 let showsCSCPicker = slot == .csc && flash.cscOptions.count > 1
                 HStack(spacing: 12) {
@@ -278,7 +283,7 @@ private struct FlashConfirmation: View {
             }
             Text(plan.preservesData ? String(localized: "HOME_CSC: preservar dados") : String(localized: "CSC: instalação limpa, com possível perda de dados"))
                 .font(.headline)
-            Text("A instalação pode causar perda de dados ou impedir a inicialização se o firmware for incompatível. O teste de USB não verifica modelo, bloqueios de segurança ou anti-rollback. Testada no S25 e no A05s, com CSC completo e HOME_CSC; continua experimental.")
+            Text("A instalação pode causar perda de dados ou impedir a inicialização se o firmware for incompatível. O teste de USB não verifica modelo, bloqueios de segurança ou anti-rollback.")
                 .font(.callout)
             Toggle("Conferi o PRODUCT NAME e a revisão do bootloader na tela do aparelho e tenho backup.", isOn: $confirmed)
             if !plan.preservesData {

@@ -9,8 +9,16 @@ with the key provided by the server. The downloaded `.zip` can be installed by F
 used with another flashing tool.
 
 <p align="center">
+  <a href="https://github.com/julianamarques/firmdrop/releases/latest"><img src="https://img.shields.io/github/v/release/julianamarques/firmdrop?style=flat-square&label=release&color=007ec6" alt="Latest release"></a>
+  <img src="https://img.shields.io/badge/macOS-26%2B-000000?style=flat-square&logo=apple&logoColor=white" alt="macOS 26 or later">
+  <img src="https://img.shields.io/badge/Platforms-Apple%20Silicon%20%7C%20Intel-8a8a8a?style=flat-square" alt="Runs on Apple Silicon and Intel">
+  <img src="https://img.shields.io/badge/SwiftUI-native-F05138?style=flat-square&logo=swift&logoColor=white" alt="Native SwiftUI app">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-4c1?style=flat-square" alt="Apache 2.0 license"></a>
+</p>
+
+<p align="center">
   <img src="docs/images/download-firmware.png" width="49%" alt="Download Firmware tab, with the model field, the ZTO · Brazil (unlocked) region menu, the Search button and the Search for a model message">
-  <img src="docs/images/install-firmware.png" width="49%" alt="Install Firmware tab, with the Device card (Detect, Test Connection and Reboot to Download Mode over ADB), the BL, AP and CP packages and the Install Firmware button">
+  <img src="docs/images/install-firmware.png" width="49%" alt="Install Firmware tab, with the Device card (Detect, Test Connection and Reboot to Download Mode over ADB), the Firmware packages card (Import ZIP, Open Folder and the BL and AP rows) and the Install Firmware button">
 </p>
 
 > [!CAUTION]
@@ -121,13 +129,13 @@ Settings also let you keep the `.enc4` after decrypting and choose the default r
 
 ### Install firmware from your Mac (experimental)
 
-**Tested on two devices**, all tests on 2026-10-10 and from start to finish:
+**Tested on two devices**, from start to finish on 2026-10-10 and 2026-10-11:
 
 - **Galaxy S25 (SM-S931B):** One UI 9 (Android 17, `S931BXXUCDZIF`, CSC `OWO`), with the
-  full CSC (clean install). The device entered Download Mode through Maintenance Mode
-  and ADB.
+  full CSC (clean install) and with HOME_CSC, which kept the data. The device entered
+  Download Mode through Maintenance Mode and ADB.
 - **Galaxy A05s (SM-A057M):** One UI 7 (Android 15, `A057MUBUGDZH1`, CSC `OWO`), with the
-  full CSC and then with HOME_CSC, which kept the data. The device entered Download Mode
+  full CSC and with HOME_CSC, which kept the data. The device entered Download Mode
   with the buttons, without ADB.
 
 FirmDrop uses Brokkr's IOKit transport, unlike the Heimdall used by OdinMac.
@@ -149,11 +157,12 @@ does not guarantee a fix when a device is not recognized.
    turn off maintenance. On versions that support the button combination, power off
    the phone and hold both volume buttons while connecting the cable; confirm with
    Volume Up. Close all apps that use the device.
-4. Click **Detect** and **Test Connection**. Detect only enumerates USB;
-   testing opens a protocol session, queries its version and ends without rebooting
-   or writing partitions. Installation resumes that session without repeating the handshake,
-   like Heimdall's `--resume`. If you need to reconnect the cable, test again;
-   if installation fails, leave Download Mode and enter it again before retrying.
+4. **Detect** and **Test Connection** are optional. The device list refreshes on its own,
+   and installing tests the connection right after checking the files. Detect only
+   enumerates USB; testing opens a protocol session, queries its version and ends without
+   rebooting or writing partitions. After a test, installation resumes that session without
+   repeating the handshake, like Heimdall's `--resume`. If installation fails, leave
+   Download Mode and enter it again before retrying.
 5. Click **Install Firmware…** at the bottom of the window. In the review, check the
    files, the model and the bootloader revision, then confirm. Flashing only starts
    after that confirmation. Don't disconnect the cable; the app prevents idle sleep

@@ -150,7 +150,7 @@ public enum FlashError: LocalizedError, Equatable, Sendable {
         case .outputTooLarge: String(localized: "A resposta excedeu o limite de tamanho permitido.")
         case .invalidZIP: String(localized: "O ZIP não contém um conjunto válido de pacotes Samsung ou contém nomes ambíguos.")
         case .deviceChanged: String(localized: "A conexão USB mudou. Detecte e teste o aparelho novamente.")
-        case .probeRequired: String(localized: "Teste a conexão com o aparelho antes de instalar.")
+        case .probeRequired: String(localized: "O aparelho não respondeu ao teste de conexão.")
         case let .notEnoughSpace(bytes):
             String(localized: "Espaço insuficiente para extrair os pacotes. São necessários \(ByteCountFormatter.string(fromByteCount: bytes, countStyle: .file)) livres no disco.")
         case .incompleteFlash: String(localized: "O motor encerrou sem confirmar a conclusão da instalação. Consulte o registro antes de tentar novamente.")

@@ -77,12 +77,12 @@
         }
       }
     },
-    "A instalação pode causar perda de dados ou impedir a inicialização se o firmware for incompatível. O teste de USB não verifica modelo, bloqueios de segurança ou anti-rollback. Testada no S25 e no A05s, com CSC completo e HOME_CSC; continua experimental.": {
+    "A instalação pode causar perda de dados ou impedir a inicialização se o firmware for incompatível. O teste de USB não verifica modelo, bloqueios de segurança ou anti-rollback.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Installing incompatible firmware may erase data or prevent the device from booting. The USB test does not check the model, security locks or anti-rollback. Tested on the S25 and A05s with a full CSC and HOME_CSC; still experimental."
+            "value": "Installing incompatible firmware may erase data or prevent the device from booting. The USB test does not check the model, security locks or anti-rollback."
           }
         }
       }
@@ -135,6 +135,16 @@
           "stringUnit": {
             "state": "new",
             "value": "A versão %1$@ está disponível. Você está usando a %2$@."
+          }
+        }
+      }
+    },
+    "Abrir Pasta usa uma pasta já extraída: basta escolher a pasta, sem selecionar arquivo por arquivo. Os arquivos ficam onde estão, sem cópia. Nos dois casos, o app reconhece BL, AP, CP e CSC e preenche cada linha; se houver HOME_CSC e CSC, você escolhe qual usar.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Folder uses an already extracted folder: just choose the folder, with no need to select each file. The files stay where they are, without being copied. Either way, the app recognizes BL, AP, CP and CSC and fills in each row; if there are both HOME_CSC and CSC, you choose which one to use."
           }
         }
       }
@@ -475,16 +485,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cancel the download of %@?"
-          }
-        }
-      }
-    },
-    "Clique em Testar Conexão.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Click Test Connection."
           }
         }
       }
@@ -945,6 +945,16 @@
         }
       }
     },
+    "Importar ZIP extrai os pacotes do firmware baixado para uma pasta temporária, apagada ao fechar o app; o ZIP é mantido.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import ZIP extracts the packages from the downloaded firmware into a temporary folder that is deleted when the app quits; the ZIP is kept."
+          }
+        }
+      }
+    },
     "Importar ZIP…": {
       "localizations": {
         "en": {
@@ -1141,22 +1151,12 @@
         }
       }
     },
-    "Modo Download detectado. Clique em Testar Conexão para continuar.": {
+    "Modo Download detectado.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Download Mode detected. Click Test Connection to continue."
-          }
-        }
-      }
-    },
-    "Modo Download detectado. Teste a comunicação antes de instalar.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Download Mode detected. Test communication before installing."
+            "value": "Download Mode detected."
           }
         }
       }
@@ -1385,12 +1385,12 @@
         }
       }
     },
-    "O aparelho já está em modo Download. Use Testar Conexão para continuar.": {
+    "O aparelho já está em modo Download. Prossiga para a instalação.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The device is already in Download Mode. Use Test Connection to continue."
+            "value": "The device is already in Download Mode. Continue with the installation."
           }
         }
       }
@@ -1401,6 +1401,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "The device is not in Download Mode."
+          }
+        }
+      }
+    },
+    "O aparelho não respondeu ao teste de conexão.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The device did not respond to the connection test."
           }
         }
       }
@@ -1913,22 +1923,12 @@
         }
       }
     },
-    "Testar Conexão confirma a comunicação USB, mas não confirma a compatibilidade do firmware.": {
+    "Testar Conexão é opcional: a instalação testa a conexão antes de gravar. O teste confirma a comunicação USB, mas não a compatibilidade do firmware.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Test Connection confirms USB communication, but does not confirm firmware compatibility."
-          }
-        }
-      }
-    },
-    "Teste a conexão com o aparelho antes de instalar.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Test the device connection before installing."
+            "value": "Test Connection is optional: installing tests the connection before writing. The test confirms USB communication, but not firmware compatibility."
           }
         }
       }
